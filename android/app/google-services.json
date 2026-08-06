@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "942017738617",
+    "project_id": "muevete-rico-3544f",
+    "storage_bucket": "muevete-rico-3544f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942017738617:android:b7eba6f1039bf0f22461a8",
+        "android_client_info": {
+          "package_name": "com.example.muevete"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFiy96hhMDmNzBBH5yE_2j6omn2tyFBSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942017738617:android:c640ef80105d562f2461a8",
+        "android_client_info": {
+          "package_name": "com.example.muevete_rico_mark_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFiy96hhMDmNzBBH5yE_2j6omn2tyFBSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
