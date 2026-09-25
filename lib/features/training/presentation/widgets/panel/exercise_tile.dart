@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
+import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 
 class ExerciseTile extends StatelessWidget {
   const ExerciseTile({
@@ -11,23 +12,34 @@ class ExerciseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(16),
+    return GestureDetector(
+      onTap: (){
+      Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ExerciseDetailScreen(
+          exercise: exercise,
+        ),
       ),
-      child: Row(
-        children: [
-          _Thumbnail(exercisePicture: exercise.exercise.visualPath),
-          const SizedBox(width: 16),
-          Expanded(
-            child: _ExerciseInfo(exercise: exercise),
-          ),
-          const SizedBox(width: 16),
-          const _Chevron(),
-        ],
+    );  
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            _Thumbnail(exercisePicture: exercise.exercise.visualPath),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _ExerciseInfo(exercise: exercise),
+            ),
+            const SizedBox(width: 16),
+            const _Chevron(),
+          ],
+        ),
       ),
     );
   }

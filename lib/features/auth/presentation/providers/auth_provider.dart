@@ -8,9 +8,7 @@ part 'auth_provider.g.dart';
 
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
-
-  AuthRepository get _repository =>
-      ref.read(authRepositoryProvider);
+  AuthRepository get _repository => ref.read(authRepositoryProvider);
 
   @override
   User? build() {
@@ -21,20 +19,17 @@ class AuthNotifier extends _$AuthNotifier {
     required String email,
     required String password,
   }) async {
-    state = await _repository.signIn(
-      email,
-      password,
-    );
+    final user = await _repository.signIn(email, password);
+    state = user;
   }
 
-  Future<void> signUp({
+  Future<User?> signUp({
     required String email,
     required String password,
   }) async {
-    state = await _repository.signUp(
-      email,
-      password,
-    );
+    final user = await _repository.signUp(email, password);
+    state = user;
+    return user;
   }
 
   Future<void> signOut() async {
@@ -44,16 +39,14 @@ class AuthNotifier extends _$AuthNotifier {
 }
 
 @riverpod
-AuthRepository authRepository(Ref ref){
-
-    return FirebaseAuthRepository(
-      auth: ref.read(firebaseAuthProvider),
-    );
+AuthRepository authRepository(Ref ref) {
+  return FirebaseAuthRepository(
+    auth: ref.read(firebaseAuthProvider),
+  );
 }
 
 @riverpod
-Stream<User?> authState(Ref ref){
+Stream<User?> authState(Ref ref) {
   final repository = ref.watch(authRepositoryProvider);
-
   return repository.authStateChanges;
 }

@@ -45,4 +45,6 @@ class UserStats {
         throw Exception("Invalid Target");     
     }
   }
+  double get overallLevel =>
+    (knee + hip + ankle + shoulder) / 4;
 }

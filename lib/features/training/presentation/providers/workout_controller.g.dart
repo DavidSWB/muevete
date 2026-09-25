@@ -33,7 +33,7 @@ final class WorkoutControllerProvider
   WorkoutController create() => WorkoutController();
 }
 
-String _$workoutControllerHash() => r'2acda9f328fe4910c191ab8ef49964ad3b62116c';
+String _$workoutControllerHash() => r'6b09f9767e4420c2cb333182796dcd6d8280e55c';
 
 abstract class _$WorkoutController extends $AsyncNotifier<Workout> {
   FutureOr<Workout> build();

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
+import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_list.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_overview.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -8,9 +10,11 @@ class WorkoutSlidingPanel extends StatelessWidget {
   const WorkoutSlidingPanel({
     super.key,
     required this.workout,
+    required this.onWorkoutFinished,
   });
 
   final Workout workout;
+  final VoidCallback onWorkoutFinished;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +51,14 @@ class WorkoutSlidingPanel extends StatelessWidget {
               ExerciseList(
                 exercises: workout.exercises,
               ),
+
+            SliverToBoxAdapter(
+              child: _FinishWorkoutButton(
+                onWorkoutFinished: onWorkoutFinished,
+              ),
+            ),
+              
+
             ],
           ),
         );
@@ -70,6 +82,34 @@ class _DragHandle extends StatelessWidget {
             color: Colors.grey.shade400,
             borderRadius: BorderRadius.circular(999)
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FinishWorkoutButton extends ConsumerWidget {
+  const _FinishWorkoutButton({
+    required this.onWorkoutFinished,
+  });
+
+  final VoidCallback onWorkoutFinished;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () async {
+            await ref
+                .read(workoutControllerProvider.notifier)
+                .finishWorkout();
+            
+            onWorkoutFinished();
+          },
+          child: const Text('Finish Workout'),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:muevete/features/training/domain/entities/exercise.dart';
 import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
-import 'package:muevete/features/profile/domain/entities/userstats.dart';
+import 'package:muevete/features/profile/domain/entities/user_stats.dart';
 
 class Variantselector {
 

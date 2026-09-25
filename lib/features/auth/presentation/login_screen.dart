@@ -16,91 +16,151 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  String? errorMessage = '';
-  final _email = TextEditingController();
-  final _password = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String? errorMessage;
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _email.dispose();
-    _password.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void handleLogin() async{
-    if(_email.text.isEmpty || _password.text.isEmpty){
+  Future<void> handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
       setState(() {
-        errorMessage = "Email or password cannot be empty";
-      });
-      return;
-    }else if(_password.text.length <6){
-      setState(() {
-        errorMessage = "Password must be at least 6 characters long";
-      });
-      return;
-    }else if(!_email.text.contains('@')){
-      setState(() {
-        errorMessage = "Email is not valid";
+        errorMessage = 'Email and password cannot be empty.';
       });
       return;
     }
-    setState(() {
-        errorMessage = "";
-    });
-    try{
-      await ref.read(authProvider.notifier).signIn(
-        email: _email.text, 
-        password: _password.text,
-      );
-    }on FirebaseAuthException catch(e){
+
+    if (password.length < 6) {
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = 'Password must be at least 6 characters long.';
       });
       return;
+    }
+
+    if (!email.contains('@') || !email.contains('.')) {
+      setState(() {
+        errorMessage = 'Please enter a valid email address.';
+      });
+      return;
+    }
+
+    setState(() {
+      errorMessage = null;
+      _isLoading = true;
+    });
+
+    try {
+      await ref.read(authProvider.notifier).signIn(
+        email: email,
+        password: password,
+      );
+
+      if (mounted) {
+        context.go('/');
+      }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      switch (e.code) {
+        case 'user-not-found':
+        case 'wrong-password':
+        case 'invalid-credential':
+          message = 'Invalid email or password.';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email format.';
+          break;
+        case 'user-disabled':
+          message = 'This user account has been disabled.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many failed attempts. Please try again later.';
+          break;
+        case 'network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+          break;
+        default:
+          message = e.message ?? 'Authentication failed. Please try again.';
+      }
+
+      if (mounted) {
+        setState(() {
+          errorMessage = message;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          errorMessage = 'An unexpected error occurred. Please try again.';
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
-
   @override
-  Widget build(BuildContext context) { // Nota: Aquí ya no se necesita pasar 'WidgetRef ref' por parámetro, se usa 'ref' directamente
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyHeadingTwo(text: "Login"),
-            const SizedBox(height: 20),
-            
-            if (errorMessage != null && errorMessage!.isNotEmpty)
-              Text(errorMessage!, style: const TextStyle(color: Colors.red)),
-              
-            const SizedBox(height: 40),
-
-            MyTextinputfield(
-              controller: _email,
-              hintText: "example@gmail.com",
-              obscureText: false, // Cambiado a false para el correo
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const MyHeadingTwo(text: 'Login'),
+                const SizedBox(height: 24),
+                if (errorMessage != null && errorMessage!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Text(
+                      errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+                const SizedBox(height: 20),
+                MyTextinputfield(
+                  controller: _emailController,
+                  hintText: 'example@gmail.com',
+                  obscureText: false,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 20),
+                MyTextinputfield(
+                  controller: _passwordController,
+                  hintText: 'Password',
+                  obscureText: true,
+                ),
+                const SizedBox(height: 30),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  MyButton(
+                    text: 'Enter',
+                    onTap: handleLogin,
+                  ),
+                const SizedBox(height: 15),
+                MyButtonSecondarytext(
+                  text: 'Create a new account',
+                  onTap: () => context.go('/signup'),
+                ),
+              ],
             ),
-            const SizedBox(height: 30),
-
-            MyTextinputfield(
-              controller: _password,
-              hintText: "....",
-              obscureText: true,
-            ),
-            const SizedBox(height: 30),
-
-            MyButton(
-              text: "Enter",
-              onTap: handleLogin, // Llamamos a tu función modificada
-            ),
-            const SizedBox(height: 15),
-
-            MyButtonSecondarytext(
-              text: "Create a new account",
-              onTap: () => context.go("/signup"),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,4 @@
-import 'package:muevete/features/profile/domain/entities/userstats.dart';
+import 'package:muevete/features/profile/domain/entities/user_stats.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';

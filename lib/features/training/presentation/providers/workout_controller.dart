@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
+import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
 import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
@@ -38,7 +39,7 @@ class WorkoutController extends _$WorkoutController {
       user: user,
     );
 
-    final day = schedule.calculateTrainingDay(
+    final planDay = schedule.getNextTrainingDay(
       user: user,
       plan: plan,
     );
@@ -46,9 +47,28 @@ class WorkoutController extends _$WorkoutController {
     return builder.buildWorkout(
       plan: plan,
       week: week,
-      day: day,
+      day: planDay.day,
       stats: user.stats!,
     );
+  }
+
+  Future<void> finishWorkout() async{
+    final user = ref.read(profileProvider).requireValue;
+
+    final updatedWorkouts = [
+    ...user.completedWorkouts,
+    DateTime.now()
+    ];
+
+    final updatedUser = user.copyWith(
+      completedWorkouts: updatedWorkouts,
+    );
+    
+    await ref
+      .read(profileRepositoryProvider)
+      .saveProfile(updatedUser);
+    
+    ref.invalidate(profileProvider);
   }
 
   Future<void> refresh() async {

@@ -122,6 +122,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
                               try{
                                 await notifier.finish();
 
+                                if (!context.mounted) return;
                                 await QuickAlert.show(
                                   context: context,
                                   type: QuickAlertType.success,
@@ -132,6 +133,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
 
                                 );
                                 if (context.mounted) context.go('/home'); 
+                                if (context.mounted) context.go('/'); 
                               }catch(e){
                                 QuickAlert.show(
                                   context: context,
@@ -139,6 +141,14 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
                                   title: 'Sorry, something went wrong',
                                   text: 'Error: ${e.toString()}',
                                 );
+                                if (context.mounted) {
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.error,
+                                    title: 'Sorry, something went wrong',
+                                    text: 'Error: ${e.toString()}',
+                                  );
+                                }
                               }
                               }
                             );

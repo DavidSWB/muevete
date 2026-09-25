@@ -1,4 +1,5 @@
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/training/domain/entities/plan_day.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 
 class TrainingScheduleService {
@@ -15,19 +16,23 @@ class TrainingScheduleService {
     return (difference ~/ 7) + 1;
   }
 
-  int calculateTrainingDay({
+
+  PlanDay getNextTrainingDay({
     required UserModel user,
     required TrainingPlan plan,
   }) {
-    final completed = _completedThisWeek(
-      workouts: user.completedWorkouts,
+    final completed = user.completedWorkouts
+        .where(
+          (date) =>
+              !date.isBefore(user.training!.planStartDate),
+        )
+        .length;
+
+    final dayNumber = (completed % plan.daysPerWeek) + 1;
+
+    return plan.template.firstWhere(
+      (day) => day.day == dayNumber,
     );
-
-    if (completed >= plan.daysPerWeek) {
-      return plan.daysPerWeek;
-    }
-
-    return completed + 1;
   }
 
   int _completedThisWeek({

@@ -1,4 +1,4 @@
-import 'package:muevete/features/profile/domain/entities/userstats.dart';
+import 'package:muevete/features/profile/domain/entities/user_stats.dart';
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
 import 'package:muevete/shared/entities/progresssummary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
