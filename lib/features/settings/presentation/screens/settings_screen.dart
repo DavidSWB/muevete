@@ -48,6 +48,13 @@ class SettingsScreen extends ConsumerWidget {
             },
           ),
 
+          SettingsTile(
+            title: 'Change training program',
+            onTap: () {
+              context.push('/program-setup');
+            },
+          ),
+
           const SizedBox(height: 16),
           SettingsTile(
             title: 'Log Out',

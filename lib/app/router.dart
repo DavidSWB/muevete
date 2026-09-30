@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
-import 'package:muevete/app/home_screen.dart';
 import 'package:muevete/auth_gate.dart';
 import 'package:muevete/features/auth/presentation/login_screen.dart';
 import 'package:muevete/features/auth/presentation/signup_screen.dart';
 import 'package:muevete/features/diagnosis/presentation/screens/diagnosis_screen.dart';
+import 'package:muevete/features/training/presentation/screens/program_setup_screen.dart';
 
 GoRouter router = GoRouter(
   routes: [
@@ -21,11 +21,15 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: "/home",
-      builder: (context, state) => HomeScreen() ,
+      builder: (context, state) => const AuthGate() ,
     ),
     GoRoute(
       path: "/diagnosis",
       builder: (context, state) => DiagnosisScreen() ,
+    ),
+    GoRoute(
+      path: "/program-setup",
+      builder: (context, state) => const ProgramSetupScreen(),
     ),
   ],
 );

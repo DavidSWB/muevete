@@ -4,4 +4,6 @@ abstract class TrainingRepository {
 
   Future <TrainingPlan> getPlan(String id);
 
+  Future<List<TrainingPlan>> getPlans();
+
 }

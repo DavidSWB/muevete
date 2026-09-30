@@ -17,11 +17,30 @@ class FirebaseTrainingRepository implements TrainingRepository{
       .doc(id)
       .get();
 
-    final data = snapshot.data()!;
+    if (!snapshot.exists || snapshot.data() == null) {
+      throw StateError('Training plan not found: $id');
+    }
 
-    return TrainingPlan.fromJson({
-      ...data,
-      "planId": snapshot.id,
-    });
+    return _parsePlan(snapshot.id, snapshot.data()!);
+  }
+
+  @override
+  Future<List<TrainingPlan>> getPlans() async {
+    final snapshot = await _firestore.collection('plans').get();
+
+    return snapshot.docs
+        .map((doc) => _parsePlan(doc.id, doc.data()))
+        .toList();
+  }
+
+  TrainingPlan _parsePlan(String id, Map<String, dynamic> data) {
+    try {
+      return TrainingPlan.fromJson({
+        ...data,
+        'planId': id,
+      });
+    } catch (error) {
+      throw FormatException('Invalid training plan: $id', error);
+    }
   }
 }
