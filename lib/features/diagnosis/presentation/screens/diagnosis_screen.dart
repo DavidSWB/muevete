@@ -17,21 +17,16 @@ class DiagnosisScreen extends ConsumerStatefulWidget {
   ConsumerState<DiagnosisScreen> createState() => _DiagnosisScreenState();
 }
 
-class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
-  
+class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
   String? selectedOption;
 
   @override
   Widget build(BuildContext context) {
-
     final diagnosisAsync = ref.watch(diagnosisProvider);
     final notifier = ref.read(diagnosisProvider.notifier);
 
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Diagnosis"),
-      ),
+      appBar: AppBar(title: const Text("Diagnosis")),
       body: Center(
         child: diagnosisAsync.when(
           data: (state) {
@@ -39,8 +34,8 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
             final description = currentQuestion.question;
             final options = currentQuestion.options.toList();
 
-            int getSelectedValue (){
-              if(selectedOption == null) throw Exception("No option selected");
+            int getSelectedValue() {
+              if (selectedOption == null) throw Exception("No option selected");
 
               final selectedOptionValue = options.firstWhere(
                 (opt) => opt.text == selectedOption,
@@ -49,17 +44,18 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
               return selectedOptionValue.value;
             }
 
-            return SingleChildScrollView( // Previene desbordamiento de pantalla si hay muchas opciones
+            return SingleChildScrollView(
+              // Previene desbordamiento de pantalla si hay muchas opciones
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  
-                  children: [                 
+
+                  children: [
                     const SizedBox(height: 20),
                     Text(
                       description,
-                
+
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
@@ -70,12 +66,12 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
                     const SizedBox(height: 20),
                     MyQuizImage(imagePath: currentQuestion.imagePath),
                     const SizedBox(height: 20),
-                    
+
                     // y usar el operador spread (...) para meter los elementos en la Column.
                     ...options.map((option) {
                       return MyQuizoptionButton(
-                        text: option.text, 
-                        isSelected: selectedOption == option.text, 
+                        text: option.text,
+                        isSelected: selectedOption == option.text,
                         onTap: () {
                           setState(() {
                             selectedOption = option.text;
@@ -83,87 +79,83 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen>{
                         },
                       );
                     }),
-                  const SizedBox(height: 20),
-                
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      if (currentQuestion.order >1 )
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        if (currentQuestion.order > 1)
+                          MyButtonSecondarytext(
+                            text: 'Previous',
+                            onTap: () {
+                              notifier.previousQuestion();
+                            },
+                          ),
+
                         MyButtonSecondarytext(
-                          text: 'Previous', 
-                          onTap: (){
-                            notifier.previousQuestion();
-                          }
-                        ),
-                      
-                      MyButtonSecondarytext(
-                        text: currentQuestion.order == 5 ? 'Finish' :'Next', 
-                        onTap: (){
-                          notifier.answer(
-                            currentQuestion.id, 
-                            getSelectedValue(),
-                          );
-                          if(currentQuestion.order < 5){
-                            setState(() {
-                              selectedOption = null;
-                            });
-                            notifier.nextQuestion();
-
-                          }else {
-                          
-                            QuickAlert.show(
-                              context: context, 
-                              type: QuickAlertType.warning,
-                              text: 'Are you sure you wanna finish the test?',
-                              showCancelBtn: true,
-                              barrierDismissible: false,
-                              confirmBtnText: 'Finsih',
-                              onConfirmBtnTap: () async {
-                              try{
-                                await notifier.finish();
-
-                                if (!context.mounted) return;
-                                await QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.success,
-                                  barrierDismissible: false,
-                                  text: 'Diagnosis saved Successfully!',
-                                  confirmBtnColor: Colors.green,
-                                  confirmBtnText: 'Accept'
-
-                                );
-                                if (context.mounted) context.go('/home'); 
-                                if (context.mounted) context.go('/'); 
-                              }catch(e){
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.error,
-                                  title: 'Sorry, something went wrong',
-                                  text: 'Error: ${e.toString()}',
-                                );
-                                if (context.mounted) {
-                                  QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.error,
-                                    title: 'Sorry, something went wrong',
-                                    text: 'Error: ${e.toString()}',
-                                  );
-                                }
-                              }
-                              }
+                          text: currentQuestion.order == 5 ? 'Finish' : 'Next',
+                          onTap: () {
+                            notifier.answer(
+                              currentQuestion.id,
+                              getSelectedValue(),
                             );
-                          }
-                        }
-                      ),  
-                    ],
-                  ),
-                  
+                            if (currentQuestion.order < 5) {
+                              setState(() {
+                                selectedOption = null;
+                              });
+                              notifier.nextQuestion();
+                            } else {
+                              final navigator = Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              );
+                              final router = GoRouter.of(context);
+                              QuickAlert.show(
+                                context: context,
+                                type: QuickAlertType.warning,
+                                text: 'Are you sure you wanna finish the test?',
+                                showCancelBtn: true,
+                                barrierDismissible: false,
+                                confirmBtnText: 'Finish',
+                                onConfirmBtnTap: () async {
+                                  try {
+                                    await notifier.finish();
+                                  } catch (e) {
+                                    if (!navigator.mounted) return;
+                                    navigator.pop();
+                                    await QuickAlert.show(
+                                      context: navigator.context,
+                                      type: QuickAlertType.error,
+                                      title: 'Sorry, something went wrong',
+                                      text: 'Error: ${e.toString()}',
+                                    );
+                                    return;
+                                  }
+
+                                  if (!navigator.mounted) return;
+                                  navigator.pop();
+                                  await QuickAlert.show(
+                                    context: navigator.context,
+                                    type: QuickAlertType.success,
+                                    barrierDismissible: false,
+                                    text: 'Diagnosis saved Successfully!',
+                                    confirmBtnColor: Colors.green,
+                                    confirmBtnText: 'Accept',
+                                  );
+                                  router.go('/');
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             );
           },
-          error: (error, stackTrace) => Text("Error: $error"), 
+          error: (error, stackTrace) => Text("Error: $error"),
           loading: () => const CircularProgressIndicator(),
         ),
       ),
