@@ -102,29 +102,41 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildStats(user, AsyncValue nextTraining) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildStatCard(
-          title: 'Completed',
-          value: '${user.completedWorkouts.length}',
-        ),
-        const SizedBox(width: 8),
-        _buildStatCard(
-          title: 'Next workout',
-          value: nextTraining.when(
-            loading: () => '...',
-            error: (_, __) => '--',
-            data: (day) => day.name['en'] ?? 'Workout',
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildStatCard(
+                  title: 'Completed',
+                  value: '${user.completedWorkouts.length}',
+                ),
+                const SizedBox(height: 8),
+                _buildStatCard(
+                  title: 'Overall level',
+                  value: user.stats?.overallLevel.round().toString() ?? '--',
+                ),
+              ],
+            ),
           ),
-          color: AppColors.cardOrange,
-        ),
-        const SizedBox(width: 8),
-        _buildStatCard(
-          title: 'Overall level',
-          value: user.stats?.overallLevel.round().toString() ?? '--',
-        ),
-      ],
+      
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildStatCard(
+              title: 'Next workout',
+              value: nextTraining.when(
+                loading: () => '...',
+                error: (_, __) => '--',
+                data: (day) => day.name['en'] ?? 'Workout',
+              ),
+              color: AppColors.cardOrange,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -133,34 +145,32 @@ class HomeScreen extends ConsumerWidget {
     required String value,
     Color color = AppColors.softGrey,
   }) {
-    return Expanded(
-      child: Card(
-        color: color,
-        elevation: 0,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted,
-                ),
+    return Card(
+      color: color,
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textMuted,
               ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

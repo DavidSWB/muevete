@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   String? errorMessage = '';
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('jsadlkajsdklasjdklasjdklasjkldjaslkdjaskldjsakldjaslkdjlkasslkjdalkjdskldjalkdj');
+  }
 
   @override
   void dispose() {
@@ -86,6 +93,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Future<void> handleSignup() async {
+    var signupStage = 'input parsing';
     final validationError = _validateInputs();
     if (validationError != null) {
       setState(() {
@@ -109,18 +117,22 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       final medicalConditionsText = _medicalConditionsController.text.trim();
 
       // 1. Create user with Firebase Auth
-      final user = await ref.read(authProvider.notifier).signUp(
-            email: email,
-            password: password,
-          );
+      signupStage = 'Firebase Auth account creation';
+      final user = await _signUpOrRecoverMatchingSession(
+        email: email,
+        password: password,
+      );
 
-      final uid = user?.uid ?? ref.read(authRepositoryProvider).currentUser?.uid;
+      signupStage = 'resolving Auth user ID';
+      final uid =
+          user?.uid ?? ref.read(authRepositoryProvider).currentUser?.uid;
 
       if (uid == null) {
         throw Exception("Could not retrieve user ID after registration.");
       }
 
       // 2. Create initial user profile in Firestore
+      signupStage = 'Firestore profile construction';
       final initialUser = UserModel(
         id: uid,
         email: email,
@@ -138,12 +150,21 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         progressSummary: null,
       );
 
+      signupStage = 'Firestore profile save';
       await ref.read(profileRepositoryProvider).saveProfile(initialUser);
 
+      signupStage = 'post-registration navigation';
       if (mounted) {
         context.go('/');
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint(
+          'Signup failed during $signupStage: FirebaseAuthException '
+          'code=${e.code}',
+        );
+        debugPrintStack(stackTrace: stackTrace);
+      }
       String message;
       switch (e.code) {
         case 'email-already-in-use':
@@ -166,7 +187,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           errorMessage = message;
         });
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('Signup failed during $signupStage (${e.runtimeType}).');
+        if (e is FirebaseException) {
+          debugPrint('Firebase error code: ${e.code}');
+        }
+        debugPrintStack(stackTrace: stackTrace);
+      }
       if (mounted) {
         setState(() {
           errorMessage = "An unexpected error occurred. Please try again.";
@@ -178,6 +206,29 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  Future<User?> _signUpOrRecoverMatchingSession({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      return await ref
+          .read(authProvider.notifier)
+          .signUp(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'email-already-in-use') {
+        rethrow;
+      }
+
+      final currentUser = ref.read(authRepositoryProvider).currentUser;
+      final currentEmail = currentUser?.email?.trim().toLowerCase();
+      if (currentEmail == email.trim().toLowerCase()) {
+        return currentUser;
+      }
+
+      rethrow;
     }
   }
 
@@ -196,7 +247,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 if (errorMessage != null && errorMessage!.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0,
+                      vertical: 8.0,
+                    ),
                     child: Text(
                       errorMessage!,
                       textAlign: TextAlign.center,
@@ -241,7 +295,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   controller: _weightController,
                   hintText: "Weight in kg (e.g. 70.5)",
                   obscureText: false,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -249,7 +305,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   controller: _heightController,
                   hintText: "Height in cm (e.g. 175)",
                   obscureText: false,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -263,10 +321,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 if (_isLoading)
                   const CircularProgressIndicator()
                 else
-                  MyButton(
-                    text: "Register",
-                    onTap: handleSignup,
-                  ),
+                  MyButton(text: "Register", onTap: handleSignup),
                 const SizedBox(height: 16),
 
                 MyButtonSecondarytext(

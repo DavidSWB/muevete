@@ -4,16 +4,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/app.dart';
 import 'package:muevete/firebase_options.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  Object? firebaseError;
+  StackTrace? firebaseStackTrace;
 
-  runApp( 
-    const ProviderScope(
-      child: App(),
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on Object catch (error, stackTrace) {
+    // Keep the Flutter engine alive so startup errors are visible instead of
+    // leaving a blank/black window. Firebase must still be configured for the
+    // authentication and Firestore features to work.
+    firebaseError = error;
+    firebaseStackTrace = stackTrace;
+  }
+
+  runApp(
+    ProviderScope(
+      child: App(
+        firebaseError: firebaseError,
+        firebaseStackTrace: firebaseStackTrace,
+      ),
     ),
   );
 }
