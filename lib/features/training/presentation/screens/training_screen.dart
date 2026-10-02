@@ -30,7 +30,10 @@ class TrainingScreen extends ConsumerWidget {
               
               WorkoutSlidingPanel(
                 workout: workout,
-                onWorkoutFinished: () {
+                onWorkoutFinished: () async {
+                  await ref
+                      .read(workoutControllerProvider.notifier)
+                      .finishWorkout();
                   context.go('/home');
                 },
               ),

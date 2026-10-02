@@ -10,15 +10,24 @@ class FirebaseExerciseRepository implements ExerciseRepository{
   final FirebaseFirestore _firestore;
 
   @override
-  Future<Exercise> getExercise(id) async {
+  Future<Exercise> getExercise(String id) async {
     final snapshot = await _firestore
           .collection('exercises')
           .doc(id)
           .get();
 
-    final data = snapshot.data()!;
-    
-    return Exercise.fromJson(data);
+    if (!snapshot.exists || snapshot.data() == null) {
+      throw StateError('Exercise document "$id" does not exist.');
+    }
+
+    try {
+      return Exercise.fromJson(snapshot.data()!);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        FormatException('Invalid exercise document "$id": $error'),
+        stackTrace,
+      );
+    }
   }
  
 }

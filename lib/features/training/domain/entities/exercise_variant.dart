@@ -22,8 +22,18 @@ class ExerciseVariant {
   factory ExerciseVariant.fromJson(
     Map<String, dynamic> json,
   ) {
+    final variantId = _requiredString(json["variantId"], "variantId");
+    final requiredLevelName =
+        _requiredString(json["requiredLevel"], "requiredLevel");
+    final requiredLevel = ExerciseLevel.values.firstWhere(
+      (e) => e.name == requiredLevelName,
+      orElse: () => throw FormatException(
+        'Invalid requiredLevel "$requiredLevelName" in variant "$variantId"',
+      ),
+    );
+
     return ExerciseVariant(
-      variantId: json["variantId"],
+      variantId: variantId,
 
       name: Map<String, String>.from(
         json["name"],
@@ -35,10 +45,13 @@ class ExerciseVariant {
 
       visualPath: json["visualPath"],
 
-      requiredLevel: ExerciseLevel.values.firstWhere(
-        (e) => e.name == json["requiredLevel"],
-      ),
+      requiredLevel: requiredLevel,
     );
+  }
+
+  static String _requiredString(dynamic value, String field) {
+    if (value is String && value.isNotEmpty) return value;
+    throw FormatException('Missing $field in exercise variant');
   }
 
   Map<String, dynamic> toJson() {

@@ -6,4 +6,6 @@ enum ExerciseType {
 
   flexibility,
 
+  mobility,
+
 }

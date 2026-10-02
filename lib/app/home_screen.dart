@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/presentation/providers/next_training_provider.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -34,7 +35,7 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
                 _buildStats(user, nextTraining),
                 const SizedBox(height: 28),
-                _buildStartTraining(),
+                _buildStartTraining(context),
               ],
             ),
           ),
@@ -177,7 +178,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
 
-Widget _buildStartTraining() {
+Widget _buildStartTraining(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -189,7 +190,10 @@ Widget _buildStartTraining() {
           ),
         ),
         const SizedBox(height: 12),
-        Card(
+        InkWell(
+          onTap: () => context.push('/active-breaks'),
+          borderRadius: BorderRadius.circular(12),
+          child: Card(
           elevation: 0,
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -229,6 +233,7 @@ Widget _buildStartTraining() {
                 ),
               ],
             ),
+          ),
           ),
         ),
       ],

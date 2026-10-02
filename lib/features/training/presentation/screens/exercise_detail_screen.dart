@@ -65,6 +65,7 @@ class _Stats extends StatelessWidget {
         _Stat('Sets', '${exercise.sets}'),
         _Stat('Reps', '${exercise.reps ?? "-"}'),
         _Stat('Rest', '${exercise.rest}s'),
+        if (exercise.duration != null) _Stat('Duration', '${exercise.duration}s'),
       ],
     );
   }

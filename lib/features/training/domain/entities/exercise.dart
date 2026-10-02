@@ -22,28 +22,44 @@ class Exercise {
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json){
+    final exerciseId = _requiredString(json['exerciseId'], 'exerciseId');
+    final typeName = _requiredString(json['type'], 'type');
+    final type = ExerciseType.values.firstWhere(
+      (e) => e.name == typeName,
+      orElse: () => throw FormatException(
+        'Invalid exercise type "$typeName" in exercise "$exerciseId"',
+      ),
+    );
+
+    final rawVariants = json['variants'];
+    if (rawVariants is! List) {
+      throw FormatException('Missing variants list in exercise "$exerciseId"');
+    }
 
     return Exercise(
 
-      exerciseId: json["exerciseId"],
+      exerciseId: exerciseId,
 
       name: Map<String,String>.from(json["name"]),
 
-      type: ExerciseType.values.firstWhere(
-        (e) => e.name == json["type"],
-      ),
+      type: type,
 
       targets:
           (json["targets"] as List<dynamic>)
               .map((e) => e.toString())
               .toList(),
 
-      variants: (json["variants"] as List)
+      variants: rawVariants
           .map((e) => ExerciseVariant.fromJson(e))
           .toList(),
 
           );
 
+  }
+
+  static String _requiredString(dynamic value, String field) {
+    if (value is String && value.isNotEmpty) return value;
+    throw FormatException('Missing $field in exercise document');
   }
 
   Map<String,dynamic> toJson(){

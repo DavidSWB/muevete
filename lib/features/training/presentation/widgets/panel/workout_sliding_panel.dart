@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
-import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_list.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_overview.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -11,10 +9,12 @@ class WorkoutSlidingPanel extends StatelessWidget {
     super.key,
     required this.workout,
     required this.onWorkoutFinished,
+    this.finishButtonLabel = 'Finish Workout',
   });
 
   final Workout workout;
-  final VoidCallback onWorkoutFinished;
+  final Future<void> Function() onWorkoutFinished;
+  final String finishButtonLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +55,7 @@ class WorkoutSlidingPanel extends StatelessWidget {
             SliverToBoxAdapter(
               child: _FinishWorkoutButton(
                 onWorkoutFinished: onWorkoutFinished,
+                label: finishButtonLabel,
               ),
             ),
               
@@ -88,28 +89,26 @@ class _DragHandle extends StatelessWidget {
   }
 }
 
-class _FinishWorkoutButton extends ConsumerWidget {
+class _FinishWorkoutButton extends StatelessWidget {
   const _FinishWorkoutButton({
     required this.onWorkoutFinished,
+    required this.label,
   });
 
-  final VoidCallback onWorkoutFinished;
+  final Future<void> Function() onWorkoutFinished;
+  final String label;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () async {
-            await ref
-                .read(workoutControllerProvider.notifier)
-                .finishWorkout();
-            
-            onWorkoutFinished();
+            await onWorkoutFinished();
           },
-          child: const Text('Finish Workout'),
+          child: Text(label),
         ),
       ),
     );
