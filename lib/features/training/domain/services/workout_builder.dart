@@ -59,6 +59,7 @@ class WorkoutBuilder {
           await progressionRepository.getRules(
         exercise.type,
         level,
+        exercise.hold,
       );
 
       final cycle = progression.cycle.firstWhere(

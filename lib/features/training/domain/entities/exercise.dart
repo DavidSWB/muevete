@@ -9,6 +9,8 @@ class Exercise {
 
   final ExerciseType type;
 
+  final bool hold;
+
   final List<String> targets;
 
   final List<ExerciseVariant> variants;
@@ -17,6 +19,7 @@ class Exercise {
     required this.exerciseId,
     required this.name,
     required this.type,
+    required this.hold,
     required this.targets,
     required this.variants,
   });
@@ -43,6 +46,8 @@ class Exercise {
       name: Map<String,String>.from(json["name"]),
 
       type: type,
+
+      hold: json['hold'] as bool? ?? false,
 
       targets:
           (json["targets"] as List<dynamic>)
@@ -71,6 +76,8 @@ class Exercise {
       "name": name,
 
       "type": type.name,
+
+      "hold": hold,
 
       "targets": targets,
 

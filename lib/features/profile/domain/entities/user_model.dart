@@ -1,5 +1,6 @@
 import 'package:muevete/features/profile/domain/entities/user_stats.dart';
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
+import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/shared/entities/progresssummary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -19,6 +20,7 @@ class UserModel {
   final UserStats? stats;
   final UserTraining? training;
   final ProgressSummary? progressSummary;
+  final UserNotifications? notifications;
 
   final List<DateTime> completedWorkouts;
 
@@ -35,6 +37,7 @@ class UserModel {
     this.stats,
     this.training,
     this.progressSummary,
+    this.notifications,
     this.completedWorkouts = const [],
   });
 
@@ -78,6 +81,10 @@ class UserModel {
             ? null
             : ProgressSummary.fromJson(json["progressSummary"]),
 
+        notifications: json["notifications"] == null
+            ? null
+            : UserNotifications.fromJson(json["notifications"]),
+
         completedWorkouts:
         (json["completedWorkouts"] as List<dynamic>? ?? [])
           .map((e) {
@@ -113,6 +120,7 @@ class UserModel {
       "stats": stats?.toJson(),
       "training": training?.toJson(),
       "progressSummary": progressSummary?.toJson(),
+      "notifications": notifications?.toJson(),
       "completedWorkouts":
           completedWorkouts.map((e) => e.toIso8601String()).toList(),
     };
@@ -130,6 +138,7 @@ class UserModel {
     UserStats? stats,
     UserTraining? training,
     ProgressSummary? progressSummary,
+    UserNotifications? notifications,
     List<DateTime>? completedWorkouts,
   }) {
     return UserModel(
@@ -147,6 +156,7 @@ class UserModel {
       training: training ?? this.training,
       progressSummary:
           progressSummary ?? this.progressSummary,
+      notifications: notifications ?? this.notifications,
       completedWorkouts:
           completedWorkouts ?? this.completedWorkouts,
     );

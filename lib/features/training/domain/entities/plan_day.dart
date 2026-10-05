@@ -6,6 +6,8 @@ class PlanDay{
 
   final Map<String,String> name;
 
+  final List<String> recoveryGroups;
+
   final List<ExerciseReference> exercises;
 
   const PlanDay({
@@ -13,6 +15,8 @@ class PlanDay{
     required this.day,
 
     required this.name,
+
+    this.recoveryGroups = const [],
 
     required this.exercises,
 
@@ -30,6 +34,11 @@ class PlanDay{
           Map<String,String>.from(
             json["name"],
           ),
+
+      recoveryGroups:
+          (json["recoveryGroups"] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ?? [],
 
       exercises:
 
@@ -52,6 +61,8 @@ class PlanDay{
       "day": day,
 
       "name": name,
+
+      "recoveryGroups": recoveryGroups,
 
       "exercises":
           exercises

@@ -1,7 +1,9 @@
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
+import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
+import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,7 +16,7 @@ class ProgramSetup extends _$ProgramSetup {
     return ref.watch(trainingRepositoryProvider).getPlans();
   }
 
-  Future<void> savePlan(String planId) async {
+  Future<void> savePlan(String planId, UserSchedule? schedule) async {
     final plans = state.asData?.value;
     TrainingPlan? plan;
     if (plans != null) {
@@ -37,10 +39,18 @@ class ProgramSetup extends _$ProgramSetup {
         training: UserTraining(
           activePlanId: plan.planId,
           planStartDate: DateTime.now(),
+          schedule: schedule,
         ),
       );
 
       await ref.read(profileRepositoryProvider).saveProfile(updatedUser);
+      
+      try {
+        await NotificationScheduler.rescheduleAll(updatedUser);
+      } catch (e) {
+        // Notification scheduling failed, but profile saved successfully
+      }
+
       ref.invalidate(profileProvider);
       ref.invalidateSelf();
     } catch (error, stackTrace) {

@@ -88,12 +88,25 @@ class _ExerciseInfo extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          '${exercise.reps} reps',
+          _volumeLabel(exercise),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const Divider(height: 8),
       ],
     );
+  }
+
+  String _volumeLabel(WorkoutExercise e) {
+    final setLabel = e.sets == 1 ? '1 set' : '${e.sets} sets';
+    final reps = e.reps;
+    final duration = e.duration;
+
+    if (reps != null) {
+      return '$setLabel × $reps reps';
+    } else if (duration != null) {
+      return '$setLabel × ${duration}s';
+    }
+    return setLabel;
   }
 }
 

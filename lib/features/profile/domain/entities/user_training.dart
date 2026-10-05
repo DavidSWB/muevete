@@ -1,14 +1,20 @@
+import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
+
 class UserTraining {
 
   final String activePlanId;
 
   final DateTime planStartDate;
 
+  final UserSchedule? schedule;
+
   const UserTraining({
 
     required this.activePlanId,
 
     required this.planStartDate,
+
+    this.schedule,
 
   });
 
@@ -26,6 +32,10 @@ class UserTraining {
         ? DateTime.now()
         : DateTime.parse(startDate),
 
+      schedule: json["schedule"] == null
+          ? null
+          : UserSchedule.fromJson(json["schedule"]),
+
     );
 
   }
@@ -39,6 +49,8 @@ class UserTraining {
       "planStartDate":
           planStartDate.toIso8601String(),
 
+      if (schedule != null) "schedule": schedule!.toJson(),
+
     };
 
   }
@@ -48,6 +60,8 @@ class UserTraining {
     String? activePlanId,
 
     DateTime? planStartDate,
+
+    UserSchedule? schedule,
 
   }){
 
@@ -60,6 +74,8 @@ class UserTraining {
       planStartDate:
           planStartDate ??
           this.planStartDate,
+
+      schedule: schedule ?? this.schedule,
 
     );
 

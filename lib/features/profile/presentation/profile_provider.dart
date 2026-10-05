@@ -4,12 +4,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'profile_provider.g.dart';
 
+import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
+
 @riverpod
 class Profile extends _$Profile{
 
   @override
   Future<UserModel> build() async{
-    return await loadProfile();
+    final user = await loadProfile();
+    try {
+      await NotificationScheduler.rescheduleAll(user);
+    } catch (_) {}
+    return user;
   }
 
   Future<UserModel> loadProfile() async{

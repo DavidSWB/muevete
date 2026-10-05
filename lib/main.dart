@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/app.dart';
 import 'package:muevete/firebase_options.dart';
 
+import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationScheduler.initialize();
 
   Object? firebaseError;
   StackTrace? firebaseStackTrace;
