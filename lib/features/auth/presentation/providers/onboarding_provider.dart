@@ -1,5 +1,6 @@
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -48,12 +49,28 @@ Stream<OnboardingStatus> onboardingStatus(Ref ref) async* {
 
         try {
           await trainingRepository.getPlan(planId);
-          yield OnboardingStatus.complete;
         } on StateError catch (_) {
           yield OnboardingStatus.noTraining;
+          continue;
         } on FormatException catch (_) {
           yield OnboardingStatus.noTraining;
+          continue;
         }
+
+        final rawSchedule = training is Map ? training['schedule'] : null;
+        if (rawSchedule is! Map || rawSchedule.isEmpty) {
+          yield OnboardingStatus.noTraining;
+          continue;
+        }
+        final schedule = UserSchedule.fromJson(
+          Map<String, dynamic>.from(rawSchedule),
+        );
+        if (schedule.days.isEmpty) {
+          yield OnboardingStatus.noTraining;
+          continue;
+        }
+
+        yield OnboardingStatus.complete;
       }
     }
   }

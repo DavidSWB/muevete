@@ -1,16 +1,14 @@
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 
 part 'profile_provider.g.dart';
 
-import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
-
 @riverpod
-class Profile extends _$Profile{
-
+class Profile extends _$Profile {
   @override
-  Future<UserModel> build() async{
+  Future<UserModel> build() async {
     final user = await loadProfile();
     try {
       await NotificationScheduler.rescheduleAll(user);
@@ -18,8 +16,8 @@ class Profile extends _$Profile{
     return user;
   }
 
-  Future<UserModel> loadProfile() async{
-    final profileRepository = ref.read(profileRepositoryProvider); 
+  Future<UserModel> loadProfile() async {
+    final profileRepository = ref.read(profileRepositoryProvider);
 
     return await profileRepository.getProfile();
   }
@@ -36,5 +34,4 @@ class Profile extends _$Profile{
     ref.invalidateSelf();
     await future;
   }
-
 }

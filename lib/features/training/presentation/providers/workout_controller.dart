@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
@@ -20,7 +21,22 @@ class WorkoutController extends _$WorkoutController {
 
   Future<Workout> _loadWorkout() async {
 
-    final user = await ref.read(profileProvider.future);
+  final user = await ref.read(profileProvider.future);
+    debugPrint('Workout: user loaded; training=${user.training}, stats=${user.stats}');
+
+  final training = user.training;
+  final stats = user.stats;
+
+  if (training == null || stats == null) {
+    throw StateError(
+      'Workout needs training and stats; '
+      'training=${training != null}, stats=${stats != null}',
+    );
+  }
+
+  debugPrint('Workout: activePlanId=${training.activePlanId}');
+
+
 
     final repository =
         ref.read(trainingRepositoryProvider);
@@ -31,12 +47,11 @@ class WorkoutController extends _$WorkoutController {
     final schedule =
         const TrainingScheduleService();
 
-    final plan = await repository.getPlan(
-      user.training!.activePlanId,
-    );
-    
-    final week = schedule.calculateCurrentWeek(
-      user: user,
+    final plan = await repository.getPlan(training.activePlanId);
+    debugPrint('Workout: plan loaded; days=${plan.template.length}');
+        
+        final week = schedule.calculateCurrentWeek(
+          user: user,
     );
 
     final planDay = schedule.getNextTrainingDay(
@@ -53,7 +68,7 @@ class WorkoutController extends _$WorkoutController {
   }
 
   Future<void> finishWorkout() async{
-    final user = ref.read(profileProvider).requireValue;
+    final user = await ref.read(profileProvider.future);
 
     final updatedWorkouts = [
     ...user.completedWorkouts,

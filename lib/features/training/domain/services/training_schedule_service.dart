@@ -20,25 +20,15 @@ class TrainingScheduleService {
   PlanDay getNextTrainingDay({
     required UserModel user,
     required TrainingPlan plan,
+    DateTime? now,
   }) {
     final schedule = user.training?.schedule;
     if (schedule == null || schedule.days.isEmpty) {
-      final completed = user.completedWorkouts
-          .where(
-            (date) =>
-                !date.isBefore(user.training!.planStartDate),
-          )
-          .length;
-
-      final dayNumber = (completed % plan.daysPerWeek) + 1;
-
-      return plan.template.firstWhere(
-        (day) => day.day == dayNumber,
-      );
+      return plan.template.first;
     }
 
-    final now = DateTime.now();
-    int currentWeekday = now.weekday;
+    final currentDateTime = now ?? DateTime.now();
+    int currentWeekday = currentDateTime.weekday;
 
     for (int offset = 0; offset < 7; offset++) {
       int checkDay = currentWeekday + offset;
@@ -85,25 +75,5 @@ class TrainingScheduleService {
       }
     }
     return conflicts;
-  }
-
-  int _completedThisWeek({
-    required List<DateTime> workouts,
-  }) {
-    final now = DateTime.now();
-
-    final monday = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).subtract(
-      Duration(days: now.weekday - 1),
-    );
-
-    final sunday = monday.add(const Duration(days: 7));
-
-    return workouts.where((date) {
-      return !date.isBefore(monday) && date.isBefore(sunday);
-    }).length;
   }
 }

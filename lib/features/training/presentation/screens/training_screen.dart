@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
@@ -34,7 +35,10 @@ class TrainingScreen extends ConsumerWidget {
                   await ref
                       .read(workoutControllerProvider.notifier)
                       .finishWorkout();
-                  context.go('/home');
+                  ref.read(mainNavIndexProvider.notifier).setIndex(0);
+                  if (context.mounted) {
+                    context.go('/home');
+                  }
                 },
               ),
 

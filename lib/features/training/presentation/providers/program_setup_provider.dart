@@ -32,6 +32,22 @@ class ProgramSetup extends _$ProgramSetup {
       throw StateError('Select a valid training plan.');
     }
 
+    if (schedule != null && schedule.days.length != plan.daysPerWeek) {
+      throw ArgumentError(
+        'Schedule must contain exactly ${plan.daysPerWeek} training days.',
+      );
+    }
+
+    UserSchedule? canonicalSchedule = schedule;
+    if (schedule != null) {
+      final sortedWeekdays = schedule.days.keys.toList()..sort();
+      final canonicalDays = <int, int>{};
+      for (int i = 0; i < sortedWeekdays.length; i++) {
+        canonicalDays[sortedWeekdays[i]] = i + 1;
+      }
+      canonicalSchedule = schedule.copyWith(days: canonicalDays);
+    }
+
     state = const AsyncLoading();
     try {
       final user = await ref.read(profileProvider.future);
@@ -39,7 +55,7 @@ class ProgramSetup extends _$ProgramSetup {
         training: UserTraining(
           activePlanId: plan.planId,
           planStartDate: DateTime.now(),
-          schedule: schedule,
+          schedule: canonicalSchedule,
         ),
       );
 

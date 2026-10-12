@@ -34,8 +34,14 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
     });
 
     try {
+      final sortedWeekdays = _selectedSchedule.keys.toList()..sort();
+      final canonicalDays = <int, int>{};
+      for (int i = 0; i < sortedWeekdays.length; i++) {
+        canonicalDays[sortedWeekdays[i]] = i + 1;
+      }
+
       final schedule = UserSchedule(
-        days: _selectedSchedule,
+        days: canonicalDays,
         preferredTime: '${_preferredTime.hour.toString().padLeft(2, '0')}:${_preferredTime.minute.toString().padLeft(2, '0')}',
       );
       
@@ -115,17 +121,16 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                             setState(() {
                               if (selected) {
                                 if (_selectedSchedule.length < _selectedPlan!.daysPerWeek) {
-                                  int nextDay = 1;
-                                  for (int i = 1; i <= _selectedPlan!.daysPerWeek; i++) {
-                                    if (!_selectedSchedule.containsValue(i)) {
-                                      nextDay = i;
-                                      break;
-                                    }
-                                  }
-                                  _selectedSchedule[weekday] = nextDay;
+                                  _selectedSchedule[weekday] = 1;
                                 }
                               } else {
                                 _selectedSchedule.remove(weekday);
+                              }
+
+                              final sortedWeekdays = _selectedSchedule.keys.toList()..sort();
+                              _selectedSchedule.clear();
+                              for (int i = 0; i < sortedWeekdays.length; i++) {
+                                _selectedSchedule[sortedWeekdays[i]] = i + 1;
                               }
                             });
                           },

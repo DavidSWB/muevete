@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/home_screen.dart';
 import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/progress/presentation/screens/progress_screen.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
 
-class MainScreen extends StatefulWidget {
+final mainNavIndexProvider =
+    NotifierProvider<MainNavIndexNotifier, int>(MainNavIndexNotifier.new);
+
+class MainNavIndexNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void setIndex(int index) {
+    state = index;
+  }
+}
+
+class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int currentIndex =0;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex = ref.watch(mainNavIndexProvider);
 
     const screens = [
       HomeScreen(),
@@ -33,11 +40,9 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentIndex,
         onDestinationSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+          ref.read(mainNavIndexProvider.notifier).setIndex(index);
         },
-        destinations: const[
+        destinations: const [
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined), 
@@ -58,8 +63,8 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.settings_outlined), 
             label: 'Settings',
           ),
-        ]
-        ),
+        ],
+      ),
     );
   }
 }

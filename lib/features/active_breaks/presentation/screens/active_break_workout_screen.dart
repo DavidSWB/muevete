@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/active_breaks/domain/entities/active_break.dart';
 import 'package:muevete/features/active_breaks/presentation/providers/active_break_providers.dart';
+import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
 import 'package:muevete/shared/screens/loading_screen.dart';
@@ -45,9 +48,16 @@ class _ActiveBreakWorkoutScreenState extends ConsumerState<ActiveBreakWorkoutScr
             WorkoutHero(workout: value),
             WorkoutSlidingPanel(
               workout: value,
-              finishButtonLabel: completed ? 'Completed' : 'Mark Active Break as completed',
+              finishButtonLabel: completed ? 'Completed' : 'Mark active break as completed',
               onWorkoutFinished: () async {
                 if (!completed && mounted) setState(() => completed = true);
+                await ref
+                    .read(workoutControllerProvider.notifier)
+                    .finishWorkout();
+                ref.read(mainNavIndexProvider.notifier).setIndex(0);
+                if (context.mounted) {
+                  context.go('/home');
+                }
               },
             ),
           ],
