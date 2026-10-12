@@ -62,7 +62,7 @@ class UserModel {
 
         createdAt: json["createdAt"] == null
             ? null
-            : DateTime.parse(json["createdAt"]),
+            : parseDateTime(json["createdAt"]),
 
         medicalConditions:
             (json["medicalConditions"] as List<dynamic>?)
@@ -86,25 +86,49 @@ class UserModel {
             : UserNotifications.fromJson(json["notifications"]),
 
         completedWorkouts:
-        (json["completedWorkouts"] as List<dynamic>? ?? [])
-          .map((e) {
-            if (e is Timestamp) {
-              return e.toDate();
-            }
-
-            if (e is String) {
-              return DateTime.parse(e);
-            }
-
-            throw Exception("Formato de fecha no soportado: ${e.runtimeType}");
-          })
-          .toList(),
+            (json["completedWorkouts"] as List<dynamic>? ?? [])
+                .map((e) => parseDateTime(e))
+                .toList(),
       );
-    }catch (e, s) {
-    print(e);
-    print(s);
-    rethrow;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      rethrow;
+    }
   }
+
+  static DateTime parseDateTime(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is String) {
+      final parsed = DateTime.tryParse(value);
+      if (parsed != null) return parsed;
+
+      final regex = RegExp(
+        r'^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ](\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.(\d+))?)?)?',
+      );
+      final match = regex.firstMatch(value.trim());
+      if (match != null) {
+        final year = int.parse(match.group(1)!);
+        final month = int.parse(match.group(2)!);
+        final day = int.parse(match.group(3)!);
+        final hour = match.group(4) != null ? int.parse(match.group(4)!) : 0;
+        final minute = match.group(5) != null ? int.parse(match.group(5)!) : 0;
+        final second = match.group(6) != null ? int.parse(match.group(6)!) : 0;
+        final microsecondStr = match.group(7);
+        int microsecond = 0;
+        if (microsecondStr != null) {
+          final padded = microsecondStr.padRight(6, '0').substring(0, 6);
+          microsecond = int.parse(padded);
+        }
+        return DateTime(year, month, day, hour, minute, second, 0, microsecond);
+      }
+    }
+    throw FormatException("Formato de fecha no soportado: $value");
   }
 
   Map<String, dynamic> toJson() {

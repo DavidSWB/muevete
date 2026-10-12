@@ -48,18 +48,24 @@ class ProgramSetup extends _$ProgramSetup {
       canonicalSchedule = schedule.copyWith(days: canonicalDays);
     }
 
-    state = const AsyncLoading();
     try {
       final user = await ref.read(profileProvider.future);
-      final updatedUser = user.copyWith(
-        training: UserTraining(
-          activePlanId: plan.planId,
-          planStartDate: DateTime.now(),
-          schedule: canonicalSchedule,
-        ),
-      );
+      final existingTraining = user.training;
 
-      await ref.read(profileRepositoryProvider).saveProfile(updatedUser);
+      final updatedTraining = existingTraining != null && existingTraining.activePlanId == plan.planId
+          ? existingTraining.copyWith(
+              schedule: canonicalSchedule,
+            )
+          : UserTraining(
+              activePlanId: plan.planId,
+              planStartDate: DateTime.now(),
+              schedule: canonicalSchedule,
+              extraFields: existingTraining?.extraFields ?? const {},
+            );
+
+      final updatedUser = user.copyWith(training: updatedTraining);
+
+      await ref.read(profileProvider.notifier).saveProfile(updatedUser);
       
       try {
         await NotificationScheduler.rescheduleAll(updatedUser);
@@ -68,7 +74,6 @@ class ProgramSetup extends _$ProgramSetup {
       }
 
       ref.invalidate(profileProvider);
-      ref.invalidateSelf();
     } catch (error, stackTrace) {
       state = AsyncError(error, stackTrace);
       rethrow;

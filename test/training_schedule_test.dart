@@ -351,4 +351,119 @@ void main() {
       expect(nullDaysSchedule.days, isEmpty);
     });
   });
+
+  group('UserTraining and Firestore Compatibility', () {
+    test('UserTraining serializes and deserializes currentWeek and extra fields without loss', () {
+      final trainingJson = {
+        'activePlanId': 'plan_3d_lower_upper_full',
+        'planStartDate': '2026-10-04T12:58:58.617555',
+        'currentWeek': 1,
+        'customMetadata': 'safe_value',
+        'schedule': {
+          'monday': 1,
+          'tuesday': null,
+          'wednesday': 2,
+          'thursday': null,
+          'friday': 3,
+          'saturday': null,
+          'sunday': null,
+          'preferredTime': '18:00',
+        },
+      };
+
+      final training = UserTraining.fromJson(trainingJson);
+      expect(training.activePlanId, 'plan_3d_lower_upper_full');
+      expect(training.currentWeek, 1);
+      expect(training.extraFields['customMetadata'], 'safe_value');
+      expect(training.schedule?.days, {1: 1, 3: 2, 5: 3});
+      expect(training.schedule?.preferredTime, '18:00');
+
+      final serialized = training.toJson();
+      expect(serialized['activePlanId'], 'plan_3d_lower_upper_full');
+      expect(serialized['currentWeek'], 1);
+      expect(serialized['customMetadata'], 'safe_value');
+      expect(serialized['schedule']['monday'], 1);
+      expect(serialized['schedule']['tuesday'], isNull);
+      expect(serialized['schedule']['preferredTime'], '18:00');
+    });
+
+    test('Reconstructing profile from firebase/users.json data restores program and schedule perfectly', () {
+      final userDocument = {
+        'id': 'UP4xlfIJylhtslgKTcUag3F9ZrJ2',
+        'email': 'mao@gmail.com',
+        'username': 'mao',
+        'completedWorkouts': <String>[],
+        'training': {
+          'activePlanId': 'plan_3d_lower_upper_full',
+          'planStartDate': '2026-10-04T12:58:58.617555',
+          'currentWeek': 1,
+          'schedule': {
+            'monday': 1,
+            'tuesday': null,
+            'wednesday': 2,
+            'thursday': null,
+            'friday': 3,
+            'saturday': null,
+            'sunday': null,
+            'preferredTime': '18:00',
+          },
+        },
+      };
+
+      final user = UserModel.fromJson(
+        id: userDocument['id'] as String,
+        json: userDocument,
+      );
+
+      expect(user.training, isNotNull);
+      expect(user.training!.activePlanId, 'plan_3d_lower_upper_full');
+      expect(user.training!.currentWeek, 1);
+      expect(user.training!.schedule, isNotNull);
+      expect(user.training!.schedule!.days, {1: 1, 3: 2, 5: 3});
+      expect(user.training!.schedule!.preferredTime, '18:00');
+
+      // Verify that getNextTrainingDay works directly with this reconstructed UserModel
+      final nextWorkout = scheduleService.getNextTrainingDay(
+        user: user,
+        plan: testPlan,
+        now: mondayDate,
+      );
+      // Monday is plan session 1 (Lower Body in testPlan)
+      expect(nextWorkout.day, 1);
+      expect(nextWorkout.name['en'], 'Lower Body');
+    });
+
+    test('UserModel and UserTraining parse non-standard unpadded date strings without FormatException', () {
+      final userWithUnpaddedDate = {
+        'id': 'unpadded-date-user',
+        'email': 'unpadded@example.com',
+        'username': 'unpadded',
+        'createdAt': '2026-9-4T12:00:00.000',
+        'completedWorkouts': [
+          '2026-9-12T15:06:34.857484',
+          '2026-10-04T12:58:19.605093',
+        ],
+        'training': {
+          'activePlanId': 'plan_3d_test',
+          'planStartDate': '2026-9-1T08:00:00',
+          'currentWeek': 2,
+          'schedule': {
+            'monday': 1,
+            'wednesday': 2,
+            'friday': 3,
+          },
+        },
+      };
+
+      final user = UserModel.fromJson(
+        id: userWithUnpaddedDate['id'] as String,
+        json: userWithUnpaddedDate,
+      );
+
+      expect(user.createdAt, DateTime(2026, 9, 4, 12, 0, 0));
+      expect(user.completedWorkouts.length, 2);
+      expect(user.completedWorkouts.first, DateTime(2026, 9, 12, 15, 6, 34, 0, 857484));
+      expect(user.training?.planStartDate, DateTime(2026, 9, 1, 8, 0, 0));
+    });
+  });
 }
