@@ -1,7 +1,6 @@
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
-import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
@@ -68,7 +67,7 @@ class ProgramSetup extends _$ProgramSetup {
       await ref.read(profileProvider.notifier).saveProfile(updatedUser);
       
       try {
-        await NotificationScheduler.rescheduleAll(updatedUser);
+        await NotificationScheduler.rescheduleAll(updatedUser, force: true);
       } catch (e) {
         // Notification scheduling failed, but profile saved successfully
       }

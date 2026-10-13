@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/domain/repositories/auth_repository.dart';
 import 'package:muevete/features/auth/domain/repositories/firebase_auth_repository.dart';
+import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
@@ -33,6 +34,9 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> signOut() async {
+    try {
+      await NotificationScheduler.cancelUserReminders();
+    } catch (_) {}
     await _repository.signOut();
     state = null;
   }

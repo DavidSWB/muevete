@@ -1,31 +1,103 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:muevete/app/app.dart';
-
-import 'package:muevete/main.dart';
+import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
+import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
+import 'package:muevete/features/profile/domain/entities/user_training.dart';
+import 'package:muevete/features/profile/presentation/profile_provider.dart';
+import 'package:muevete/features/settings/presentation/screens/notification_settings_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const App());
+  testWidgets('NotificationSettingsScreen displays preferences and schedule',
+      (WidgetTester tester) async {
+    final testUser = UserModel(
+      id: 'test-user-1',
+      email: 'test@example.com',
+      username: 'Tester',
+      training: UserTraining(
+        activePlanId: 'plan-1',
+        planStartDate: DateTime(2026, 10, 1),
+        schedule: const UserSchedule(
+          days: {1: 1, 3: 2, 5: 3},
+          preferredTime: '18:00',
+        ),
+      ),
+      notifications: const UserNotifications(
+        enabled: true,
+        trainingReminderEnabled: true,
+        activeBreakReminderEnabled: true,
+        activeBreakStartTime: '08:00',
+        activeBreakEndTime: '18:00',
+        activeBreakIntervalMinutes: 120,
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          profileProvider.overrideWith(
+            () => _FakeProfileNotifier(testUser),
+          ),
+        ],
+        child: const MaterialApp(
+          home: NotificationSettingsScreen(),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Notification Settings'), findsOneWidget);
+    expect(find.text('Training Reminders'), findsOneWidget);
+    expect(find.text('Active-Break Reminders'), findsOneWidget);
+    expect(find.text('Days: Monday, Wednesday, Friday'), findsOneWidget);
+    expect(find.text('Time: 18:00'), findsOneWidget);
+    expect(find.text('Start Time'), findsOneWidget);
+    expect(find.text('End Time'), findsOneWidget);
+    expect(find.text('08:00'), findsOneWidget);
+    expect(find.text('18:00'), findsOneWidget);
+    
+    await tester.scrollUntilVisible(find.text('Save Preferences'), 200);
+    expect(find.text('Save Preferences'), findsOneWidget);
   });
+
+  testWidgets('NotificationSettingsScreen guides user when schedule is missing',
+      (WidgetTester tester) async {
+    final testUser = UserModel(
+      id: 'test-user-2',
+      email: 'test@example.com',
+      username: 'Tester',
+      training: null,
+      notifications: const UserNotifications(),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          profileProvider.overrideWith(
+            () => _FakeProfileNotifier(testUser),
+          ),
+        ],
+        child: const MaterialApp(
+          home: NotificationSettingsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('No Active Training Schedule'), findsOneWidget);
+    expect(find.text('Configure Program'), findsOneWidget);
+  });
+}
+
+class _FakeProfileNotifier extends Profile {
+  final UserModel _user;
+  _FakeProfileNotifier(this._user);
+
+  @override
+  Future<UserModel> build() async {
+    return _user;
+  }
 }

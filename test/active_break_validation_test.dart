@@ -95,6 +95,7 @@ class _FakeExerciseRepository implements ExerciseRepository {
       exerciseId: id,
       name: const {'en': 'Exercise', 'es': 'Ejercicio'},
       type: ExerciseType.mobility,
+      hold: false,
       targets: const ['hip'],
       variants: const [
         ExerciseVariant(

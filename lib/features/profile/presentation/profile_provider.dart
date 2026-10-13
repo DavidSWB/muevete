@@ -1,4 +1,5 @@
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
@@ -28,6 +29,15 @@ class Profile extends _$Profile {
     await repository.saveProfile(updatedUser);
 
     state = AsyncData(updatedUser);
+  }
+
+  Future<void> saveNotificationPreferences(UserNotifications notifications) async {
+    final currentUser = await future;
+    final updatedUser = currentUser.copyWith(notifications: notifications);
+    await saveProfile(updatedUser);
+    try {
+      await NotificationScheduler.rescheduleAll(updatedUser, force: true);
+    } catch (_) {}
   }
 
   Future<void> refresh() async {
