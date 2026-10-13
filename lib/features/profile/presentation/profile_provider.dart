@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
@@ -13,7 +15,14 @@ class Profile extends _$Profile {
     final user = await loadProfile();
     try {
       await NotificationScheduler.rescheduleAll(user);
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to schedule notifications after loading the profile',
+        name: 'muevete.notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
     return user;
   }
 
@@ -37,11 +46,29 @@ class Profile extends _$Profile {
     await saveProfile(updatedUser);
     try {
       await NotificationScheduler.rescheduleAll(updatedUser, force: true);
-    } catch (_) {}
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to schedule notifications after saving preferences',
+        name: 'muevete.notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      throw NotificationSchedulingException(error, stackTrace);
+    }
   }
 
   Future<void> refresh() async {
     ref.invalidateSelf();
     await future;
   }
+}
+
+class NotificationSchedulingException implements Exception {
+  const NotificationSchedulingException(this.error, this.stackTrace);
+
+  final Object error;
+  final StackTrace stackTrace;
+
+  @override
+  String toString() => 'Notification scheduling failed: $error';
 }

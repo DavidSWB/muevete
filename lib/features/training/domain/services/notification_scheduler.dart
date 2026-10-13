@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -21,6 +23,17 @@ abstract class NotificationPluginAdapter {
     DateTimeComponents? matchDateTimeComponents,
   });
   Future<void> cancel(int id);
+
+  Future<void> showNow(
+    int id,
+    String? title,
+    String? body,
+    NotificationDetails notificationDetails,
+  ) async {}
+
+  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async {
+    return const <PendingNotificationRequest>[];
+  }
 }
 
 class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
@@ -83,10 +96,19 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
       final ios = plugin.resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>();
       if (ios != null) {
-        return true;
+        final status = await ios.checkPermissions();
+        return status?.isEnabled ?? false;
       }
-    } catch (_) {}
-    return true;
+    } catch (error, stackTrace) {
+      developer.log(
+        'Unable to check notification permission status',
+        name: 'muevete.notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+    return false;
   }
 
   @override
@@ -117,6 +139,21 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
   @override
   Future<void> cancel(int id) {
     return plugin.cancel(id);
+  }
+
+  @override
+  Future<List<PendingNotificationRequest>> pendingNotificationRequests() {
+    return plugin.pendingNotificationRequests();
+  }
+
+  @override
+  Future<void> showNow(
+    int id,
+    String? title,
+    String? body,
+    NotificationDetails notificationDetails,
+  ) {
+    return plugin.show(id, title, body, notificationDetails);
   }
 }
 
@@ -171,6 +208,29 @@ class NotificationScheduler {
 
   static Future<bool> checkPermissionStatus() async {
     return _adapter.checkPermissionStatus();
+  }
+
+  static Future<List<PendingNotificationRequest>>
+      pendingNotificationRequests() {
+    return _adapter.pendingNotificationRequests();
+  }
+
+  static Future<void> showDiagnosticNotification() {
+    return _adapter.showNow(
+      9000,
+      'Muévete diagnostic notification',
+      'Local notifications are configured and can be displayed.',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'diagnostic_channel',
+          'Notification Diagnostics',
+          channelDescription: 'Development diagnostics for local notifications',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
   }
 
   static Future<void> cancelTrainingReminders() async {

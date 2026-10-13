@@ -185,11 +185,12 @@ class _NotificationSettingsScreenState
           );
         }
       }
-    } catch (_) {
+    } catch (error) {
       if (mounted) {
         setState(() {
-          _errorMessage =
-              'Could not save notification settings. Please try again.';
+          _errorMessage = error is NotificationSchedulingException
+              ? 'Preferences were saved, but reminders could not be scheduled. Check notification permissions and try again.'
+              : 'Could not save notification settings. Please try again.';
         });
       }
     } finally {

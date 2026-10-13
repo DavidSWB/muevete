@@ -84,6 +84,19 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
     cancelledIds.add(id);
     scheduled.remove(id);
   }
+
+  @override
+  Future<void> showNow(
+    int id,
+    String? title,
+    String? body,
+    NotificationDetails notificationDetails,
+  ) async {}
+
+  @override
+  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async {
+    return const <PendingNotificationRequest>[];
+  }
 }
 
 void main() {
