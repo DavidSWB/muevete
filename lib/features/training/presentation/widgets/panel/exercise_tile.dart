@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
+import 'package:muevete/shared/widgets/exercise_thumbnail.dart';
 
 class ExerciseTile extends StatelessWidget {
   const ExerciseTile({
@@ -31,7 +32,7 @@ class ExerciseTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _Thumbnail(exercisePicture: exercise.exercise.visualPath),
+            ExerciseThumbnail(visualPath: exercise.exercise.visualPath),
             const SizedBox(width: 16),
             Expanded(
               child: _ExerciseInfo(exercise: exercise),
@@ -39,30 +40,6 @@ class ExerciseTile extends StatelessWidget {
             const SizedBox(width: 16),
             const _Chevron(),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Thumbnail extends StatelessWidget {
-  const _Thumbnail({
-    required this.exercisePicture,
-  });
-
-  final String exercisePicture;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 64,
-      height: 64,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: AssetImage(exercisePicture),
-          fit: BoxFit.cover,
         ),
       ),
     );

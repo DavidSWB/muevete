@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
+import 'package:muevete/shared/utils/youtube_utils.dart';
+import 'package:muevete/shared/widgets/exercise_video_player.dart';
 
 class ExerciseDetailScreen extends StatefulWidget {
   const ExerciseDetailScreen({super.key, required this.exercise});
@@ -111,7 +113,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     _activeSet = null;
     if (mounted) {
       setState(() {
-        _remainingSeconds[activeSet] = secondsLeft.clamp(0, 86400) as int;
+        _remainingSeconds[activeSet] = secondsLeft.clamp(0, 86400);
       });
     }
   }
@@ -133,6 +135,16 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     return '${widget.exercise.reps ?? '-'}';
   }
 
+  Widget _buildVisual(String visualPath) {
+    if (extractYouTubeId(visualPath) != null) {
+      return ExerciseVideoPlayer(visualPath: visualPath);
+    }
+    if (visualPath.trim().startsWith('assets/')) {
+      return Image.asset(visualPath.trim(), fit: BoxFit.cover);
+    }
+    return ExerciseVideoPlayer(visualPath: visualPath);
+  }
+
   @override
   Widget build(BuildContext context) {
     final variant = widget.exercise.exercise;
@@ -148,7 +160,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             foregroundColor: Colors.white,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(variant.name['en'] ?? 'Exercise'),
-              background: Image.asset(variant.visualPath, fit: BoxFit.cover),
+              background: _buildVisual(variant.visualPath),
             ),
           ),
           SliverPadding(
