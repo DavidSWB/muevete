@@ -6,6 +6,52 @@ import 'package:muevete/features/training/domain/entities/workout_exercise.dart'
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 
 void main() {
+  testWidgets('title is rendered below the visual', (tester) async {
+    await tester.pumpWidget(_detailScreen(reps: 8, sets: 1));
+
+    final visualBottom = tester.getRect(
+      find.byKey(const ValueKey('exercise-visual')),
+    ).bottom;
+    final titleTop = tester.getRect(
+      find.byKey(const ValueKey('exercise-title')),
+    ).top;
+
+    expect(titleTop, greaterThanOrEqualTo(visualBottom));
+  });
+
+  testWidgets('Done! pops the detail route without completing a set',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (context) => ElevatedButton(
+            key: const ValueKey('open-detail'),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ExerciseDetailScreen(
+                    exercise: _exercise(reps: 8, sets: 1),
+                  ),
+                ),
+              );
+            },
+            child: const Text('Open'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const ValueKey('open-detail')));
+    await tester.pumpAndSettle();
+    expect(find.text('Done!'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('exercise-done-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Open'), findsOneWidget);
+    expect(find.text('Done!'), findsNothing);
+  });
+
   testWidgets('rep sets can be checked independently', (tester) async {
     await tester.pumpWidget(_detailScreen(reps: 8, sets: 2));
 
@@ -56,19 +102,23 @@ void main() {
 Widget _detailScreen({int? reps, int? duration, required int sets}) {
   return MaterialApp(
     home: ExerciseDetailScreen(
-      exercise: WorkoutExercise(
-        exercise: const ExerciseVariant(
-          variantId: 'test',
-          name: {'en': 'Test exercise'},
-          description: {'en': 'Description'},
-          visualPath: 'assets/images/workoutPicture.jpg',
-          requiredLevel: ExerciseLevel.beginner,
-        ),
-        sets: sets,
-        reps: reps,
-        rest: 30,
-        duration: duration,
-      ),
+      exercise: _exercise(reps: reps, duration: duration, sets: sets),
     ),
+  );
+}
+
+WorkoutExercise _exercise({int? reps, int? duration, required int sets}) {
+  return WorkoutExercise(
+    exercise: const ExerciseVariant(
+      variantId: 'test',
+      name: {'en': 'Test exercise'},
+      description: {'en': 'Description'},
+      visualPath: 'assets/images/workoutPicture.jpg',
+      requiredLevel: ExerciseLevel.beginner,
+    ),
+    sets: sets,
+    reps: reps,
+    rest: 30,
+    duration: duration,
   );
 }

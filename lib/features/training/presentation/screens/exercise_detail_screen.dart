@@ -140,7 +140,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       return ExerciseVideoPlayer(visualPath: visualPath);
     }
     if (visualPath.trim().startsWith('assets/')) {
-      return Image.asset(visualPath.trim(), fit: BoxFit.cover);
+      return AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Image.asset(visualPath.trim(), fit: BoxFit.cover),
+      );
     }
     return ExerciseVideoPlayer(visualPath: visualPath);
   }
@@ -151,46 +154,70 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     return Scaffold(
       backgroundColor: AppColors.surface,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(variant.name['en'] ?? 'Exercise'),
-              background: _buildVisual(variant.visualPath),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.all(24),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    variant.description['en'] ?? '',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 24),
-                  _Stats(exercise: widget.exercise),
-                  const SizedBox(height: 24),
-                  for (var index = 0; index < widget.exercise.sets; index++)
-                    ExerciseSetRow(
-                      setNumber: index + 1,
-                      isHold: _isHold,
-                      isCompleted: _completed[index],
-                      isRunning: _activeSet == index,
-                      value: _setValue(index),
-                      onToggleCompleted: () => _toggleCompleted(index),
-                      onToggleTimer: () => _toggleTimer(index),
-                    ),
-                ],
+      appBar: AppBar(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                key: const ValueKey('exercise-visual'),
+                borderRadius: BorderRadius.circular(20),
+                child: _buildVisual(variant.visualPath),
               ),
+              const SizedBox(height: 24),
+              Text(
+                variant.name['en'] ?? 'Exercise',
+                key: const ValueKey('exercise-title'),
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                variant.description['en'] ?? '',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 24),
+              _Stats(exercise: widget.exercise),
+              const SizedBox(height: 24),
+              for (var index = 0; index < widget.exercise.sets; index++)
+                ExerciseSetRow(
+                  setNumber: index + 1,
+                  isHold: _isHold,
+                  isCompleted: _completed[index],
+                  isRunning: _activeSet == index,
+                  value: _setValue(index),
+                  onToggleCompleted: () => _toggleCompleted(index),
+                  onToggleTimer: () => _toggleTimer(index),
+                ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
+          child: SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton(
+              key: const ValueKey('exercise-done-button'),
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryDark,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: const Text('Done!'),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
