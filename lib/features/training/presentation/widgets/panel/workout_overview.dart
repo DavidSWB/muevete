@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
 
 class WorkoutOverview extends StatelessWidget {
@@ -12,16 +13,16 @@ class WorkoutOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            workout.name['en'] ?? 'Workout name',
+            workout.name.localized(context, fallback: 'Workout name'),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
    
-          SizedBox(height: 24,),
+          const SizedBox(height: 24),
           
           Text("${workout.exercises.length} exercises"),
         ],

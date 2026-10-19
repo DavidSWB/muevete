@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:go_router/go_router.dart'; // Descoméntalo si lo usas más adelante
-
 import 'package:muevete/features/diagnosis/presentation/providers/diagnosis_provider.dart';
+import 'package:muevete/features/diagnosis/presentation/widgets/my_quizoption_button.dart';
 import 'package:muevete/shared/widgets/my_button_secondarytext.dart';
 import 'package:muevete/shared/widgets/my_quiz_image.dart';
-import 'package:muevete/features/diagnosis/presentation/widgets/my_quizoption_button.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 
@@ -22,11 +21,12 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final diagnosisAsync = ref.watch(diagnosisProvider);
     final notifier = ref.read(diagnosisProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Diagnosis")),
+      appBar: AppBar(title: Text(l10n.diagTitle)),
       body: Center(
         child: diagnosisAsync.when(
           data: (state) {
@@ -45,19 +45,16 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
             }
 
             return SingleChildScrollView(
-              // Previene desbordamiento de pantalla si hay muchas opciones
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-
                   children: [
                     const SizedBox(height: 20),
                     Text(
                       description,
-
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -66,8 +63,6 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                     const SizedBox(height: 20),
                     MyQuizImage(imagePath: currentQuestion.imagePath),
                     const SizedBox(height: 20),
-
-                    // y usar el operador spread (...) para meter los elementos en la Column.
                     ...options.map((option) {
                       return MyQuizoptionButton(
                         text: option.text,
@@ -80,20 +75,20 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                       );
                     }),
                     const SizedBox(height: 20),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         if (currentQuestion.order > 1)
                           MyButtonSecondarytext(
-                            text: 'Previous',
+                            text: l10n.diagPrevious,
                             onTap: () {
                               notifier.previousQuestion();
                             },
                           ),
-
                         MyButtonSecondarytext(
-                          text: currentQuestion.order == 5 ? 'Finish' : 'Next',
+                          text: currentQuestion.order == 5
+                              ? l10n.diagFinish
+                              : l10n.diagNext,
                           onTap: () {
                             notifier.answer(
                               currentQuestion.id,
@@ -113,10 +108,10 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.warning,
-                                text: 'Are you sure you wanna finish the test?',
+                                text: l10n.diagConfirmFinish,
                                 showCancelBtn: true,
                                 barrierDismissible: false,
-                                confirmBtnText: 'Finish',
+                                confirmBtnText: l10n.diagFinish,
                                 onConfirmBtnTap: () async {
                                   try {
                                     await notifier.finish();
@@ -126,8 +121,8 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                                     await QuickAlert.show(
                                       context: navigator.context,
                                       type: QuickAlertType.error,
-                                      title: 'Sorry, something went wrong',
-                                      text: 'Error: ${e.toString()}',
+                                      title: l10n.diagSomethingWentWrong,
+                                      text: l10n.errGeneric(e.toString()),
                                     );
                                     return;
                                   }
@@ -138,9 +133,9 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                                     context: navigator.context,
                                     type: QuickAlertType.success,
                                     barrierDismissible: false,
-                                    text: 'Diagnosis saved Successfully!',
+                                    text: l10n.diagSavedSuccess,
                                     confirmBtnColor: Colors.green,
-                                    confirmBtnText: 'Accept',
+                                    confirmBtnText: l10n.diagAccept,
                                   );
                                   router.go('/');
                                 },
@@ -155,7 +150,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
               ),
             );
           },
-          error: (error, stackTrace) => Text("Error: $error"),
+          error: (error, stackTrace) => Text(l10n.errGeneric(error.toString())),
           loading: () => const CircularProgressIndicator(),
         ),
       ),

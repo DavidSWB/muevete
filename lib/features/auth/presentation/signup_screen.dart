@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
@@ -32,12 +34,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    debugPrint('jsadlkajsdklasjdklasjdklasjkldjaslkdjaskldjsakldjaslkdjlkasslkjdalkjdskldjalkdj');
-  }
-
-  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -49,7 +45,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     super.dispose();
   }
 
-  String? _validateInputs() {
+  String? _validateInputs(AppLocalizations l10n) {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -63,38 +59,39 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         ageText.isEmpty ||
         weightText.isEmpty ||
         heightText.isEmpty) {
-      return "All mandatory fields must be filled.";
+      return l10n.valMandatoryFields;
     }
 
     if (!email.contains('@') || !email.contains('.')) {
-      return "Please enter a valid email address.";
+      return l10n.valInvalidEmail;
     }
 
     if (password.length < 6) {
-      return "Password must be at least 6 characters long.";
+      return l10n.valPasswordMinLength;
     }
 
     final age = int.tryParse(ageText);
     if (age == null || age <= 0 || age > 120) {
-      return "Please enter a valid age (1-120).";
+      return l10n.valInvalidAge;
     }
 
     final weight = double.tryParse(weightText);
     if (weight == null || weight <= 0 || weight > 400) {
-      return "Please enter a valid weight in kg.";
+      return l10n.valInvalidWeight;
     }
 
     final height = double.tryParse(heightText);
     if (height == null || height <= 0 || height > 300) {
-      return "Please enter a valid height in cm.";
+      return l10n.valInvalidHeight;
     }
 
     return null;
   }
 
   Future<void> handleSignup() async {
+    final l10n = AppLocalizations.of(context)!;
     var signupStage = 'input parsing';
-    final validationError = _validateInputs();
+    final validationError = _validateInputs(l10n);
     if (validationError != null) {
       setState(() {
         errorMessage = validationError;
@@ -168,19 +165,19 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       String message;
       switch (e.code) {
         case 'email-already-in-use':
-          message = "This email is already in use by another account.";
+          message = l10n.errEmailInUse;
           break;
         case 'invalid-email':
-          message = "The email address is invalid.";
+          message = l10n.errInvalidEmailFormat;
           break;
         case 'weak-password':
-          message = "The password provided is too weak.";
+          message = l10n.errWeakPassword;
           break;
         case 'network-request-failed':
-          message = "Network error. Please check your internet connection.";
+          message = l10n.errNetwork;
           break;
         default:
-          message = e.message ?? "Authentication failed. Please try again.";
+          message = e.message ?? l10n.errAuthFailed;
       }
       if (mounted) {
         setState(() {
@@ -197,7 +194,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       }
       if (mounted) {
         setState(() {
-          errorMessage = "An unexpected error occurred. Please try again.";
+          errorMessage = l10n.errUnexpected;
         });
       }
     } finally {
@@ -234,15 +231,25 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [
+          LocaleSwitcher(),
+          SizedBox(width: 16),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const MyHeadingTwo(text: "Create Account"),
+                MyHeadingTwo(text: l10n.authCreateAccountTitle),
                 const SizedBox(height: 16),
 
                 if (errorMessage != null && errorMessage!.isNotEmpty)
@@ -262,14 +269,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 MyTextinputfield(
                   controller: _nameController,
-                  hintText: "Full name",
+                  hintText: l10n.authFullNameHint,
                   obscureText: false,
                 ),
                 const SizedBox(height: 16),
 
                 MyTextinputfield(
                   controller: _emailController,
-                  hintText: "Email (example@gmail.com)",
+                  hintText: l10n.authEmailHint,
                   obscureText: false,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -277,14 +284,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 MyTextinputfield(
                   controller: _passwordController,
-                  hintText: "Password (min. 6 characters)",
+                  hintText: l10n.authPasswordHint,
                   obscureText: true,
                 ),
                 const SizedBox(height: 16),
 
                 MyTextinputfield(
                   controller: _ageController,
-                  hintText: "Age (e.g. 25)",
+                  hintText: l10n.authAgeHint,
                   obscureText: false,
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -293,7 +300,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 MyTextinputfield(
                   controller: _weightController,
-                  hintText: "Weight in kg (e.g. 70.5)",
+                  hintText: l10n.authWeightHint,
                   obscureText: false,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -303,7 +310,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 MyTextinputfield(
                   controller: _heightController,
-                  hintText: "Height in cm (e.g. 175)",
+                  hintText: l10n.authHeightHint,
                   obscureText: false,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -313,7 +320,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
                 MyTextinputfield(
                   controller: _medicalConditionsController,
-                  hintText: "Medical conditions (optional)",
+                  hintText: l10n.authMedicalConditionsHint,
                   obscureText: false,
                 ),
                 const SizedBox(height: 24),
@@ -321,11 +328,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 if (_isLoading)
                   const CircularProgressIndicator()
                 else
-                  MyButton(text: "Register", onTap: handleSignup),
+                  MyButton(text: l10n.authRegister, onTap: handleSignup),
                 const SizedBox(height: 16),
 
                 MyButtonSecondarytext(
-                  text: "Already have an account? Log in",
+                  text: l10n.authAlreadyHaveAccount,
                   onTap: () => context.go("/login"),
                 ),
               ],

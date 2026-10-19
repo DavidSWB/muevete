@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 
 class ActiveBreakTimerScreen extends StatefulWidget {
   const ActiveBreakTimerScreen({super.key});
@@ -65,16 +67,32 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Personal Timer')),
+      appBar: AppBar(
+        title: Text(l10n.abPersonalTimerTitle),
+        actions: const [
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 8),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             DropdownButtonFormField<int>(
               value: selectedMinutes,
-              decoration: const InputDecoration(labelText: 'Duration'),
-              items: [for (var i = 1; i <= 20; i++) DropdownMenuItem(value: i, child: Text('$i minutes'))],
+              decoration: InputDecoration(
+                labelText: l10n.abDurationMinutes(selectedMinutes).split(' ').last,
+              ),
+              items: [
+                for (var i = 1; i <= 20; i++)
+                  DropdownMenuItem(
+                    value: i,
+                    child: Text(l10n.abDurationMinutes(i)),
+                  ),
+              ],
               onChanged: running || completed
                   ? null
                   : (value) {
@@ -86,12 +104,16 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
                     },
             ),
             const Spacer(),
-            Text(displayTime, style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
+            Text(displayTime,
+                style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold)),
             const SizedBox(height: 24),
-            Text('Try to walk for $selectedMinutes ${selectedMinutes == 1 ? 'minute' : 'minutes'} after 1 hour of sitting.'),
+            Text(l10n.abTryToWalk(selectedMinutes)),
             const SizedBox(height: 24),
             if (completed)
-              const Text('Active break complete!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                l10n.abComplete,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             const SizedBox(height: 24),
             Wrap(
               spacing: 12,
@@ -99,15 +121,16 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
                 if (!completed)
                   FilledButton(
                     onPressed: running ? pause : start,
-                    child: Text(running ? 'Pause' : (remainingSeconds == selectedMinutes * 60 ? 'Start' : 'Resume')),
+                    child: Text(running ? l10n.abPause : l10n.abStart),
                   ),
-                OutlinedButton(onPressed: reset, child: const Text('Reset')),
+                OutlinedButton(onPressed: reset, child: Text(l10n.abReset)),
                 if (completed && !markedCompleted)
                   FilledButton(
                     onPressed: () => setState(() => markedCompleted = true),
-                    child: const Text('Mark as completed'),
+                    child: Text(l10n.abMarkCompleted),
                   ),
-                if (markedCompleted) const Chip(label: Text('Completed')),
+                if (markedCompleted)
+                  Chip(label: Text(l10n.abCompletedMarked)),
               ],
             ),
             const Spacer(),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/home_screen.dart';
-import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/progress/presentation/screens/progress_screen.dart';
+import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
 
 final mainNavIndexProvider =
@@ -22,6 +23,7 @@ class MainScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final currentIndex = ref.watch(mainNavIndexProvider);
 
     const screens = [
@@ -42,26 +44,26 @@ class MainScreen extends ConsumerWidget {
         onDestinationSelected: (index) {
           ref.read(mainNavIndexProvider.notifier).setIndex(index);
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined), 
-            label: 'Home',
+            selectedIcon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_outlined), 
+            label: l10n.navHome,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.fitness_center),
-            icon: Icon(Icons.fitness_center_outlined), 
-            label: 'Training',
+            selectedIcon: const Icon(Icons.fitness_center),
+            icon: const Icon(Icons.fitness_center_outlined), 
+            label: l10n.navTraining,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.insights),
-            icon: Icon(Icons.insights_outlined), 
-            label: 'Progress',
+            selectedIcon: const Icon(Icons.insights),
+            icon: const Icon(Icons.insights_outlined), 
+            label: l10n.navProgress,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined), 
-            label: 'Settings',
+            selectedIcon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_outlined), 
+            label: l10n.navSettings,
           ),
         ],
       ),

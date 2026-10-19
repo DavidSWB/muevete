@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
@@ -202,15 +204,16 @@ class _NotificationSettingsScreenState
     }
   }
 
-  String _formatWeekdayList(Map<int, int> days) {
-    const names = {
-      1: 'Monday',
-      2: 'Tuesday',
-      3: 'Wednesday',
-      4: 'Thursday',
-      5: 'Friday',
-      6: 'Saturday',
-      7: 'Sunday',
+  String _formatWeekdayList(BuildContext context, Map<int, int> days) {
+    final l10n = AppLocalizations.of(context);
+    final names = {
+      1: l10n?.dayMonday ?? 'Monday',
+      2: l10n?.dayTuesday ?? 'Tuesday',
+      3: l10n?.dayWednesday ?? 'Wednesday',
+      4: l10n?.dayThursday ?? 'Thursday',
+      5: l10n?.dayFriday ?? 'Friday',
+      6: l10n?.daySaturday ?? 'Saturday',
+      7: l10n?.daySunday ?? 'Sunday',
     };
     final sorted = days.keys.toList()..sort();
     return sorted.map((d) => names[d] ?? 'Day $d').join(', ');
@@ -218,12 +221,17 @@ class _NotificationSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notification Settings'),
+        title: Text(l10n?.notifSettingsTitle ?? 'Notification Settings'),
         elevation: 0,
+        actions: const [
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 8),
+        ],
       ),
       backgroundColor: AppColors.surface,
       body: profileAsync.when(
@@ -232,11 +240,11 @@ class _NotificationSettingsScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Failed to load profile.'),
+              Text(l10n?.notifFailedLoadProfile ?? 'Failed to load profile.'),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () => ref.read(profileProvider.notifier).refresh(),
-                child: const Text('Retry'),
+                child: Text(l10n?.notifRetry ?? 'Retry'),
               ),
             ],
           ),
@@ -268,7 +276,7 @@ class _NotificationSettingsScreenState
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Notifications Disabled',
+                              l10n?.notifDisabledTitle ?? 'Notifications Disabled',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.amber.shade900,
@@ -279,7 +287,8 @@ class _NotificationSettingsScreenState
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Notification permissions are disabled on your device. Muévete cannot deliver workout or active break reminders until permission is enabled.',
+                        l10n?.notifDisabledDesc ??
+                            'Notification permissions are disabled on your device. Muévete cannot deliver workout or active break reminders until permission is enabled.',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.amber.shade900,
@@ -288,7 +297,7 @@ class _NotificationSettingsScreenState
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         icon: const Icon(Icons.check_circle_outline),
-                        label: const Text('Request Permission'),
+                        label: Text(l10n?.notifRequestPermission ?? 'Request Permission'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.amber.shade900,
                           side: BorderSide(color: Colors.amber.shade700),
@@ -335,9 +344,9 @@ class _NotificationSettingsScreenState
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Text(
-                              'Training Reminders',
-                              style: TextStyle(
+                            Text(
+                              l10n?.notifTrainingReminders ?? 'Training Reminders',
+                              style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -375,7 +384,9 @@ class _NotificationSettingsScreenState
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    'Days: ${_formatWeekdayList(schedule.days)}',
+                                    l10n != null
+                                        ? l10n.notifDays(_formatWeekdayList(context, schedule.days))
+                                        : 'Days: ${_formatWeekdayList(context, schedule.days)}',
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -391,7 +402,9 @@ class _NotificationSettingsScreenState
                                     size: 16, color: AppColors.textMuted),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'Time: ${schedule.preferredTime ?? "18:00"}',
+                                  l10n != null
+                                      ? l10n.notifTime(schedule.preferredTime ?? "18:00")
+                                      : 'Time: ${schedule.preferredTime ?? "18:00"}',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
@@ -405,7 +418,7 @@ class _NotificationSettingsScreenState
                       const SizedBox(height: 8),
                       TextButton.icon(
                         icon: const Icon(Icons.edit_calendar, size: 16),
-                        label: const Text('Change Schedule in Program Setup'),
+                        label: Text(l10n?.notifChangeSchedule ?? 'Change Schedule in Program Setup'),
                         onPressed: () {
                           context.push('/program-setup');
                         },
@@ -420,17 +433,18 @@ class _NotificationSettingsScreenState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'No Active Training Schedule',
-                              style: TextStyle(
+                            Text(
+                              l10n?.notifNoActiveSchedule ?? 'No Active Training Schedule',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.deepOrange,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
-                              'To enable training reminders, please select a training plan and set your workout days.',
-                              style: TextStyle(fontSize: 13),
+                            Text(
+                              l10n?.notifNoActiveScheduleDesc ??
+                                  'To enable training reminders, please select a training plan and set your workout days.',
+                              style: const TextStyle(fontSize: 13),
                             ),
                             const SizedBox(height: 8),
                             ElevatedButton(
@@ -441,7 +455,7 @@ class _NotificationSettingsScreenState
                               onPressed: () {
                                 context.push('/program-setup');
                               },
-                              child: const Text('Configure Program'),
+                              child: Text(l10n?.notifConfigureProgram ?? 'Configure Program'),
                             ),
                           ],
                         ),
@@ -487,9 +501,9 @@ class _NotificationSettingsScreenState
                               ),
                             ),
                             const SizedBox(width: 12),
-                            const Text(
-                              'Active-Break Reminders',
-                              style: TextStyle(
+                            Text(
+                              l10n?.notifActiveBreakReminders ?? 'Active-Break Reminders',
+                              style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -508,9 +522,10 @@ class _NotificationSettingsScreenState
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Receive reminders to move throughout your day during a configurable time window.',
-                      style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                    Text(
+                      l10n?.notifActiveBreakDesc ??
+                          'Receive reminders to move throughout your day during a configurable time window.',
+                      style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
                     ),
                     if (_activeBreakReminderEnabled) ...[
                       const Divider(height: 24),
@@ -530,9 +545,9 @@ class _NotificationSettingsScreenState
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'Start Time',
-                                      style: TextStyle(
+                                    Text(
+                                      l10n?.notifStartTime ?? 'Start Time',
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: AppColors.textMuted,
                                       ),
@@ -565,9 +580,9 @@ class _NotificationSettingsScreenState
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'End Time',
-                                      style: TextStyle(
+                                    Text(
+                                      l10n?.notifEndTime ?? 'End Time',
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: AppColors.textMuted,
                                       ),
@@ -589,15 +604,16 @@ class _NotificationSettingsScreenState
                       ),
                       if (!_isActiveBreakRangeValid) ...[
                         const SizedBox(height: 8),
-                        const Text(
-                          'End time must be later than start time within the same day.',
-                          style: TextStyle(color: Colors.red, fontSize: 13),
+                        Text(
+                          l10n?.notifRangeError ??
+                              'End time must be later than start time within the same day.',
+                          style: const TextStyle(color: Colors.red, fontSize: 13),
                         ),
                       ],
                       const SizedBox(height: 16),
-                      const Text(
-                        'Reminder Interval',
-                        style: TextStyle(
+                      Text(
+                        l10n?.notifInterval ?? 'Reminder Interval',
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -613,10 +629,10 @@ class _NotificationSettingsScreenState
                                 child: ChoiceChip(
                                   label: Text(
                                     minutes == 60
-                                        ? '60 min\n(1 hour)'
+                                        ? (l10n?.notifMin60 ?? '60 min\n(1 hour)')
                                         : minutes == 120
-                                            ? '120 min\n(2 hours)'
-                                            : '180 min\n(3 hours)',
+                                            ? (l10n?.notifMin120 ?? '120 min\n(2 hours)')
+                                            : (l10n?.notifMin180 ?? '180 min\n(3 hours)'),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 12,
@@ -668,7 +684,7 @@ class _NotificationSettingsScreenState
                 const Center(child: CircularProgressIndicator())
               else
                 MyButton(
-                  text: 'Save Preferences',
+                  text: l10n?.notifSavePreferences ?? 'Save Preferences',
                   enabled: _canSave,
                   onTap: _savePreferences,
                 ),

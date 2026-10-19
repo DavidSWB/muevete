@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
@@ -23,7 +26,7 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
   bool _isSaving = false;
   String? _saveError;
 
-  Future<void> _save() async {
+  Future<void> _save(AppLocalizations l10n) async {
     final selectedPlan = _selectedPlan;
     if (selectedPlan == null) return;
     if (_selectedSchedule.length != selectedPlan.daysPerWeek) return;
@@ -42,15 +45,18 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
 
       final schedule = UserSchedule(
         days: canonicalDays,
-        preferredTime: '${_preferredTime.hour.toString().padLeft(2, '0')}:${_preferredTime.minute.toString().padLeft(2, '0')}',
+        preferredTime:
+            '${_preferredTime.hour.toString().padLeft(2, '0')}:${_preferredTime.minute.toString().padLeft(2, '0')}',
       );
-      
-      await ref.read(programSetupProvider.notifier).savePlan(selectedPlan.planId, schedule);
+
+      await ref
+          .read(programSetupProvider.notifier)
+          .savePlan(selectedPlan.planId, schedule);
       if (mounted) context.go('/');
     } catch (_) {
       if (mounted) {
         setState(() {
-          _saveError = 'Could not save the training program. Please try again.';
+          _saveError = l10n.progCouldNotSave;
         });
       }
     } finally {
@@ -60,30 +66,49 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final plansAsync = ref.watch(programSetupProvider);
 
+    final dayNames = [
+      l10n.dayMonShort,
+      l10n.dayTueShort,
+      l10n.dayWedShort,
+      l10n.dayThuShort,
+      l10n.dayFriShort,
+      l10n.daySatShort,
+      l10n.daySunShort,
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Training program')),
+      appBar: AppBar(
+        title: Text(l10n.progTitle),
+        actions: const [
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 8),
+        ],
+      ),
       body: plansAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => _ErrorView(
-          message: 'Could not load training programs.',
+          message: l10n.progCouldNotLoad,
+          retryText: l10n.notifRetry,
           onRetry: () => ref.invalidate(programSetupProvider),
         ),
         data: (plans) {
           if (plans.isEmpty) {
-            return const _ErrorView(message: 'No training programs are available.');
+            return _ErrorView(message: l10n.progNoPrograms);
           }
 
           return SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
                     child: Text(
-                      'Select a program to continue to Home.',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      l10n.progSelectSubtitle,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -103,33 +128,41 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                     ),
                   ),
                   if (_selectedPlan != null) ...[
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Select your training days', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        l10n.progSelectDays,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       children: List.generate(7, (index) {
                         final weekday = index + 1;
-                        final isSelected = _selectedSchedule.containsKey(weekday);
-                        final dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                        final isSelected =
+                            _selectedSchedule.containsKey(weekday);
                         return ChoiceChip(
                           label: Text(dayNames[index]),
                           selected: isSelected,
                           onSelected: (selected) {
                             setState(() {
                               if (selected) {
-                                if (_selectedSchedule.length < _selectedPlan!.daysPerWeek) {
+                                if (_selectedSchedule.length <
+                                    _selectedPlan!.daysPerWeek) {
                                   _selectedSchedule[weekday] = 1;
                                 }
                               } else {
                                 _selectedSchedule.remove(weekday);
                               }
 
-                              final sortedWeekdays = _selectedSchedule.keys.toList()..sort();
+                              final sortedWeekdays = _selectedSchedule.keys
+                                  .toList()
+                                ..sort();
                               _selectedSchedule.clear();
-                              for (int i = 0; i < sortedWeekdays.length; i++) {
+                              for (int i = 0;
+                                  i < sortedWeekdays.length;
+                                  i++) {
                                 _selectedSchedule[sortedWeekdays[i]] = i + 1;
                               }
                             });
@@ -138,13 +171,16 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                       }),
                     ),
                     Builder(builder: (context) {
-                      final conflicts = const TrainingScheduleService().getRecoveryConflicts(_selectedSchedule, _selectedPlan!);
+                      final conflicts = const TrainingScheduleService()
+                          .getRecoveryConflicts(
+                              _selectedSchedule, _selectedPlan!);
                       if (conflicts.isNotEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
                           child: Text(
-                            '⚠️ Scheduling workouts that target the same muscles consecutively limits recovery. Consider leaving a 48h window.',
-                            style: TextStyle(color: Colors.orange, fontSize: 12),
+                            l10n.progRecoveryWarning,
+                            style: const TextStyle(
+                                color: Colors.orange, fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
                         );
@@ -152,10 +188,13 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                       return const SizedBox.shrink();
                     }),
                     ListTile(
-                      title: const Text('Reminder Time'),
+                      title: Text(l10n.progReminderTime),
                       trailing: Text(_preferredTime.format(context)),
                       onTap: () async {
-                        final time = await showTimePicker(context: context, initialTime: _preferredTime);
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime: _preferredTime,
+                        );
                         if (time != null) {
                           setState(() => _preferredTime = time);
                         }
@@ -178,9 +217,11 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                           child: CircularProgressIndicator(),
                         )
                       : MyButton(
-                          text: 'Continue',
-                          enabled: _selectedPlan != null && _selectedSchedule.length == _selectedPlan!.daysPerWeek,
-                          onTap: _save,
+                          text: l10n.progContinue,
+                          enabled: _selectedPlan != null &&
+                              _selectedSchedule.length ==
+                                  _selectedPlan!.daysPerWeek,
+                          onTap: () => _save(l10n),
                         ),
                   const SizedBox(height: 16),
                 ],
@@ -206,8 +247,8 @@ class _PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = plan.name['es'] ?? plan.name['en'] ?? plan.planId;
-    final description = plan.description['es'] ?? plan.description['en'] ?? '';
+    final name = plan.name.localized(context, fallback: plan.planId);
+    final description = plan.description.localized(context, fallback: '');
 
     return Card(
       color: selected ? AppColors.cardBlue : null,
@@ -216,7 +257,7 @@ class _PlanCard extends StatelessWidget {
         groupValue: selected ? plan.planId : null,
         onChanged: (_) => onTap(),
         title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('$description\n${plan.daysPerWeek} days per week'),
+        subtitle: Text('$description\n${plan.daysPerWeek} days/week'),
         isThreeLine: true,
       ),
     );
@@ -224,9 +265,10 @@ class _PlanCard extends StatelessWidget {
 }
 
 class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, this.onRetry});
+  const _ErrorView({required this.message, this.retryText, this.onRetry});
 
   final String message;
+  final String? retryText;
   final VoidCallback? onRetry;
 
   @override
@@ -240,7 +282,7 @@ class _ErrorView extends StatelessWidget {
             Text(message, textAlign: TextAlign.center),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              TextButton(onPressed: onRetry, child: const Text('Retry')),
+              TextButton(onPressed: onRetry, child: Text(retryText ?? 'Retry')),
             ],
           ],
         ),

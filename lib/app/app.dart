@@ -1,8 +1,10 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/router.dart';
+import 'package:muevete/features/localization/presentation/locale_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 
@@ -43,7 +45,12 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   Future<void> _refreshNotificationWindow() async {
     try {
       final user = await ref.read(profileProvider.future);
-      await NotificationScheduler.rescheduleAll(user, force: true);
+      final currentLocale = ref.read(localeProvider);
+      await NotificationScheduler.rescheduleAll(
+        user,
+        force: true,
+        locale: currentLocale,
+      );
     } catch (error, stackTrace) {
       developer.log(
         'Failed to refresh notifications after app resume',
@@ -56,9 +63,14 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final activeLocale = ref.watch(localeProvider);
+
     if (widget.firebaseError != null) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
+        locale: activeLocale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: Scaffold(
           appBar: AppBar(title: const Text('Error de inicio')),
           body: SingleChildScrollView(
@@ -77,6 +89,9 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
     return MaterialApp.router(
       routerConfig: router,
+      locale: activeLocale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
     );
   }
 }

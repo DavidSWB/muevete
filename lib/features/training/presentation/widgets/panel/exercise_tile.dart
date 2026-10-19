@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/shared/widgets/exercise_thumbnail.dart';
@@ -60,7 +61,7 @@ class _ExerciseInfo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          exercise.exercise.name['en'] ?? 'Exercise name',
+          exercise.exercise.name.localized(context, fallback: 'Exercise name'),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 4),

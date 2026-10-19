@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -85,10 +87,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     }
 
     _activeSet = index;
-    _timerEndsAt = DateTime.now().add(Duration(seconds: seconds));
+    _timerEndsAt = clock.now().add(Duration(seconds: seconds));
     _timer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       if (!mounted || _timerEndsAt == null || _activeSet != index) return;
-      final remaining = _timerEndsAt!.difference(DateTime.now());
+      final remaining = _timerEndsAt!.difference(clock.now());
       final secondsLeft = (remaining.inMilliseconds / 1000).ceil();
       if (secondsLeft <= 0) {
         _completeFromTimer(index);
@@ -106,7 +108,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     final endsAt = _timerEndsAt;
     final secondsLeft = endsAt == null
         ? _remainingSeconds[activeSet]
-        : (endsAt.difference(DateTime.now()).inMilliseconds / 1000).ceil();
+        : (endsAt.difference(clock.now()).inMilliseconds / 1000).ceil();
     _timer?.cancel();
     _timer = null;
     _timerEndsAt = null;
@@ -171,13 +173,13 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
               ),
               const SizedBox(height: 24),
               Text(
-                variant.name['en'] ?? 'Exercise',
+                variant.name.localized(context, fallback: 'Exercise'),
                 key: const ValueKey('exercise-title'),
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
               Text(
-                variant.description['en'] ?? '',
+                variant.description.localized(context, fallback: ''),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 24),

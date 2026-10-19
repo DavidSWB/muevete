@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -251,10 +252,11 @@ class NotificationScheduler {
     await cancelActiveBreakReminders();
   }
 
-  static String _generateFingerprint(UserModel user) {
+  static String _generateFingerprint(UserModel user, [Locale? locale]) {
     final notifs = user.notifications;
     final schedule = user.training?.schedule;
     return '${user.id}_'
+        '${locale?.languageCode}_'
         '${notifs?.enabled}_'
         '${notifs?.trainingReminderEnabled}_'
         '${schedule?.preferredTime}_'
@@ -265,14 +267,14 @@ class NotificationScheduler {
         '${notifs?.activeBreakIntervalMinutes}';
   }
 
-  static Future<void> rescheduleAll(UserModel user, {bool force = false}) async {
-    final fingerprint = _generateFingerprint(user);
+  static Future<void> rescheduleAll(UserModel user, {bool force = false, Locale? locale}) async {
+    final fingerprint = _generateFingerprint(user, locale);
     if (!force && _lastScheduledFingerprint == fingerprint) {
       return;
     }
 
-    await scheduleTrainingReminders(user);
-    await scheduleActiveBreaks(user);
+    await scheduleTrainingReminders(user, locale: locale);
+    await scheduleActiveBreaks(user, locale: locale);
 
     _lastScheduledFingerprint = fingerprint;
   }
@@ -280,6 +282,7 @@ class NotificationScheduler {
   static Future<int> scheduleTrainingReminders(
     UserModel user, {
     DateTime? nowOverride,
+    Locale? locale,
   }) async {
     await cancelTrainingReminders();
 
@@ -328,10 +331,16 @@ class NotificationScheduler {
         scheduledDate = scheduledDate.add(const Duration(days: 1));
       }
 
+      final isSpanish = locale?.languageCode == 'es';
+      final trainingTitle = isSpanish ? '¡Hora de entrenar!' : 'Time to train!';
+      final trainingBody = isSpanish
+          ? 'Sesión $sessionNumber: Tu entrenamiento programado está listo.'
+          : 'Session $sessionNumber: Your scheduled workout is ready.';
+
       await _adapter.zonedSchedule(
         trainingIdBase + weekday,
-        'Time to train!',
-        'Session $sessionNumber: Your scheduled workout is ready.',
+        trainingTitle,
+        trainingBody,
         scheduledDate,
         const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -357,6 +366,7 @@ class NotificationScheduler {
   static Future<int> scheduleActiveBreaks(
     UserModel user, {
     DateTime? nowOverride,
+    Locale? locale,
   }) async {
     await cancelActiveBreakReminders();
 
@@ -383,6 +393,11 @@ class NotificationScheduler {
         : tz.TZDateTime.now(tz.local);
 
     int scheduledCount = 0;
+    final isSpanish = locale?.languageCode == 'es';
+    final breakTitle = isSpanish ? 'Pausa activa' : 'Active Break';
+    final breakBody = isSpanish
+        ? '¡Hora de moverte! Toma una pausa activa corta.'
+        : 'Time to move! Take a short active break.';
 
     // Rolling window of 3 days (today, tomorrow, day after tomorrow)
     for (int dayOffset = 0; dayOffset < 3; dayOffset++) {
@@ -414,8 +429,8 @@ class NotificationScheduler {
           final id = activeBreakIdBase + 1 + scheduledCount;
           await _adapter.zonedSchedule(
             id,
-            'Active Break',
-            'Time to move! Take a short active break.',
+            breakTitle,
+            breakBody,
             breakTime,
             const NotificationDetails(
               android: AndroidNotificationDetails(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 class ActiveBreaksScreen extends StatelessWidget {
@@ -7,30 +9,38 @@ class ActiveBreaksScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Active Breaks')),
+      appBar: AppBar(
+        title: Text(l10n.abTitle),
+        actions: const [
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 8),
+        ],
+      ),
       backgroundColor: AppColors.surface,
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'You better move that beautiful butt... or you\'ll lose it.',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              l10n.abMotto,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 32),
             _OptionCard(
               icon: Icons.accessibility_new,
-              title: 'Active Breaks',
-              description: 'Choose a quick routine to keep moving.',
+              title: l10n.abBrowseTitle,
+              description: l10n.abBrowseDesc,
               onTap: () => context.push('/active-breaks/browse'),
             ),
             const SizedBox(height: 16),
             _OptionCard(
               icon: Icons.timer_outlined,
-              title: 'Personal Timer',
-              description: 'Set a timer for a self-directed break.',
+              title: l10n.abPersonalTimerTitle,
+              description: l10n.abPersonalTimerDesc,
               onTap: () => context.push('/active-breaks/timer'),
             ),
           ],
@@ -70,9 +80,12 @@ class _OptionCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(title,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 4),
-                    Text(description, style: const TextStyle(color: AppColors.textMuted)),
+                    Text(description,
+                        style: const TextStyle(color: AppColors.textMuted)),
                   ],
                 ),
               ),

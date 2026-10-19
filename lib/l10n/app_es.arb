@@ -1,0 +1,196 @@
+{
+  "@@locale": "es",
+  "appName": "Muévete",
+
+  "authLogin": "Iniciar sesión",
+  "authEmailHint": "ejemplo@correo.com",
+  "authPasswordHint": "Contraseña",
+  "authEnter": "Entrar",
+  "authCreateAccountPrompt": "Crear una cuenta nueva",
+  "authRegister": "Registrarse",
+  "authAlreadyHaveAccount": "¿Ya tienes una cuenta? Inicia sesión",
+  "authCreateAccountTitle": "Crear cuenta",
+  "authFullNameHint": "Nombre completo",
+  "authAgeHint": "Edad (ej. 25)",
+  "authWeightHint": "Peso en kg (ej. 70.5)",
+  "authHeightHint": "Altura en cm (ej. 175)",
+  "authMedicalConditionsHint": "Condiciones médicas (opcional)",
+
+  "valEmptyEmailPassword": "El correo y la contraseña no pueden estar vacíos.",
+  "valPasswordMinLength": "La contraseña debe tener al menos 6 caracteres.",
+  "valInvalidEmail": "Por favor ingresa un correo electrónico válido.",
+  "valMandatoryFields": "Todos los campos obligatorios deben completarse.",
+  "valInvalidAge": "Por favor ingresa una edad válida (1-120).",
+  "valInvalidWeight": "Por favor ingresa un peso válido en kg.",
+  "valInvalidHeight": "Por favor ingresa una altura válida en cm.",
+
+  "errInvalidCredentials": "Correo o contraseña inválidos.",
+  "errInvalidEmailFormat": "El formato del correo es inválido.",
+  "errUserDisabled": "Esta cuenta de usuario ha sido inhabilitada.",
+  "errTooManyRequests": "Demasiados intentos fallidos. Inténtalo más tarde.",
+  "errNetwork": "Error de red. Revisa tu conexión a internet.",
+  "errAuthFailed": "Error de autenticación. Inténtalo de nuevo.",
+  "errEmailInUse": "Este correo ya está en uso por otra cuenta.",
+  "errWeakPassword": "La contraseña proporcionada es demasiado débil.",
+  "errUnexpected": "Ocurrió un error inesperado. Inténtalo de nuevo.",
+  "errGeneric": "Error: {error}",
+  "@errGeneric": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "navHome": "Inicio",
+  "navTraining": "Entrenamiento",
+  "navProgress": "Progreso",
+  "navSettings": "Ajustes",
+
+  "homeGreeting": "¡Hola {username}!",
+  "@homeGreeting": {
+    "placeholders": {
+      "username": { "type": "String" }
+    }
+  },
+  "homeSubGreeting": "Sigamos en movimiento.",
+  "homeKeepProgress": "¡Mantén el progreso!",
+  "homeStayConsistent": "Mantén la constancia con tu entrenamiento.",
+  "homeCompleted": "Completados",
+  "homeOverallLevel": "Nivel general",
+  "homeNextWorkout": "Siguiente sesión",
+  "homeStartTraining": "¡Empieza a entrenar ahora!",
+  "homeActiveBreaks": "Pausas activas",
+  "homeActiveBreaksDesc": "Rutinas cortas para mantenerte en movimiento.",
+  "homeCouldNotLoadProfile": "No se pudo cargar el perfil",
+
+  "settingsTitle": "Ajustes",
+  "settingsAccount": "Cuenta",
+  "settingsEditProfile": "Editar perfil",
+  "settingsNotifications": "Notificaciones",
+  "settingsLanguage": "Idioma",
+  "settingsChangeProgram": "Cambiar programa de entrenamiento",
+  "settingsLogOut": "Cerrar sesión",
+  "settingsLanguageSubtitle": "Español",
+
+  "languageTitle": "Seleccionar idioma",
+  "languageSpanish": "Español",
+  "languageEnglish": "Inglés",
+
+  "notifSettingsTitle": "Ajustes de notificaciones",
+  "notifDisabledTitle": "Notificaciones desactivadas",
+  "notifDisabledDesc": "Los permisos de notificaciones están desactivados en tu dispositivo. Muévete no podrá enviar recordatorios hasta que se habiliten los permisos.",
+  "notifRequestPermission": "Solicitar permiso",
+  "notifTrainingReminders": "Recordatorios de entrenamiento",
+  "notifDays": "Días: {days}",
+  "@notifDays": {
+    "placeholders": {
+      "days": { "type": "String" }
+    }
+  },
+  "notifTime": "Hora: {time}",
+  "@notifTime": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "notifChangeSchedule": "Cambiar horario en configuración del programa",
+  "notifNoActiveSchedule": "Sin horario de entrenamiento activo",
+  "notifNoActiveScheduleDesc": "Para habilitar los recordatorios, selecciona un plan de entrenamiento y configura tus días.",
+  "notifConfigureProgram": "Configurar programa",
+  "notifActiveBreakReminders": "Recordatorios de pausas activas",
+  "notifActiveBreakDesc": "Recibe recordatorios para moverte durante el día en un horario configurable.",
+  "notifStartTime": "Hora de inicio",
+  "notifEndTime": "Hora de fin",
+  "notifRangeError": "La hora de fin debe ser posterior a la de inicio en el mismo día.",
+  "notifInterval": "Intervalo de recordatorio",
+  "notifMin60": "60 min\n(1 hora)",
+  "notifMin120": "120 min\n(2 horas)",
+  "notifMin180": "180 min\n(3 horas)",
+  "notifSavePreferences": "Guardar preferencias",
+  "notifSavedSuccess": "Ajustes de notificaciones guardados correctamente.",
+  "notifSavedDisabledDevice": "Ajustes guardados, pero las notificaciones están desactivadas en este dispositivo.",
+  "notifFailedLoadProfile": "No se pudo cargar el perfil.",
+  "notifRetry": "Reintentar",
+  "notifErrorSave": "No se pudieron guardar los ajustes. Inténtalo de nuevo.",
+  "notifErrorSchedule": "Se guardaron las preferencias, pero no se pudieron programar los recordatorios. Revisa los permisos y vuelve a intentarlo.",
+
+  "diagTitle": "Diagnóstico",
+  "diagPrevious": "Anterior",
+  "diagNext": "Siguiente",
+  "diagFinish": "Finalizar",
+  "diagConfirmFinish": "¿Seguro que deseas finalizar el test?",
+  "diagSomethingWentWrong": "Lo sentimos, algo salió mal",
+  "diagSavedSuccess": "¡Diagnóstico guardado exitosamente!",
+  "diagAccept": "Aceptar",
+
+  "progTitle": "Programa de entrenamiento",
+  "progSelectSubtitle": "Selecciona un programa para continuar al Inicio.",
+  "progSelectDays": "Selecciona tus días de entrenamiento",
+  "progReminderTime": "Hora del recordatorio",
+  "progRecoveryWarning": "⚠️ Entrenar los mismos músculos en días consecutivos limita la recuperación. Considera dejar un intervalo de 48h.",
+  "progContinue": "Continuar",
+  "progCouldNotLoad": "No se pudieron cargar los programas de entrenamiento.",
+  "progNoPrograms": "No hay programas de entrenamiento disponibles.",
+  "progCouldNotSave": "No se pudo guardar el programa. Inténtalo de nuevo.",
+
+  "progressTitle": "Progreso",
+  "progressMobilityStats": "Estadísticas de movilidad",
+  "progressShoulder": "Hombro",
+  "progressHip": "Cadera",
+  "progressKnee": "Rodilla",
+  "progressAnkle": "Tobillo",
+  "progressRetake": "Repetir evaluación",
+
+  "abTitle": "Pausas activas",
+  "abMotto": "Más vale mover ese lindo cuerpo... o lo perderás.",
+  "abBrowseTitle": "Pausas activas",
+  "abBrowseDesc": "Elige una rutina rápida para mantenerte en movimiento.",
+  "abPersonalTimerTitle": "Temporizador personal",
+  "abPersonalTimerDesc": "Configura un temporizador para tu propia pausa.",
+  "abChooseTitle": "Elige una pausa activa",
+  "abChooseRandom": "Elegir al azar",
+  "abDurationMinutes": "{count, plural, =1{1 minuto} other{{count} minutos}}",
+  "@abDurationMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "abTryToWalk": "Intenta caminar durante {minutes} {minutes, plural, =1{minuto} other{minutos}} después de 1 hora sentado.",
+  "@abTryToWalk": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "abComplete": "¡Pausa activa completada!",
+  "abStart": "Iniciar",
+  "abPause": "Pausar",
+  "abReset": "Reiniciar",
+  "abMarkCompleted": "Marcar como completada",
+  "abCompletedMarked": "¡Completada!",
+  "abCouldNotLoad": "No se pudieron cargar las pausas activas.",
+  "abNoAvailable": "No hay pausas activas disponibles en este momento.",
+
+  "notifTrainingTitle": "¡Hora de entrenar!",
+  "notifTrainingBody": "Sesión {session}: Tu entrenamiento programado está listo.",
+  "@notifTrainingBody": {
+    "placeholders": {
+      "session": { "type": "int" }
+    }
+  },
+  "notifActiveBreakTitle": "Pausa activa",
+  "notifActiveBreakBody": "¡Hora de moverte! Toma una pausa activa corta.",
+
+  "dayMonday": "Lunes",
+  "dayTuesday": "Martes",
+  "dayWednesday": "Miércoles",
+  "dayThursday": "Jueves",
+  "dayFriday": "Viernes",
+  "daySaturday": "Sábado",
+  "daySunday": "Domingo",
+  "dayMonShort": "Lun",
+  "dayTueShort": "Mar",
+  "dayWedShort": "Mié",
+  "dayThuShort": "Jue",
+  "dayFriShort": "Vie",
+  "daySatShort": "Sáb",
+  "daySunShort": "Dom"
+}

@@ -4,7 +4,9 @@ import 'package:muevete/auth_gate.dart';
 import 'package:muevete/features/auth/presentation/login_screen.dart';
 import 'package:muevete/features/auth/presentation/signup_screen.dart';
 import 'package:muevete/features/diagnosis/presentation/screens/diagnosis_screen.dart';
+import 'package:muevete/features/settings/presentation/screens/language_settings_screen.dart';
 import 'package:muevete/features/settings/presentation/screens/notification_settings_screen.dart';
+import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/training/presentation/screens/program_setup_screen.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_breaks_screen.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_selection_screen.dart';
@@ -41,6 +43,14 @@ GoRouter router = GoRouter(
     GoRoute(
       path: "/notifications",
       builder: (context, state) => const NotificationSettingsScreen(),
+    ),
+    GoRoute(
+      path: "/settings",
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: "/language",
+      builder: (context, state) => const LanguageSettingsScreen(),
     ),
     GoRoute(
       path: "/active-breaks",

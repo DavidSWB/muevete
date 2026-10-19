@@ -4,9 +4,15 @@ import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
+import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
 
 void main() {
   testWidgets('title is rendered below the visual', (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(_detailScreen(reps: 8, sets: 1));
 
     final visualBottom = tester.getRect(
@@ -21,6 +27,11 @@ void main() {
 
   testWidgets('Done! pops the detail route without completing a set',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(
       MaterialApp(
         home: Builder(
@@ -53,6 +64,11 @@ void main() {
   });
 
   testWidgets('rep sets can be checked independently', (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(_detailScreen(reps: 8, sets: 2));
 
     expect(find.text('Reps'), findsNWidgets(3));
@@ -67,10 +83,18 @@ void main() {
 
   testWidgets('hold set displays duration, pauses, resumes, and auto-checks',
       (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(_detailScreen(duration: 2, sets: 1));
 
     expect(find.text('Duration'), findsNWidgets(2));
-    expect(find.text('2s'), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(ExerciseSetRow), matching: find.text('2s')),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byTooltip('Start timer'));
     await tester.pump(const Duration(milliseconds: 700));
@@ -87,6 +111,11 @@ void main() {
   });
 
   testWidgets('unchecking a completed hold resets its timer', (tester) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(_detailScreen(duration: 1, sets: 1));
 
     await tester.tap(find.byTooltip('Start timer'));
@@ -94,7 +123,10 @@ void main() {
     await tester.tap(find.byTooltip('Mark set incomplete'));
     await tester.pump();
 
-    expect(find.text('1s'), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(ExerciseSetRow), matching: find.text('1s')),
+      findsOneWidget,
+    );
     expect(find.byTooltip('Start timer'), findsOneWidget);
   });
 }

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 import 'package:muevete/shared/widgets/my_button_secondarytext.dart';
 import 'package:muevete/shared/widgets/my_heading_two.dart';
@@ -29,26 +31,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> handleLogin() async {
+    final l10n = AppLocalizations.of(context)!;
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
       setState(() {
-        errorMessage = 'Email and password cannot be empty.';
+        errorMessage = l10n.valEmptyEmailPassword;
       });
       return;
     }
 
     if (password.length < 6) {
       setState(() {
-        errorMessage = 'Password must be at least 6 characters long.';
+        errorMessage = l10n.valPasswordMinLength;
       });
       return;
     }
 
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
-        errorMessage = 'Please enter a valid email address.';
+        errorMessage = l10n.valInvalidEmail;
       });
       return;
     }
@@ -73,22 +76,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         case 'user-not-found':
         case 'wrong-password':
         case 'invalid-credential':
-          message = 'Invalid email or password.';
+          message = l10n.errInvalidCredentials;
           break;
         case 'invalid-email':
-          message = 'Invalid email format.';
+          message = l10n.errInvalidEmailFormat;
           break;
         case 'user-disabled':
-          message = 'This user account has been disabled.';
+          message = l10n.errUserDisabled;
           break;
         case 'too-many-requests':
-          message = 'Too many failed attempts. Please try again later.';
+          message = l10n.errTooManyRequests;
           break;
         case 'network-request-failed':
-          message = 'Network error. Please check your internet connection.';
+          message = l10n.errNetwork;
           break;
         default:
-          message = e.message ?? 'Authentication failed. Please try again.';
+          message = e.message ?? l10n.errAuthFailed;
       }
 
       if (mounted) {
@@ -99,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (_) {
       if (mounted) {
         setState(() {
-          errorMessage = 'An unexpected error occurred. Please try again.';
+          errorMessage = l10n.errUnexpected;
         });
       }
     } finally {
@@ -113,15 +116,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [
+          LocaleSwitcher(),
+          SizedBox(width: 16),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const MyHeadingTwo(text: 'Login'),
+                MyHeadingTwo(text: l10n.authLogin),
                 const SizedBox(height: 24),
                 if (errorMessage != null && errorMessage!.isNotEmpty)
                   Padding(
@@ -135,14 +148,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 20),
                 MyTextinputfield(
                   controller: _emailController,
-                  hintText: 'example@gmail.com',
+                  hintText: l10n.authEmailHint,
                   obscureText: false,
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 20),
                 MyTextinputfield(
                   controller: _passwordController,
-                  hintText: 'Password',
+                  hintText: l10n.authPasswordHint,
                   obscureText: true,
                 ),
                 const SizedBox(height: 30),
@@ -150,12 +163,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const CircularProgressIndicator()
                 else
                   MyButton(
-                    text: 'Enter',
+                    text: l10n.authEnter,
                     onTap: handleLogin,
                   ),
                 const SizedBox(height: 15),
                 MyButtonSecondarytext(
-                  text: 'Create a new account',
+                  text: l10n.authCreateAccountPrompt,
                   onTap: () => context.go('/signup'),
                 ),
               ],
