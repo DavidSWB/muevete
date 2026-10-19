@@ -22,6 +22,21 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- Google Sign-In: replace REPLACE_WITH_REVERSED_CLIENT_ID with the
+	     value from GoogleService-Info.plist (REVERSED_CLIENT_ID key).
+	     This plist must be added to the iOS target after enabling Google sign-in
+	     in the Firebase console and downloading the updated file. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>REPLACE_WITH_REVERSED_CLIENT_ID</string>
+			</array>
+		</dict>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -51,3 +66,4 @@
 	</array>
 </dict>
 </plist>
+

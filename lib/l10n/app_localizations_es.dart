@@ -111,6 +111,22 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get errAccountExistsOtherProvider =>
+      'Ya existe una cuenta con este correo. Por favor inicia sesión con tu método original.';
+
+  @override
+  String get errSignInCancelled => 'El inicio de sesión fue cancelado.';
+
+  @override
+  String get authSignInWithGoogle => 'Continuar con Google';
+
+  @override
+  String get authSignInWithApple => 'Continuar con Apple';
+
+  @override
+  String get authOrDivider => 'o';
+
+  @override
   String get navHome => 'Inicio';
 
   @override

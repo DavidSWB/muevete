@@ -9,6 +9,7 @@ class MyTextinputfield extends StatelessWidget {
     required this.obscureText,
     this.keyboardType,
     this.inputFormatters,
+    this.readOnly = false,
   });
 
     final TextEditingController controller;
@@ -16,6 +17,7 @@ class MyTextinputfield extends StatelessWidget {
     final bool obscureText;
     final TextInputType? keyboardType;
     final List<TextInputFormatter>? inputFormatters;
+    final bool readOnly;
 
 
   @override
@@ -27,6 +29,7 @@ class MyTextinputfield extends StatelessWidget {
         obscureText: obscureText,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
+        readOnly: readOnly,
         style: const TextStyle(height: 1),
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
@@ -36,6 +39,8 @@ class MyTextinputfield extends StatelessWidget {
             borderSide: BorderSide(color: Colors.blueAccent),
           ),
           hintText: hintText,
+          filled: readOnly,
+          fillColor: readOnly ? Colors.grey.shade100 : null,
         ),
       ),
     );

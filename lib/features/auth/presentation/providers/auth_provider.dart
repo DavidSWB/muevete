@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/domain/repositories/auth_repository.dart';
 import 'package:muevete/features/auth/domain/repositories/firebase_auth_repository.dart';
@@ -39,6 +40,38 @@ class AuthNotifier extends _$AuthNotifier {
     } catch (_) {}
     await _repository.signOut();
     state = null;
+  }
+
+  /// Signs in with Google. Returns [false] if the user cancelled.
+  /// Rethrows [FirebaseAuthException] for the UI to handle.
+  Future<bool> signInWithGoogle() async {
+    try {
+      final user = await _repository.signInWithGoogle();
+      if (user == null) return false; // user cancelled
+      state = user;
+      return true;
+    } on FirebaseAuthException {
+      rethrow;
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('signInWithGoogle unexpected error: $e\n$st');
+      rethrow;
+    }
+  }
+
+  /// Signs in with Apple. Returns [false] if the user cancelled.
+  /// Rethrows [FirebaseAuthException] for the UI to handle.
+  Future<bool> signInWithApple() async {
+    try {
+      final user = await _repository.signInWithApple();
+      if (user == null) return false; // user cancelled
+      state = user;
+      return true;
+    } on FirebaseAuthException {
+      rethrow;
+    } catch (e, st) {
+      if (kDebugMode) debugPrint('signInWithApple unexpected error: $e\n$st');
+      rethrow;
+    }
   }
 }
 

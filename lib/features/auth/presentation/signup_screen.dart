@@ -33,6 +33,40 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   String? errorMessage = '';
   bool _isLoading = false;
 
+  /// True when the current Firebase user authenticated via a social provider
+  /// (Google, Apple) and therefore does not need a password field.
+  bool get _isSocialUser {
+    final firebaseUser = ref.read(authRepositoryProvider).currentUser;
+    if (firebaseUser == null) return false;
+    return firebaseUser.providerData.every(
+      (p) => p.providerId != 'password',
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill name and email from the social-provider Firebase user when
+    // the user arrived via Google / Apple.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final firebaseUser = ref.read(authRepositoryProvider).currentUser;
+      if (firebaseUser == null) return;
+
+      final isSocial = firebaseUser.providerData.every(
+        (p) => p.providerId != 'password',
+      );
+      if (!isSocial) return;
+
+      if (firebaseUser.email != null && firebaseUser.email!.isNotEmpty) {
+        _emailController.text = firebaseUser.email!;
+      }
+      if (firebaseUser.displayName != null &&
+          firebaseUser.displayName!.isNotEmpty) {
+        _nameController.text = firebaseUser.displayName!;
+      }
+    });
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -52,10 +86,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final ageText = _ageController.text.trim();
     final weightText = _weightController.text.trim();
     final heightText = _heightController.text.trim();
+    final social = _isSocialUser;
 
     if (name.isEmpty ||
         email.isEmpty ||
-        password.isEmpty ||
+        (!social && password.isEmpty) ||
         ageText.isEmpty ||
         weightText.isEmpty ||
         heightText.isEmpty) {
@@ -66,7 +101,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       return l10n.valInvalidEmail;
     }
 
-    if (password.length < 6) {
+    if (!social && password.length < 6) {
       return l10n.valPasswordMinLength;
     }
 
@@ -113,22 +148,29 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       final height = double.parse(_heightController.text.trim());
       final medicalConditionsText = _medicalConditionsController.text.trim();
 
-      // 1. Create user with Firebase Auth
-      signupStage = 'Firebase Auth account creation';
-      final user = await _signUpOrRecoverMatchingSession(
-        email: email,
-        password: password,
-      );
+      String? uid;
 
-      signupStage = 'resolving Auth user ID';
-      final uid =
-          user?.uid ?? ref.read(authRepositoryProvider).currentUser?.uid;
+      if (_isSocialUser) {
+        // Social user: Firebase account already exists. Use the current UID.
+        signupStage = 'resolving social Auth user ID';
+        uid = ref.read(authRepositoryProvider).currentUser?.uid;
+      } else {
+        // Email/password: create the Firebase Auth account.
+        signupStage = 'Firebase Auth account creation';
+        final user = await _signUpOrRecoverMatchingSession(
+          email: email,
+          password: password,
+        );
+
+        signupStage = 'resolving Auth user ID';
+        uid = user?.uid ?? ref.read(authRepositoryProvider).currentUser?.uid;
+      }
 
       if (uid == null) {
         throw Exception("Could not retrieve user ID after registration.");
       }
 
-      // 2. Create initial user profile in Firestore
+      // Create initial user profile in Firestore.
       signupStage = 'Firestore profile construction';
       final initialUser = UserModel(
         id: uid,
@@ -232,6 +274,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final social = _isSocialUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -279,15 +322,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   hintText: l10n.authEmailHint,
                   obscureText: false,
                   keyboardType: TextInputType.emailAddress,
+                  // Read-only when prefilled from social provider.
+                  readOnly: social && _emailController.text.isNotEmpty,
                 ),
                 const SizedBox(height: 16),
 
-                MyTextinputfield(
-                  controller: _passwordController,
-                  hintText: l10n.authPasswordHint,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 16),
+                // Password field – hidden for social sign-in users.
+                if (!social) ...[
+                  MyTextinputfield(
+                    controller: _passwordController,
+                    hintText: l10n.authPasswordHint,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
                 MyTextinputfield(
                   controller: _ageController,
@@ -331,10 +379,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   MyButton(text: l10n.authRegister, onTap: handleSignup),
                 const SizedBox(height: 16),
 
-                MyButtonSecondarytext(
-                  text: l10n.authAlreadyHaveAccount,
-                  onTap: () => context.go("/login"),
-                ),
+                // Only show "Already have account" for non-social flows.
+                if (!social)
+                  MyButtonSecondarytext(
+                    text: l10n.authAlreadyHaveAccount,
+                    onTap: () => context.go("/login"),
+                  ),
               ],
             ),
           ),

@@ -39,6 +39,11 @@
       "error": { "type": "String" }
     }
   },
+  "errAccountExistsOtherProvider": "Ya existe una cuenta con este correo. Por favor inicia sesión con tu método original.",
+  "errSignInCancelled": "El inicio de sesión fue cancelado.",
+  "authSignInWithGoogle": "Continuar con Google",
+  "authSignInWithApple": "Continuar con Apple",
+  "authOrDivider": "o",
 
   "navHome": "Inicio",
   "navTraining": "Entrenamiento",

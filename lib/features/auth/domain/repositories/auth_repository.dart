@@ -17,4 +17,12 @@ abstract class AuthRepository {
   User? get currentUser;
 
   Stream<User?> get authStateChanges;
-}
+
+  /// Signs in with Google. Returns [null] if the user cancelled.
+  /// Throws [FirebaseAuthException] on auth failures.
+  Future<User?> signInWithGoogle();
+
+  /// Signs in with Apple. Returns [null] if the user cancelled.
+  /// Throws [FirebaseAuthException] on auth failures.
+  Future<User?> signInWithApple();
+}

@@ -12,7 +12,12 @@
           "package_name": "com.example.muevete"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "942017738617-llnph3cna8sgdcjaj917eo1ohkmdsmnc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAFiy96hhMDmNzBBH5yE_2j6omn2tyFBSs"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942017738617-llnph3cna8sgdcjaj917eo1ohkmdsmnc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "942017738617-00pvj0mre3191vafh0n8171532urtul3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.muevete"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.example.muevete_rico_mark_1"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "942017738617-s4i64vcdfrfk0loj71sgf53cs4kvagtd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.muevete_rico_mark_1",
+            "certificate_hash": "fb0702a6ea768d15bdc98afad673f039bcdcc252"
+          }
+        },
+        {
+          "client_id": "942017738617-llnph3cna8sgdcjaj917eo1ohkmdsmnc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAFiy96hhMDmNzBBH5yE_2j6omn2tyFBSs"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942017738617-llnph3cna8sgdcjaj917eo1ohkmdsmnc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "942017738617-00pvj0mre3191vafh0n8171532urtul3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.muevete"
+              }
+            }
+          ]
         }
       }
     }

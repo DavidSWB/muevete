@@ -34,6 +34,11 @@
   "errWeakPassword": "The password provided is too weak.",
   "errUnexpected": "An unexpected error occurred. Please try again.",
   "errGeneric": "Error: {error}",
+  "errAccountExistsOtherProvider": "An account with this email already exists. Please sign in with your original method.",
+  "errSignInCancelled": "Sign-in was cancelled.",
+  "authSignInWithGoogle": "Continue with Google",
+  "authSignInWithApple": "Continue with Apple",
+  "authOrDivider": "or",
 
   "navHome": "Home",
   "navTraining": "Training",

@@ -284,6 +284,36 @@ abstract class AppLocalizations {
   /// **'Error: {error}'**
   String errGeneric(String error);
 
+  /// No description provided for @errAccountExistsOtherProvider.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya existe una cuenta con este correo. Por favor inicia sesión con tu método original.'**
+  String get errAccountExistsOtherProvider;
+
+  /// No description provided for @errSignInCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'El inicio de sesión fue cancelado.'**
+  String get errSignInCancelled;
+
+  /// No description provided for @authSignInWithGoogle.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Google'**
+  String get authSignInWithGoogle;
+
+  /// No description provided for @authSignInWithApple.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Apple'**
+  String get authSignInWithApple;
+
+  /// No description provided for @authOrDivider.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get authOrDivider;
+
   /// No description provided for @navHome.
   ///
   /// In es, this message translates to:
