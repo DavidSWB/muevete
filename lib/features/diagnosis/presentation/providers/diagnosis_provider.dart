@@ -1,4 +1,5 @@
 import 'package:muevete/features/diagnosis/domain/entities/diagnosisState.dart';
+import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/services/diagnosis_calculator.dart';
 import 'questions_repository_providers.dart';
@@ -89,19 +90,21 @@ class DiagnosisNotifier extends _$DiagnosisNotifier {
       final diagnosis = state.value;
       if (diagnosis == null) return;
 
-      if (diagnosis.answers.length == diagnosis.questions.length){
-
-        final userDiagnosis =
-
-          DiagnosisCalculator().calculate(
-            diagnosis.questions,
-            diagnosis.answers,
-          );
-        final repository =
-          ref.read(diagnosisRepositoryProvider);
-
-        await repository.saveDiagnosis(userDiagnosis);
+      if (diagnosis.answers.length != diagnosis.questions.length) {
+        throw StateError('Cannot finish diagnosis with unanswered questions');
       }
+
+      final userDiagnosis =
+
+        DiagnosisCalculator().calculate(
+          diagnosis.questions,
+          diagnosis.answers,
+        );
+      final repository =
+        ref.read(diagnosisRepositoryProvider);
+
+      await repository.saveDiagnosis(userDiagnosis);
+      await ref.read(profileProvider.notifier).refresh();
     }
     catch(e){
       rethrow;

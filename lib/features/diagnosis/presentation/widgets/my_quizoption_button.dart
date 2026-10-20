@@ -15,23 +15,42 @@ class MyQuizoptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        constraints: BoxConstraints(minHeight: 60),
-        margin: EdgeInsets.symmetric(vertical: 5),
-        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.disabledBg,
-          borderRadius: BorderRadius.circular(15)
+    return Card(
+      elevation: isSelected ? 2 : 0.5,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: isSelected ? AppColors.primaryDark : Colors.grey.shade200,
+          width: isSelected ? 1.5 : 1.0,
         ),
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: isSelected ? Colors.white : AppColors.disabledFg,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
+      ),
+      color: isSelected ? AppColors.cardBlue : AppColors.surface,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  text,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: isSelected ? AppColors.primaryDark : Colors.black87,
+                    fontWeight: isSelected
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Icon(
+                isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: isSelected ? AppColors.primaryDark : AppColors.textMuted,
+                size: 24,
+              ),
+            ],
           ),
         ),
       ),
