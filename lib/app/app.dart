@@ -88,6 +88,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     }
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       locale: activeLocale,
       supportedLocales: AppLocalizations.supportedLocales,

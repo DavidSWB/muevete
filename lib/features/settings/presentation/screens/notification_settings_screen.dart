@@ -327,11 +327,11 @@ class _NotificationSettingsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -344,14 +344,17 @@ class _NotificationSettingsScreenState
                               ),
                             ),
                             const SizedBox(width: 12),
-                            Text(
-                              l10n?.notifTrainingReminders ?? 'Training Reminders',
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                l10n?.notifTrainingReminders ?? 'Training Reminders',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ],
+                              ],
+                            ),
                         ),
                         Switch(
                           value: _trainingReminderEnabled && hasValidSchedule,
@@ -401,13 +404,15 @@ class _NotificationSettingsScreenState
                                 const Icon(Icons.access_time,
                                     size: 16, color: AppColors.textMuted),
                                 const SizedBox(width: 6),
-                                Text(
-                                  l10n != null
-                                      ? l10n.notifTime(schedule.preferredTime ?? "18:00")
-                                      : 'Time: ${schedule.preferredTime ?? "18:00"}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
+                                Expanded(
+                                  child: Text(
+                                    l10n != null
+                                        ? l10n.notifTime(schedule.preferredTime ?? "18:00")
+                                        : 'Time: ${schedule.preferredTime ?? "18:00"}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -484,11 +489,11 @@ class _NotificationSettingsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -501,14 +506,17 @@ class _NotificationSettingsScreenState
                               ),
                             ),
                             const SizedBox(width: 12),
-                            Text(
-                              l10n?.notifActiveBreakReminders ?? 'Active-Break Reminders',
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                l10n?.notifActiveBreakReminders ?? 'Active-Break Reminders',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ],
+                              ],
+                            ),
                         ),
                         Switch(
                           value: _activeBreakReminderEnabled,
@@ -619,14 +627,12 @@ class _NotificationSettingsScreenState
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
                           for (final minutes in UserNotifications.supportedIntervals)
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4),
-                                child: ChoiceChip(
+                            ChoiceChip(
                                   label: Text(
                                     minutes == 60
                                         ? (l10n?.notifMin60 ?? '60 min\n(1 hour)')
@@ -641,19 +647,16 @@ class _NotificationSettingsScreenState
                                           ? Colors.white
                                           : Colors.black87,
                                     ),
-                                  ),
-                                  selected:
-                                      _activeBreakIntervalMinutes == minutes,
-                                  selectedColor: AppColors.primary,
-                                  onSelected: (selected) {
-                                    if (selected) {
-                                      setState(() {
-                                        _activeBreakIntervalMinutes = minutes;
-                                      });
-                                    }
-                                  },
-                                ),
                               ),
+                              selected: _activeBreakIntervalMinutes == minutes,
+                              selectedColor: AppColors.primary,
+                              onSelected: (selected) {
+                                if (selected) {
+                                  setState(() {
+                                    _activeBreakIntervalMinutes = minutes;
+                                  });
+                                }
+                              },
                             ),
                         ],
                       ),

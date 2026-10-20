@@ -90,6 +90,59 @@ void main() {
     expect(find.text('No Active Training Schedule'), findsOneWidget);
     expect(find.text('Configure Program'), findsOneWidget);
   });
+
+  testWidgets('NotificationSettingsScreen avoids overflow on narrow screens',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(320, 900);
+    tester.view.devicePixelRatio = 1;
+    tester.view.textScaleFactor = 1.5;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetTextScaleFactor);
+
+    final testUser = UserModel(
+      id: 'test-user-3',
+      email: 'test@example.com',
+      username: 'Tester',
+      training: UserTraining(
+        activePlanId: 'plan-1',
+        planStartDate: DateTime(2026, 10, 1),
+        schedule: const UserSchedule(
+          days: {1: 1, 3: 2, 5: 3},
+          preferredTime: '18:00',
+        ),
+      ),
+      notifications: const UserNotifications(
+        enabled: true,
+        trainingReminderEnabled: true,
+        activeBreakReminderEnabled: true,
+        activeBreakStartTime: '08:00',
+        activeBreakEndTime: '18:00',
+        activeBreakIntervalMinutes: 120,
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          profileProvider.overrideWith(
+            () => _FakeProfileNotifier(testUser),
+          ),
+        ],
+        child: const MaterialApp(
+          home: NotificationSettingsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Training Reminders'), findsOneWidget);
+    expect(find.text('Active-Break Reminders'), findsOneWidget);
+    expect(find.byType(Switch), findsNWidgets(2));
+    expect(find.byType(ChoiceChip), findsNWidgets(3));
+  });
 }
 
 class _FakeProfileNotifier extends Profile {
