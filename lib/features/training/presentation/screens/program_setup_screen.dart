@@ -104,10 +104,7 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.progTitle),
-        actions: const [
-          LocaleSwitcher(compact: true),
-          SizedBox(width: 8),
-        ],
+        actions: const [LocaleSwitcher(compact: true), SizedBox(width: 8)],
       ),
       body: plansAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -173,56 +170,86 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                       runSpacing: 8,
                       children: List.generate(7, (index) {
                         final weekday = index + 1;
-                        final isSelected =
-                            _selectedSchedule.containsKey(weekday);
+                        final isSelected = _selectedSchedule.containsKey(
+                          weekday,
+                        );
                         return ChoiceChip(
-                          label: Text(dayNames[index]),
+                          label: Text(
+                            dayNames[index],
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textPrimary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
                           selected: isSelected,
+                          showCheckmark: false,
                           onSelected: (selected) =>
                               _toggleDay(weekday, selected),
+                          selectedColor: const Color(0xFF0077C2),
+                          backgroundColor: const Color(0xFFE3F2FD),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: isSelected
+                                  ? const Color(0xFF0077C2)
+                                  : AppColors.border,
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          elevation: isSelected ? 2 : 0,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
                         );
                       }),
                     ),
-                    Builder(builder: (context) {
-                      final conflicts = const TrainingScheduleService()
-                          .getRecoveryConflicts(
-                        _selectedSchedule,
-                        _selectedPlan!,
-                      );
-                      if (conflicts.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.warningSoft,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.warning_amber_rounded,
-                                  color: AppColors.warning,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    l10n.progRecoveryWarning,
-                                    style: const TextStyle(
-                                      color: AppColors.warning,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                    Builder(
+                      builder: (context) {
+                        final conflicts = const TrainingScheduleService()
+                            .getRecoveryConflicts(
+                              _selectedSchedule,
+                              _selectedPlan!,
+                            );
+                        if (conflicts.isNotEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppColors.warningSoft,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber_rounded,
+                                    color: AppColors.warning,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      l10n.progRecoveryWarning,
+                                      style: const TextStyle(
+                                        color: AppColors.warning,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                     const SizedBox(height: 12),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -276,7 +303,8 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                   MyButton(
                     text: l10n.progContinue,
                     isLoading: _isSaving,
-                    enabled: _selectedPlan != null &&
+                    enabled:
+                        _selectedPlan != null &&
                         _selectedSchedule.length == _selectedPlan!.daysPerWeek,
                     onTap: () => _save(l10n),
                   ),
