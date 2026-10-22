@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
@@ -8,6 +7,8 @@ import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
 import 'package:muevete/features/training/presentation/providers/program_setup_provider.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 
@@ -64,6 +65,27 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
     }
   }
 
+  void _toggleDay(int weekday, bool selected) {
+    final selectedPlan = _selectedPlan;
+    if (selectedPlan == null) return;
+
+    setState(() {
+      if (selected) {
+        if (_selectedSchedule.length < selectedPlan.daysPerWeek) {
+          _selectedSchedule[weekday] = 1;
+        }
+      } else {
+        _selectedSchedule.remove(weekday);
+      }
+
+      final sortedWeekdays = _selectedSchedule.keys.toList()..sort();
+      _selectedSchedule.clear();
+      for (int i = 0; i < sortedWeekdays.length; i++) {
+        _selectedSchedule[sortedWeekdays[i]] = i + 1;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -89,18 +111,19 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
       ),
       body: plansAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => _ErrorView(
-          message: l10n.progCouldNotLoad,
-          retryText: l10n.notifRetry,
+        error: (error, _) => ErrorScreen(
+          l10n.progCouldNotLoad,
           onRetry: () => ref.invalidate(programSetupProvider),
+          retryLabel: l10n.notifRetry,
         ),
         data: (plans) {
           if (plans.isEmpty) {
-            return _ErrorView(message: l10n.progNoPrograms);
+            return ErrorScreen(l10n.progNoPrograms);
           }
 
           return SafeArea(
             child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 children: [
                   Padding(
@@ -108,7 +131,10 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                     child: Text(
                       l10n.progSelectSubtitle,
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -117,27 +143,34 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount: plans.length,
-                    itemBuilder: (context, index) => _PlanCard(
-                      plan: plans[index],
-                      selected: _selectedPlan?.planId == plans[index].planId,
-                      onTap: () => setState(() {
-                        _selectedPlan = plans[index];
-                        _selectedSchedule.clear();
-                        _saveError = null;
-                      }),
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _PlanCard(
+                        plan: plans[index],
+                        selected: _selectedPlan?.planId == plans[index].planId,
+                        onTap: () => setState(() {
+                          _selectedPlan = plans[index];
+                          _selectedSchedule.clear();
+                          _saveError = null;
+                        }),
+                      ),
                     ),
                   ),
                   if (_selectedPlan != null) ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        l10n.progSelectDays,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        '${l10n.progSelectDays} (${_selectedSchedule.length}/${_selectedPlan!.daysPerWeek})',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Wrap(
                       spacing: 8,
+                      runSpacing: 8,
                       children: List.generate(7, (index) {
                         final weekday = index + 1;
                         final isSelected =
@@ -145,85 +178,108 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                         return ChoiceChip(
                           label: Text(dayNames[index]),
                           selected: isSelected,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                if (_selectedSchedule.length <
-                                    _selectedPlan!.daysPerWeek) {
-                                  _selectedSchedule[weekday] = 1;
-                                }
-                              } else {
-                                _selectedSchedule.remove(weekday);
-                              }
-
-                              final sortedWeekdays = _selectedSchedule.keys
-                                  .toList()
-                                ..sort();
-                              _selectedSchedule.clear();
-                              for (int i = 0;
-                                  i < sortedWeekdays.length;
-                                  i++) {
-                                _selectedSchedule[sortedWeekdays[i]] = i + 1;
-                              }
-                            });
-                          },
+                          onSelected: (selected) =>
+                              _toggleDay(weekday, selected),
                         );
                       }),
                     ),
                     Builder(builder: (context) {
                       final conflicts = const TrainingScheduleService()
                           .getRecoveryConflicts(
-                              _selectedSchedule, _selectedPlan!);
+                        _selectedSchedule,
+                        _selectedPlan!,
+                      );
                       if (conflicts.isNotEmpty) {
                         return Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            l10n.progRecoveryWarning,
-                            style: const TextStyle(
-                                color: Colors.orange, fontSize: 12),
-                            textAlign: TextAlign.center,
+                          padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.warningSoft,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: AppColors.warning,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    l10n.progRecoveryWarning,
+                                    style: const TextStyle(
+                                      color: AppColors.warning,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }
                       return const SizedBox.shrink();
                     }),
-                    ListTile(
-                      title: Text(l10n.progReminderTime),
-                      trailing: Text(_preferredTime.format(context)),
-                      onTap: () async {
-                        final time = await showTimePicker(
-                          context: context,
-                          initialTime: _preferredTime,
-                        );
-                        if (time != null) {
-                          setState(() => _preferredTime = time);
-                        }
-                      },
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          side: const BorderSide(color: AppColors.border),
+                        ),
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.access_time_rounded,
+                            color: AppColors.primaryDark,
+                          ),
+                          title: Text(
+                            l10n.progReminderTime,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          trailing: Text(
+                            _preferredTime.format(context),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primaryDark,
+                            ),
+                          ),
+                          onTap: () async {
+                            final time = await showTimePicker(
+                              context: context,
+                              initialTime: _preferredTime,
+                            );
+                            if (time != null) {
+                              setState(() => _preferredTime = time);
+                            }
+                          },
+                        ),
+                      ),
                     ),
                   ],
                   if (_saveError != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
                       child: Text(
                         _saveError!,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.red),
+                        style: const TextStyle(
+                          color: AppColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  const SizedBox(height: 8),
-                  _isSaving
-                      ? const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: CircularProgressIndicator(),
-                        )
-                      : MyButton(
-                          text: l10n.progContinue,
-                          enabled: _selectedPlan != null &&
-                              _selectedSchedule.length ==
-                                  _selectedPlan!.daysPerWeek,
-                          onTap: () => _save(l10n),
-                        ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+                  MyButton(
+                    text: l10n.progContinue,
+                    isLoading: _isSaving,
+                    enabled: _selectedPlan != null &&
+                        _selectedSchedule.length == _selectedPlan!.daysPerWeek,
+                    onTap: () => _save(l10n),
+                  ),
                 ],
               ),
             ),
@@ -251,40 +307,64 @@ class _PlanCard extends StatelessWidget {
     final description = plan.description.localized(context, fallback: '');
 
     return Card(
-      color: selected ? AppColors.cardBlue : null,
-      child: RadioListTile<String>(
-        value: plan.planId,
-        groupValue: selected ? plan.planId : null,
-        onChanged: (_) => onTap(),
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('$description\n${plan.daysPerWeek} days/week'),
-        isThreeLine: true,
+      color: selected ? AppColors.cardBlue : AppColors.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: selected ? AppColors.primaryDark : AppColors.border,
+          width: selected ? 1.5 : 1,
+        ),
       ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, this.retryText, this.onRetry});
-
-  final String message;
-  final String? retryText;
-  final VoidCallback? onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message, textAlign: TextAlign.center),
-            if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              TextButton(onPressed: onRetry, child: Text(retryText ?? 'Retry')),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                selected
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_unchecked_rounded,
+                color: selected ? AppColors.primaryDark : AppColors.textMuted,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    if (description.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 6),
+                    Text(
+                      '${plan.daysPerWeek} days/week',
+                      style: const TextStyle(
+                        color: AppColors.primaryDark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
-          ],
+          ),
         ),
       ),
     );

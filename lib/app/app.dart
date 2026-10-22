@@ -1,12 +1,14 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/router.dart';
 import 'package:muevete/features/localization/presentation/locale_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/shared/theme/app_colors.dart';
+import 'package:muevete/shared/theme/app_theme.dart';
 
 class App extends ConsumerStatefulWidget {
   const App({
@@ -68,31 +70,81 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     if (widget.firebaseError != null) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
         locale: activeLocale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
-        home: Scaffold(
-          appBar: AppBar(title: const Text('Error de inicio')),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: SelectableText(
-              'No se pudo inicializar Firebase.\n\n'
-              '${widget.firebaseError}\n\n'
-              'Configura Firebase para el dispositivo seleccionado y vuelve '
-              'a ejecutar la app.\n\n'
-              '${widget.firebaseStackTrace ?? ''}',
-            ),
-          ),
+        home: _FirebaseStartupErrorScreen(
+          error: widget.firebaseError!,
+          stackTrace: widget.firebaseStackTrace,
         ),
       );
     }
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
       routerConfig: router,
       locale: activeLocale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
+    );
+  }
+}
+
+class _FirebaseStartupErrorScreen extends StatelessWidget {
+  const _FirebaseStartupErrorScreen({
+    required this.error,
+    this.stackTrace,
+  });
+
+  final Object error;
+  final StackTrace? stackTrace;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Error de inicio')),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.errorSoft,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.error_outline, color: AppColors.error, size: 28),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'No se pudo inicializar Firebase. Configura Firebase para el dispositivo seleccionado y vuelve a ejecutar la app.',
+                        style: TextStyle(
+                          color: AppColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              SelectableText(
+                '$error\n\n${stackTrace ?? ''}',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

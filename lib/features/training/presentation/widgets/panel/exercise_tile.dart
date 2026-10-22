@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
+import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/exercise_thumbnail.dart';
 
 class ExerciseTile extends StatelessWidget {
@@ -12,35 +14,55 @@ class ExerciseTile extends StatelessWidget {
 
   final WorkoutExercise exercise;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-      Navigator.of(context).push(
+  void _openExerciseDetail(BuildContext context) {
+    HapticFeedback.lightImpact();
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => ExerciseDetailScreen(
           exercise: exercise,
         ),
       ),
-    );  
-      },
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: const BorderSide(color: AppColors.border),
         ),
-        child: Row(
-          children: [
-            ExerciseThumbnail(visualPath: exercise.exercise.visualPath),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _ExerciseInfo(exercise: exercise),
+        child: InkWell(
+          onTap: () => _openExerciseDetail(context),
+          borderRadius: BorderRadius.circular(18),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                ExerciseThumbnail(visualPath: exercise.exercise.visualPath),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _ExerciseInfo(exercise: exercise),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
+                    color: AppColors.cardBlue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.play_arrow_rounded,
+                    size: 20,
+                    color: AppColors.primaryDark,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 16),
-            const _Chevron(),
-          ],
+          ),
         ),
       ),
     );
@@ -62,14 +84,27 @@ class _ExerciseInfo extends StatelessWidget {
       children: [
         Text(
           exercise.exercise.name.localized(context, fallback: 'Exercise name'),
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          _volumeLabel(exercise),
-          style: Theme.of(context).textTheme.bodySmall,
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.softGrey,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            _volumeLabel(exercise),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textMuted,
+                  fontWeight: FontWeight.w700,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+          ),
         ),
-        const Divider(height: 8),
       ],
     );
   }
@@ -85,14 +120,5 @@ class _ExerciseInfo extends StatelessWidget {
       return '$setLabel × ${duration}s';
     }
     return setLabel;
-  }
-}
-
-class _Chevron extends StatelessWidget {
-  const _Chevron();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Icon(Icons.chevron_right);
   }
 }

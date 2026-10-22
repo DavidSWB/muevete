@@ -5,30 +5,24 @@ import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/screens/loading_screen.dart';
 
 class TrainingScreen extends ConsumerWidget {
-
   const TrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final workoutAsync =
-        ref.watch(workoutControllerProvider);
+    final l10n = AppLocalizations.of(context);
+    final workoutAsync = ref.watch(workoutControllerProvider);
 
     return workoutAsync.when(
-
       data: (workout) {
-
         return Scaffold(
-
           body: Stack(
-
             children: [
-
               WorkoutHero(workout: workout),
-              
               WorkoutSlidingPanel(
                 workout: workout,
                 onWorkoutFinished: () async {
@@ -41,31 +35,16 @@ class TrainingScreen extends ConsumerWidget {
                   }
                 },
               ),
-
             ],
-
           ),
-
         );
-
       },
-
-      loading: () =>
-          const LoadingScreen(),
-
-      error: (error, stack) {
-        print("ERROR: " );
-        print(error);
-        print(stack);
-
-        return Scaffold(
-          body: Center(
-            child: Text(error.toString()),
-          ),
-        );
-      }
+      loading: () => const LoadingScreen(),
+      error: (error, _) => ErrorScreen(
+        error,
+        onRetry: () => ref.invalidate(workoutControllerProvider),
+        retryLabel: l10n?.notifRetry ?? 'Retry',
+      ),
     );
-
   }
-
 }

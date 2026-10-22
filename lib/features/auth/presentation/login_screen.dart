@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 import 'package:muevete/shared/widgets/my_button_secondarytext.dart';
 import 'package:muevete/shared/widgets/my_heading_two.dart';
@@ -20,6 +22,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  static const int _minPasswordLength = 6;
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String? errorMessage;
@@ -34,23 +38,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  // ─── Email / Password ──────────────────────────────────────────────────────
+  String? _validateCredentials(
+    String email,
+    String password,
+    AppLocalizations l10n,
+  ) {
+    if (email.isEmpty || password.isEmpty) {
+      return l10n.valEmptyEmailPassword;
+    }
+    if (password.length < _minPasswordLength) {
+      return l10n.valPasswordMinLength;
+    }
+    if (!email.contains('@') || !email.contains('.')) {
+      return l10n.valInvalidEmail;
+    }
+    return null;
+  }
 
   Future<void> _handleLogin() async {
     final l10n = AppLocalizations.of(context)!;
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      setState(() => errorMessage = l10n.valEmptyEmailPassword);
-      return;
-    }
-    if (password.length < 6) {
-      setState(() => errorMessage = l10n.valPasswordMinLength);
-      return;
-    }
-    if (!email.contains('@') || !email.contains('.')) {
-      setState(() => errorMessage = l10n.valInvalidEmail);
+    final validationError = _validateCredentials(email, password, l10n);
+    if (validationError != null) {
+      setState(() => errorMessage = validationError);
       return;
     }
 
@@ -69,47 +81,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (mounted) setState(() => errorMessage = _mapFirebaseError(e, l10n));
     } catch (_) {
       if (mounted) {
-        setState(() => errorMessage = AppLocalizations.of(context)!.errUnexpected);
+        setState(
+          () => errorMessage = AppLocalizations.of(context)!.errUnexpected,
+        );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // ─── Google ────────────────────────────────────────────────────────────────
-
   Future<void> _handleGoogleSignIn() async {
-    final l10n = AppLocalizations.of(context)!;
-    setState(() {
-      errorMessage = null;
-      _isGoogleLoading = true;
-    });
-    try {
-      final success = await ref.read(authProvider.notifier).signInWithGoogle();
-      if (!success && mounted) {
-        setState(() => errorMessage = l10n.errSignInCancelled);
-      } else if (mounted) {
-        context.go('/');
-      }
-    } on FirebaseAuthException catch (e) {
-      if (mounted) setState(() => errorMessage = _mapFirebaseError(e, l10n));
-    } catch (_) {
-      if (mounted) setState(() => errorMessage = l10n.errUnexpected);
-    } finally {
-      if (mounted) setState(() => _isGoogleLoading = false);
-    }
+    await _runSocialSignIn(
+      onStart: () => _isGoogleLoading = true,
+      onComplete: () => _isGoogleLoading = false,
+      action: () => ref.read(authProvider.notifier).signInWithGoogle(),
+    );
   }
-
-  // ─── Apple ─────────────────────────────────────────────────────────────────
 
   Future<void> _handleAppleSignIn() async {
+    await _runSocialSignIn(
+      onStart: () => _isAppleLoading = true,
+      onComplete: () => _isAppleLoading = false,
+      action: () => ref.read(authProvider.notifier).signInWithApple(),
+    );
+  }
+
+  Future<void> _runSocialSignIn({
+    required VoidCallback onStart,
+    required VoidCallback onComplete,
+    required Future<bool> Function() action,
+  }) async {
     final l10n = AppLocalizations.of(context)!;
     setState(() {
       errorMessage = null;
-      _isAppleLoading = true;
+      onStart();
     });
     try {
-      final success = await ref.read(authProvider.notifier).signInWithApple();
+      final success = await action();
       if (!success && mounted) {
         setState(() => errorMessage = l10n.errSignInCancelled);
       } else if (mounted) {
@@ -120,11 +128,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (_) {
       if (mounted) setState(() => errorMessage = l10n.errUnexpected);
     } finally {
-      if (mounted) setState(() => _isAppleLoading = false);
+      if (mounted) setState(onComplete);
     }
   }
-
-  // ─── Error mapping ─────────────────────────────────────────────────────────
 
   String _mapFirebaseError(FirebaseAuthException e, AppLocalizations l10n) {
     switch (e.code) {
@@ -147,67 +153,78 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  // ─── UI ────────────────────────────────────────────────────────────────────
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isAnyLoading = _isLoading || _isGoogleLoading || _isAppleLoading;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 12),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MyHeadingTwo(text: l10n.authLogin),
-                const SizedBox(height: 24),
-
-                // Error message
-                if (errorMessage != null && errorMessage!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Text(
-                      errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red),
-                    ),
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBlue,
+                    borderRadius: BorderRadius.circular(20),
                   ),
+                  child: const Icon(
+                    Icons.fitness_center_rounded,
+                    size: 32,
+                    color: AppColors.primaryDark,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                MyHeadingTwo(text: l10n.authLogin),
                 const SizedBox(height: 20),
 
-                // Email field
+                if (errorMessage != null && errorMessage!.isNotEmpty) ...[
+                  _AuthErrorBanner(message: errorMessage!),
+                  const SizedBox(height: 16),
+                ],
+
                 MyTextinputfield(
                   controller: _emailController,
                   hintText: l10n.authEmailHint,
+                  prefixIcon: Icons.email_outlined,
                   obscureText: false,
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
-                // Password field
                 MyTextinputfield(
                   controller: _passwordController,
                   hintText: l10n.authPasswordHint,
+                  prefixIcon: Icons.lock_outline_rounded,
                   obscureText: true,
+                  textInputAction: TextInputAction.done,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 24),
 
-                // Email / Password button
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  MyButton(
-                    text: l10n.authEnter,
-                    onTap: isAnyLoading ? () {} : _handleLogin,
-                    enabled: !isAnyLoading,
-                  ),
+                MyButton(
+                  text: l10n.authEnter,
+                  onTap: _handleLogin,
+                  enabled: !isAnyLoading,
+                  isLoading: _isLoading,
+                ),
                 const SizedBox(height: 20),
 
-                // Divider
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Row(
                     children: [
                       const Expanded(child: Divider()),
@@ -215,7 +232,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           l10n.authOrDivider,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.textMuted,
+                              ),
                         ),
                       ),
                       const Expanded(child: Divider()),
@@ -224,7 +243,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Google button
                 SocialSignInButton(
                   label: l10n.authSignInWithGoogle,
                   isLoading: _isGoogleLoading,
@@ -239,7 +257,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Apple button – iOS only
                 if (Platform.isIOS) ...[
                   SocialSignInButton(
                     label: l10n.authSignInWithApple,
@@ -254,7 +271,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: 12),
                 ],
 
-                // Create account link
+                const SizedBox(height: 4),
                 MyButtonSecondarytext(
                   text: l10n.authCreateAccountPrompt,
                   onTap: () => context.go('/signup'),
@@ -262,6 +279,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AuthErrorBanner extends StatelessWidget {
+  const _AuthErrorBanner({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.errorSoft,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColors.error.withValues(alpha: 0.25),
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.error_outline_rounded,
+              color: AppColors.error,
+              size: 20,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: AppColors.error,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

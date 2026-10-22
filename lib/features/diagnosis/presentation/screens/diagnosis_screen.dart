@@ -24,56 +24,59 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
     required BuildContext context,
     required DiagnosisNotifier notifier,
     required Question currentQuestion,
+    required int totalQuestions,
     required int selectedValue,
     required AppLocalizations l10n,
   }) {
     notifier.answer(currentQuestion.id, selectedValue);
 
-    if (currentQuestion.order < 5) {
+    final isLastQuestion = currentQuestion.order >= totalQuestions;
+    if (!isLastQuestion) {
       setState(() {
         selectedOption = null;
       });
       notifier.nextQuestion();
-    } else {
-      final navigator = Navigator.of(context, rootNavigator: true);
-      final router = GoRouter.of(context);
+      return;
+    }
 
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.warning,
-        text: l10n.diagConfirmFinish,
-        showCancelBtn: true,
-        barrierDismissible: false,
-        confirmBtnText: l10n.diagFinish,
-        onConfirmBtnTap: () async {
-          try {
-            await notifier.finish();
-          } catch (e) {
-            if (!navigator.mounted) return;
-            navigator.pop();
-            await QuickAlert.show(
-              context: navigator.context,
-              type: QuickAlertType.error,
-              title: l10n.diagSomethingWentWrong,
-              text: l10n.errGeneric(e.toString()),
-            );
-            return;
-          }
+    final navigator = Navigator.of(context, rootNavigator: true);
+    final router = GoRouter.of(context);
 
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.warning,
+      text: l10n.diagConfirmFinish,
+      showCancelBtn: true,
+      barrierDismissible: false,
+      confirmBtnText: l10n.diagFinish,
+      onConfirmBtnTap: () async {
+        try {
+          await notifier.finish();
+        } catch (e) {
           if (!navigator.mounted) return;
           navigator.pop();
           await QuickAlert.show(
             context: navigator.context,
-            type: QuickAlertType.success,
-            barrierDismissible: false,
-            text: l10n.diagSavedSuccess,
-            confirmBtnColor: Colors.green,
-            confirmBtnText: l10n.diagAccept,
+            type: QuickAlertType.error,
+            title: l10n.diagSomethingWentWrong,
+            text: l10n.errGeneric(e.toString()),
           );
-          router.go('/');
-        },
-      );
-    }
+          return;
+        }
+
+        if (!navigator.mounted) return;
+        navigator.pop();
+        await QuickAlert.show(
+          context: navigator.context,
+          type: QuickAlertType.success,
+          barrierDismissible: false,
+          text: l10n.diagSavedSuccess,
+          confirmBtnColor: AppColors.success,
+          confirmBtnText: l10n.diagAccept,
+        );
+        router.go('/');
+      },
+    );
   }
 
   @override
@@ -91,9 +94,14 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
       ),
       body: diagnosisAsync.when(
         data: (state) {
-          final currentQuestion = state.questions[state.currentQuestion];
+          final totalQuestions = state.questions.length;
+          final currentIndex = state.currentQuestion;
+          final currentQuestion = state.questions[currentIndex];
           final description = currentQuestion.question;
           final options = currentQuestion.options.toList();
+          final progress = totalQuestions > 0
+              ? (currentIndex + 1) / totalQuestions
+              : 0.0;
 
           return SafeArea(
             child: SingleChildScrollView(
@@ -101,13 +109,48 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${currentIndex + 1} / $totalQuestions',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryDark,
+                        ),
+                      ),
+                      Text(
+                        '${(progress * 100).round()}%',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 6,
+                      backgroundColor: AppColors.softGrey,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryDark,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   MyQuizImage(imagePath: currentQuestion.imagePath),
                   const SizedBox(height: 24),
                   Text(
                     description,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                   ),
                   const SizedBox(height: 16),
                   ...options.map((option) {
@@ -133,16 +176,20 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
           ),
         ),
         loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: AppColors.primaryDark),
         ),
       ),
       bottomNavigationBar: diagnosisAsync.whenOrNull(
         data: (state) {
+          final totalQuestions = state.questions.length;
           final currentQuestion = state.questions[state.currentQuestion];
           final options = currentQuestion.options.toList();
+          final isLastQuestion = currentQuestion.order >= totalQuestions &&
+              totalQuestions >= 5 ||
+              currentQuestion.order == 5;
 
           int getSelectedValue() {
-            if (selectedOption == null) throw Exception("No option selected");
+            if (selectedOption == null) throw Exception('No option selected');
             final selectedOptionValue = options.firstWhere(
               (opt) => opt.text == selectedOption,
             );
@@ -184,12 +231,14 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                         onPressed: selectedOption == null
                             ? null
                             : () => _handleNextOrFinish(
-                                context: context,
-                                notifier: notifier,
-                                currentQuestion: currentQuestion,
-                                selectedValue: getSelectedValue(),
-                                l10n: l10n,
-                              ),
+                                  context: context,
+                                  notifier: notifier,
+                                  currentQuestion: currentQuestion,
+                                  totalQuestions:
+                                      totalQuestions < 5 ? 5 : totalQuestions,
+                                  selectedValue: getSelectedValue(),
+                                  l10n: l10n,
+                                ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryDark,
                           foregroundColor: Colors.white,
@@ -200,9 +249,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                           ),
                         ),
                         child: Text(
-                          currentQuestion.order == 5
-                              ? l10n.diagFinish
-                              : l10n.diagNext,
+                          isLastQuestion ? l10n.diagFinish : l10n.diagNext,
                         ),
                       ),
                     ),

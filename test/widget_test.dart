@@ -57,7 +57,7 @@ void main() {
     expect(find.text('End Time'), findsOneWidget);
     expect(find.text('08:00'), findsOneWidget);
     expect(find.text('18:00'), findsOneWidget);
-    
+
     await tester.scrollUntilVisible(find.text('Save Preferences'), 200);
     expect(find.text('Save Preferences'), findsOneWidget);
   });
@@ -95,10 +95,10 @@ void main() {
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(320, 900);
     tester.view.devicePixelRatio = 1;
-    tester.view.textScaleFactor = 1.5;
+    tester.platformDispatcher.textScaleFactorTestValue = 1.5;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    addTearDown(tester.view.resetTextScaleFactor);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
     final testUser = UserModel(
       id: 'test-user-3',

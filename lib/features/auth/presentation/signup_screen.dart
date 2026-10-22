@@ -2,13 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:muevete/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
+import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 import 'package:muevete/shared/widgets/my_button_secondarytext.dart';
 import 'package:muevete/shared/widgets/my_heading_two.dart';
@@ -22,6 +23,11 @@ class SignupScreen extends ConsumerStatefulWidget {
 }
 
 class _SignupScreenState extends ConsumerState<SignupScreen> {
+  static const int _minPasswordLength = 6;
+  static const int _maxValidAge = 120;
+  static const double _maxValidWeightKg = 400;
+  static const double _maxValidHeightCm = 300;
+
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -101,22 +107,22 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       return l10n.valInvalidEmail;
     }
 
-    if (!social && password.length < 6) {
+    if (!social && password.length < _minPasswordLength) {
       return l10n.valPasswordMinLength;
     }
 
     final age = int.tryParse(ageText);
-    if (age == null || age <= 0 || age > 120) {
+    if (age == null || age <= 0 || age > _maxValidAge) {
       return l10n.valInvalidAge;
     }
 
     final weight = double.tryParse(weightText);
-    if (weight == null || weight <= 0 || weight > 400) {
+    if (weight == null || weight <= 0 || weight > _maxValidWeightKg) {
       return l10n.valInvalidWeight;
     }
 
     final height = double.tryParse(heightText);
-    if (height == null || height <= 0 || height > 300) {
+    if (height == null || height <= 0 || height > _maxValidHeightCm) {
       return l10n.valInvalidHeight;
     }
 
@@ -167,7 +173,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       }
 
       if (uid == null) {
-        throw Exception("Could not retrieve user ID after registration.");
+        throw Exception('Could not retrieve user ID after registration.');
       }
 
       // Create initial user profile in Firestore.
@@ -204,26 +210,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         );
         debugPrintStack(stackTrace: stackTrace);
       }
-      String message;
-      switch (e.code) {
-        case 'email-already-in-use':
-          message = l10n.errEmailInUse;
-          break;
-        case 'invalid-email':
-          message = l10n.errInvalidEmailFormat;
-          break;
-        case 'weak-password':
-          message = l10n.errWeakPassword;
-          break;
-        case 'network-request-failed':
-          message = l10n.errNetwork;
-          break;
-        default:
-          message = e.message ?? l10n.errAuthFailed;
-      }
       if (mounted) {
         setState(() {
-          errorMessage = message;
+          errorMessage = _mapSignupFirebaseError(e, l10n);
         });
       }
     } catch (e, stackTrace) {
@@ -245,6 +234,24 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  String _mapSignupFirebaseError(
+    FirebaseAuthException e,
+    AppLocalizations l10n,
+  ) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return l10n.errEmailInUse;
+      case 'invalid-email':
+        return l10n.errInvalidEmailFormat;
+      case 'weak-password':
+        return l10n.errWeakPassword;
+      case 'network-request-failed':
+        return l10n.errNetwork;
+      default:
+        return e.message ?? l10n.errAuthFailed;
     }
   }
 
@@ -281,8 +288,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: const [
-          LocaleSwitcher(),
-          SizedBox(width: 16),
+          LocaleSwitcher(compact: true),
+          SizedBox(width: 12),
         ],
       ),
       body: SafeArea(
@@ -295,95 +302,132 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 MyHeadingTwo(text: l10n.authCreateAccountTitle),
                 const SizedBox(height: 16),
 
-                if (errorMessage != null && errorMessage!.isNotEmpty)
+                if (errorMessage != null && errorMessage!.isNotEmpty) ...[
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 25.0,
-                      vertical: 8.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.errorSoft,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.error.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.error_outline_rounded,
+                            color: AppColors.error,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              errorMessage!,
+                              style: const TextStyle(
+                                color: AppColors.error,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Text(
-                      errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red, fontSize: 14),
-                    ),
-                  ),
-
-                const SizedBox(height: 16),
-
-                MyTextinputfield(
-                  controller: _nameController,
-                  hintText: l10n.authFullNameHint,
-                  obscureText: false,
-                ),
-                const SizedBox(height: 16),
-
-                MyTextinputfield(
-                  controller: _emailController,
-                  hintText: l10n.authEmailHint,
-                  obscureText: false,
-                  keyboardType: TextInputType.emailAddress,
-                  // Read-only when prefilled from social provider.
-                  readOnly: social && _emailController.text.isNotEmpty,
-                ),
-                const SizedBox(height: 16),
-
-                // Password field – hidden for social sign-in users.
-                if (!social) ...[
-                  MyTextinputfield(
-                    controller: _passwordController,
-                    hintText: l10n.authPasswordHint,
-                    obscureText: true,
                   ),
                   const SizedBox(height: 16),
                 ],
 
                 MyTextinputfield(
+                  controller: _nameController,
+                  hintText: l10n.authFullNameHint,
+                  prefixIcon: Icons.person_outline_rounded,
+                  obscureText: false,
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 14),
+
+                MyTextinputfield(
+                  controller: _emailController,
+                  hintText: l10n.authEmailHint,
+                  prefixIcon: Icons.email_outlined,
+                  obscureText: false,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  readOnly: social && _emailController.text.isNotEmpty,
+                ),
+                const SizedBox(height: 14),
+
+                if (!social) ...[
+                  MyTextinputfield(
+                    controller: _passwordController,
+                    hintText: l10n.authPasswordHint,
+                    prefixIcon: Icons.lock_outline_rounded,
+                    obscureText: true,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 14),
+                ],
+
+                MyTextinputfield(
                   controller: _ageController,
                   hintText: l10n.authAgeHint,
+                  prefixIcon: Icons.cake_outlined,
                   obscureText: false,
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
                 MyTextinputfield(
                   controller: _weightController,
                   hintText: l10n.authWeightHint,
+                  prefixIcon: Icons.monitor_weight_outlined,
                   obscureText: false,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
                 MyTextinputfield(
                   controller: _heightController,
                   hintText: l10n.authHeightHint,
+                  prefixIcon: Icons.height_rounded,
                   obscureText: false,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
+                  textInputAction: TextInputAction.next,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
                 MyTextinputfield(
                   controller: _medicalConditionsController,
                   hintText: l10n.authMedicalConditionsHint,
+                  prefixIcon: Icons.medical_information_outlined,
                   obscureText: false,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 24),
 
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  MyButton(text: l10n.authRegister, onTap: handleSignup),
-                const SizedBox(height: 16),
+                MyButton(
+                  text: l10n.authRegister,
+                  onTap: handleSignup,
+                  isLoading: _isLoading,
+                ),
+                const SizedBox(height: 12),
 
-                // Only show "Already have account" for non-social flows.
                 if (!social)
                   MyButtonSecondarytext(
                     text: l10n.authAlreadyHaveAccount,
-                    onTap: () => context.go("/login"),
+                    onTap: () => context.go('/login'),
                   ),
               ],
             ),

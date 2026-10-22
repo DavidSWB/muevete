@@ -11,38 +11,49 @@ class CalendarGrid extends StatelessWidget {
   final DateTime month;
   final List<DateTime> completedWorkouts;
 
-  final List<String> weekDays = const [
-    'Mon', 'Tue', 'Wed',
-    'Thu','Fri', 'Sat', 'Sun',
+  static const List<String> _weekDays = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
   ];
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
 
   @override
   Widget build(BuildContext context) {
     final today = DateTime.now();
-
     final firstDay = DateTime(month.year, month.month, 1);
-    final daysInMonth =
-        DateTime(month.year, month.month + 1, 0).day;
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
 
     final leadingDays = firstDay.weekday - 1;
     final totalCells = leadingDays + daysInMonth;
 
     return Column(
       children: [
-        Row(
-          children: weekDays.map((wD) {
-            return Expanded(
-              child: Center(
-                child: Text(
-                  wD,
-                  style: TextStyle(
-                    color: AppColors.textMuted,
-                    fontWeight: FontWeight.w600,
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            children: _weekDays.map((dayLabel) {
+              return Expanded(
+                child: Center(
+                  child: Text(
+                    dayLabel,
+                    style: const TextStyle(
+                      color: AppColors.textMuted,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         ),
         GridView.builder(
           shrinkWrap: true,
@@ -53,45 +64,46 @@ class CalendarGrid extends StatelessWidget {
           itemCount: totalCells,
           itemBuilder: (context, index) {
             if (index < leadingDays) {
-              return const SizedBox();
+              return const SizedBox.shrink();
             }
-        
+
             final day = index - leadingDays + 1;
             final date = DateTime(month.year, month.month, day);
-        
-            final isToday = date.year == today.year &&
-                date.month == today.month &&
-                date.day == today.day;
-        
+
+            final isToday = _isSameDay(date, today);
             final isCompleted = completedWorkouts.any(
-              (workoutDate) =>
-                  workoutDate.year == date.year &&
-                  workoutDate.month == date.month &&
-                  workoutDate.day == date.day,
+              (workoutDate) => _isSameDay(workoutDate, date),
             );
-        
-            final highlightColor = isToday
-                ? AppColors.primary
-                : isCompleted
-                    ? AppColors.success
+
+            final Color? highlightColor = isCompleted
+                ? AppColors.success
+                : isToday
+                    ? AppColors.primaryDark
                     : null;
-        
+
             return Center(
               child: Container(
-                width: 32,
-                height: 32,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   color: highlightColor,
                   shape: BoxShape.circle,
+                  border: isToday && isCompleted
+                      ? Border.all(color: AppColors.primaryDark, width: 2)
+                      : null,
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   '$day',
                   style: TextStyle(
                     color: highlightColor == null
-                        ? AppColors.textMuted
+                        ? AppColors.textPrimary
                         : AppColors.surface,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: highlightColor == null
+                        ? FontWeight.w600
+                        : FontWeight.w800,
+                    fontSize: 13,
+                    fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
               ),
