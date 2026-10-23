@@ -352,7 +352,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressTitle => 'Progress';
 
   @override
-  String get progressMobilityStats => 'Mobility Stats';
+  String get progressMobilityStats => 'Joint stats';
 
   @override
   String get progressShoulder => 'Shoulder';
@@ -453,6 +453,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifActiveBreakBody => 'Time to move! Take a short active break.';
+
+  @override
+  String get exerciseDone => 'Done!';
+
+  @override
+  String get exerciseNext => 'Next';
+
+  @override
+  String get workoutFinish => 'Finish Workout';
+
+  @override
+  String get exerciseSets => 'Sets';
+
+  @override
+  String get exerciseReps => 'Reps';
+
+  @override
+  String get exerciseRepsShort => 'Reps';
+
+  @override
+  String get exerciseRest => 'Rest';
+
+  @override
+  String get exerciseDuration => 'Duration';
+
+  @override
+  String get exerciseStartTimer => 'Start timer';
+
+  @override
+  String get exercisePauseTimer => 'Pause timer';
+
+  @override
+  String get exerciseMarkSetComplete => 'Mark set complete';
+
+  @override
+  String get exerciseMarkSetIncomplete => 'Mark set incomplete';
+
+  @override
+  String exerciseSetCompleted(int number) {
+    return 'Set $number completed';
+  }
+
+  @override
+  String exerciseSetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sets',
+      one: '1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exerciseVolumeReps(String sets, int reps) {
+    return '$sets × $reps reps';
+  }
+
+  @override
+  String exerciseVolumeDuration(String sets, int seconds) {
+    return '$sets × ${seconds}s';
+  }
+
+  @override
+  String get tourPrevious => 'Previous';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourDone => 'Got it';
+
+  @override
+  String get tourClose => 'Close tour';
+
+  @override
+  String tourStepCounter(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get tourTapHighlighted => 'Tap the highlighted control to continue';
+
+  @override
+  String get tourTryAgain => 'Try again';
+
+  @override
+  String get tourTargetMissing => 'We couldn\'t find this on the screen.';
+
+  @override
+  String get tourOneMoreBack => 'One more step back';
+
+  @override
+  String get settingsReplayTour => 'Take the tour again';
+
+  @override
+  String get settingsReplayTourSubtitle => 'Walk through the app step by step';
 
   @override
   String get dayMonday => 'Monday';

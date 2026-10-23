@@ -360,7 +360,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get progressTitle => 'Progreso';
 
   @override
-  String get progressMobilityStats => 'Estadísticas de movilidad';
+  String get progressMobilityStats => 'Estadísticas por articulación';
 
   @override
   String get progressShoulder => 'Hombro';
@@ -464,6 +464,104 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get notifActiveBreakBody =>
       '¡Hora de moverte! Toma una pausa activa corta.';
+
+  @override
+  String get exerciseDone => '¡Hecho!';
+
+  @override
+  String get exerciseNext => 'Siguiente';
+
+  @override
+  String get workoutFinish => 'Finalizar entrenamiento';
+
+  @override
+  String get exerciseSets => 'Series';
+
+  @override
+  String get exerciseReps => 'Repeticiones';
+
+  @override
+  String get exerciseRepsShort => 'Reps';
+
+  @override
+  String get exerciseRest => 'Descanso';
+
+  @override
+  String get exerciseDuration => 'Duración';
+
+  @override
+  String get exerciseStartTimer => 'Iniciar temporizador';
+
+  @override
+  String get exercisePauseTimer => 'Pausar temporizador';
+
+  @override
+  String get exerciseMarkSetComplete => 'Marcar serie como completada';
+
+  @override
+  String get exerciseMarkSetIncomplete => 'Marcar serie como pendiente';
+
+  @override
+  String exerciseSetCompleted(int number) {
+    return 'Serie $number completada';
+  }
+
+  @override
+  String exerciseSetCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count series',
+      one: '1 serie',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String exerciseVolumeReps(String sets, int reps) {
+    return '$sets × $reps reps';
+  }
+
+  @override
+  String exerciseVolumeDuration(String sets, int seconds) {
+    return '$sets × ${seconds}s';
+  }
+
+  @override
+  String get tourPrevious => 'Anterior';
+
+  @override
+  String get tourNext => 'Siguiente';
+
+  @override
+  String get tourDone => 'Entendido';
+
+  @override
+  String get tourClose => 'Cerrar guía';
+
+  @override
+  String tourStepCounter(int current, int total) {
+    return 'Paso $current de $total';
+  }
+
+  @override
+  String get tourTapHighlighted => 'Toca el elemento resaltado para continuar';
+
+  @override
+  String get tourTryAgain => 'Reintentar';
+
+  @override
+  String get tourTargetMissing =>
+      'No encontramos este elemento en la pantalla.';
+
+  @override
+  String get tourOneMoreBack => 'Una vez más: vuelve atrás';
+
+  @override
+  String get settingsReplayTour => 'Volver a ver la guía';
+
+  @override
+  String get settingsReplayTourSubtitle => 'Repasa la app paso a paso';
 
   @override
   String get dayMonday => 'Lunes';

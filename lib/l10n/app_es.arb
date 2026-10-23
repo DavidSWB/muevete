@@ -138,7 +138,7 @@
   "progCouldNotSave": "No se pudo guardar el programa. Inténtalo de nuevo.",
 
   "progressTitle": "Progreso",
-  "progressMobilityStats": "Estadísticas de movilidad",
+  "progressMobilityStats": "Estadísticas por articulación",
   "progressShoulder": "Hombro",
   "progressHip": "Cadera",
   "progressKnee": "Rodilla",
@@ -183,6 +183,62 @@
   },
   "notifActiveBreakTitle": "Pausa activa",
   "notifActiveBreakBody": "¡Hora de moverte! Toma una pausa activa corta.",
+
+  "exerciseDone": "¡Hecho!",
+  "exerciseNext": "Siguiente",
+  "workoutFinish": "Finalizar entrenamiento",
+  "exerciseSets": "Series",
+  "exerciseReps": "Repeticiones",
+  "exerciseRepsShort": "Reps",
+  "exerciseRest": "Descanso",
+  "exerciseDuration": "Duración",
+  "exerciseStartTimer": "Iniciar temporizador",
+  "exercisePauseTimer": "Pausar temporizador",
+  "exerciseMarkSetComplete": "Marcar serie como completada",
+  "exerciseMarkSetIncomplete": "Marcar serie como pendiente",
+  "exerciseSetCompleted": "Serie {number} completada",
+  "@exerciseSetCompleted": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "exerciseSetCount": "{count, plural, =1{1 serie} other{{count} series}}",
+  "@exerciseSetCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "exerciseVolumeReps": "{sets} × {reps} reps",
+  "@exerciseVolumeReps": {
+    "placeholders": {
+      "sets": { "type": "String" },
+      "reps": { "type": "int" }
+    }
+  },
+  "exerciseVolumeDuration": "{sets} × {seconds}s",
+  "@exerciseVolumeDuration": {
+    "placeholders": {
+      "sets": { "type": "String" },
+      "seconds": { "type": "int" }
+    }
+  },
+  "tourPrevious": "Anterior",
+  "tourNext": "Siguiente",
+  "tourDone": "Entendido",
+  "tourClose": "Cerrar guía",
+  "tourStepCounter": "Paso {current} de {total}",
+  "@tourStepCounter": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "tourTapHighlighted": "Toca el elemento resaltado para continuar",
+  "tourTryAgain": "Reintentar",
+  "tourTargetMissing": "No encontramos este elemento en la pantalla.",
+  "tourOneMoreBack": "Una vez más: vuelve atrás",
+  "settingsReplayTour": "Volver a ver la guía",
+  "settingsReplayTourSubtitle": "Repasa la app paso a paso",
 
   "dayMonday": "Lunes",
   "dayTuesday": "Martes",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_list.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_overview.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 class WorkoutSlidingPanel extends StatelessWidget {
@@ -9,12 +10,14 @@ class WorkoutSlidingPanel extends StatelessWidget {
     super.key,
     required this.workout,
     required this.onWorkoutFinished,
-    this.finishButtonLabel = 'Finish Workout',
+    this.finishButtonLabel,
   });
 
   final Workout workout;
   final Future<void> Function() onWorkoutFinished;
-  final String finishButtonLabel;
+
+  /// Overrides the default localized label (`workoutFinish`) when non-null.
+  final String? finishButtonLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +98,11 @@ class _DragHandle extends StatelessWidget {
 class _FinishWorkoutButton extends StatefulWidget {
   const _FinishWorkoutButton({
     required this.onWorkoutFinished,
-    required this.label,
+    this.label,
   });
 
   final Future<void> Function() onWorkoutFinished;
-  final String label;
+  final String? label;
 
   @override
   State<_FinishWorkoutButton> createState() => _FinishWorkoutButtonState();
@@ -139,7 +142,9 @@ class _FinishWorkoutButtonState extends State<_FinishWorkoutButton> {
                   ),
                 )
               : const Icon(Icons.check_circle_outline_rounded, size: 20),
-          label: Text(widget.label),
+          label: Text(
+            widget.label ?? AppLocalizations.of(context)!.workoutFinish,
+          ),
         ),
       ),
     );

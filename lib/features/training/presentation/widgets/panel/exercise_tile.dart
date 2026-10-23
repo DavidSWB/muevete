@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/exercise_thumbnail.dart';
 
@@ -78,6 +79,7 @@ class _ExerciseInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -97,7 +99,7 @@ class _ExerciseInfo extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            _volumeLabel(exercise),
+            _volumeLabel(l10n, exercise),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.textMuted,
                   fontWeight: FontWeight.w700,
@@ -109,15 +111,15 @@ class _ExerciseInfo extends StatelessWidget {
     );
   }
 
-  String _volumeLabel(WorkoutExercise e) {
-    final setLabel = e.sets == 1 ? '1 set' : '${e.sets} sets';
+  String _volumeLabel(AppLocalizations l10n, WorkoutExercise e) {
+    final setLabel = l10n.exerciseSetCount(e.sets);
     final reps = e.reps;
     final duration = e.duration;
 
     if (reps != null) {
-      return '$setLabel × $reps reps';
+      return l10n.exerciseVolumeReps(setLabel, reps);
     } else if (duration != null) {
-      return '$setLabel × ${duration}s';
+      return l10n.exerciseVolumeDuration(setLabel, duration);
     }
     return setLabel;
   }

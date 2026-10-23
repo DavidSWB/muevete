@@ -5,6 +5,7 @@ import 'package:muevete/features/training/domain/entities/exercise_variant.dart'
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('title is rendered below the visual', (tester) async {
@@ -34,6 +35,9 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
         home: Builder(
           builder: (context) => ElevatedButton(
             key: const ValueKey('open-detail'),
@@ -133,6 +137,9 @@ void main() {
 
 Widget _detailScreen({int? reps, int? duration, required int sets}) {
   return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    locale: const Locale('en'),
     home: ExerciseDetailScreen(
       exercise: _exercise(reps: reps, duration: duration, sets: sets),
     ),

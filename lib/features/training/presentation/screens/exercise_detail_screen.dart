@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/utils/youtube_utils.dart';
 import 'package:muevete/shared/widgets/exercise_video_player.dart';
@@ -162,6 +163,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final variant = widget.exercise.exercise;
     final totalSets = widget.exercise.sets;
     final progressRatio =
@@ -265,7 +267,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: const Text('Done!'),
+              child: Text(l10n.exerciseDone),
             ),
           ),
         ),
@@ -281,30 +283,31 @@ class _PrescriptionStatsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         _StatPill(
           icon: Icons.layers_outlined,
-          label: 'Sets',
+          label: l10n.exerciseSets,
           value: '${exercise.sets}',
         ),
         const SizedBox(width: 8),
         _StatPill(
           icon: Icons.repeat_rounded,
-          label: 'Reps',
+          label: l10n.exerciseRepsShort,
           value: '${exercise.reps ?? "-"}',
         ),
         const SizedBox(width: 8),
         _StatPill(
           icon: Icons.timer_outlined,
-          label: 'Rest',
+          label: l10n.exerciseRest,
           value: '${exercise.rest}s',
         ),
         if (exercise.duration != null) ...[
           const SizedBox(width: 8),
           _StatPill(
             icon: Icons.hourglass_bottom_rounded,
-            label: 'Duration',
+            label: l10n.exerciseDuration,
             value: '${exercise.duration}s',
           ),
         ],

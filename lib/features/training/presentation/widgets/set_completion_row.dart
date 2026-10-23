@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 /// A single locally tracked set in an exercise prescription.
@@ -26,6 +27,7 @@ class ExerciseSetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     final backgroundColor = isRunning
@@ -94,7 +96,7 @@ class ExerciseSetRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isHold ? 'Duration' : 'Reps',
+                  isHold ? l10n.exerciseDuration : l10n.exerciseReps,
                   style: textTheme.labelMedium?.copyWith(
                     color: AppColors.textMuted,
                     fontWeight: FontWeight.w600,
@@ -117,7 +119,9 @@ class ExerciseSetRow extends StatelessWidget {
           if (isHold)
             IconButton(
               onPressed: isCompleted ? null : onToggleTimer,
-              tooltip: isRunning ? 'Pause timer' : 'Start timer',
+              tooltip: isRunning
+                  ? l10n.exercisePauseTimer
+                  : l10n.exerciseStartTimer,
               icon: Icon(
                 isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
                 color: isCompleted
@@ -129,11 +133,12 @@ class ExerciseSetRow extends StatelessWidget {
           Semantics(
             button: true,
             checked: isCompleted,
-            label: 'Set $setNumber completed',
+            label: l10n.exerciseSetCompleted(setNumber),
             child: IconButton(
               onPressed: onToggleCompleted,
-              tooltip:
-                  isCompleted ? 'Mark set incomplete' : 'Mark set complete',
+              tooltip: isCompleted
+                  ? l10n.exerciseMarkSetIncomplete
+                  : l10n.exerciseMarkSetComplete,
               icon: Icon(
                 isCompleted
                     ? Icons.check_circle

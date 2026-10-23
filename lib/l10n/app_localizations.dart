@@ -743,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @progressMobilityStats.
   ///
   /// In es, this message translates to:
-  /// **'Estadísticas de movilidad'**
+  /// **'Estadísticas por articulación'**
   String get progressMobilityStats;
 
   /// No description provided for @progressShoulder.
@@ -907,6 +907,168 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¡Hora de moverte! Toma una pausa activa corta.'**
   String get notifActiveBreakBody;
+
+  /// No description provided for @exerciseDone.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Hecho!'**
+  String get exerciseDone;
+
+  /// No description provided for @exerciseNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get exerciseNext;
+
+  /// No description provided for @workoutFinish.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar entrenamiento'**
+  String get workoutFinish;
+
+  /// No description provided for @exerciseSets.
+  ///
+  /// In es, this message translates to:
+  /// **'Series'**
+  String get exerciseSets;
+
+  /// No description provided for @exerciseReps.
+  ///
+  /// In es, this message translates to:
+  /// **'Repeticiones'**
+  String get exerciseReps;
+
+  /// No description provided for @exerciseRepsShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Reps'**
+  String get exerciseRepsShort;
+
+  /// No description provided for @exerciseRest.
+  ///
+  /// In es, this message translates to:
+  /// **'Descanso'**
+  String get exerciseRest;
+
+  /// No description provided for @exerciseDuration.
+  ///
+  /// In es, this message translates to:
+  /// **'Duración'**
+  String get exerciseDuration;
+
+  /// No description provided for @exerciseStartTimer.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar temporizador'**
+  String get exerciseStartTimer;
+
+  /// No description provided for @exercisePauseTimer.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausar temporizador'**
+  String get exercisePauseTimer;
+
+  /// No description provided for @exerciseMarkSetComplete.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar serie como completada'**
+  String get exerciseMarkSetComplete;
+
+  /// No description provided for @exerciseMarkSetIncomplete.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar serie como pendiente'**
+  String get exerciseMarkSetIncomplete;
+
+  /// No description provided for @exerciseSetCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Serie {number} completada'**
+  String exerciseSetCompleted(int number);
+
+  /// No description provided for @exerciseSetCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 serie} other{{count} series}}'**
+  String exerciseSetCount(int count);
+
+  /// No description provided for @exerciseVolumeReps.
+  ///
+  /// In es, this message translates to:
+  /// **'{sets} × {reps} reps'**
+  String exerciseVolumeReps(String sets, int reps);
+
+  /// No description provided for @exerciseVolumeDuration.
+  ///
+  /// In es, this message translates to:
+  /// **'{sets} × {seconds}s'**
+  String exerciseVolumeDuration(String sets, int seconds);
+
+  /// No description provided for @tourPrevious.
+  ///
+  /// In es, this message translates to:
+  /// **'Anterior'**
+  String get tourPrevious;
+
+  /// No description provided for @tourNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get tourNext;
+
+  /// No description provided for @tourDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get tourDone;
+
+  /// No description provided for @tourClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar guía'**
+  String get tourClose;
+
+  /// No description provided for @tourStepCounter.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {current} de {total}'**
+  String tourStepCounter(int current, int total);
+
+  /// No description provided for @tourTapHighlighted.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el elemento resaltado para continuar'**
+  String get tourTapHighlighted;
+
+  /// No description provided for @tourTryAgain.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get tourTryAgain;
+
+  /// No description provided for @tourTargetMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos este elemento en la pantalla.'**
+  String get tourTargetMissing;
+
+  /// No description provided for @tourOneMoreBack.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez más: vuelve atrás'**
+  String get tourOneMoreBack;
+
+  /// No description provided for @settingsReplayTour.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a ver la guía'**
+  String get settingsReplayTour;
+
+  /// No description provided for @settingsReplayTourSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Repasa la app paso a paso'**
+  String get settingsReplayTourSubtitle;
 
   /// No description provided for @dayMonday.
   ///
