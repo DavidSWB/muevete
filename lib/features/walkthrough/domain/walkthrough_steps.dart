@@ -9,6 +9,7 @@ const List<WalkthroughStep> walkthroughSteps = [
     id: 'home.welcome',
     screen: WalkthroughScreen.home,
     type: _info,
+    centered: true,
   ),
   WalkthroughStep(
     id: 'home.profile',
@@ -79,11 +80,13 @@ const List<WalkthroughStep> walkthroughSteps = [
     id: 'home.practiceNote',
     screen: WalkthroughScreen.home,
     type: _info,
+    target: 'home.weeklyStats',
   ),
   WalkthroughStep(
     id: 'nav.openProgress',
     screen: WalkthroughScreen.home,
     type: _gated,
+    target: 'nav.progress',
     completesOn: ScreenRevealed(WalkthroughScreen.progress),
   ),
   WalkthroughStep(
@@ -106,17 +109,20 @@ const List<WalkthroughStep> walkthroughSteps = [
     id: 'diagnosis.overview',
     screen: WalkthroughScreen.diagnosis,
     type: _info,
+    centered: true,
   ),
   WalkthroughStep(
     id: 'diagnosis.leave',
     screen: WalkthroughScreen.diagnosis,
     type: _gated,
+    target: 'diagnosis.back',
     completesOn: ScreenRevealed(WalkthroughScreen.progress),
   ),
   WalkthroughStep(
     id: 'nav.openHome',
     screen: WalkthroughScreen.progress,
     type: _gated,
+    target: 'nav.home',
     completesOn: ScreenRevealed(WalkthroughScreen.home),
   ),
   WalkthroughStep(
@@ -151,12 +157,14 @@ const List<WalkthroughStep> walkthroughSteps = [
     id: 'ab.routine',
     screen: WalkthroughScreen.activeBreakRoutine,
     type: _info,
+    centered: true,
   ),
   // The routine sits on top of the list, so going back takes two presses.
   WalkthroughStep(
     id: 'ab.backToMenu',
     screen: WalkthroughScreen.activeBreakRoutine,
     type: _gated,
+    target: 'ab.back',
     alsoAccepts: ScreenRevealed(WalkthroughScreen.activeBreaksBrowse),
     completesOn: ScreenRevealed(WalkthroughScreen.activeBreaksMenu),
   ),
@@ -170,18 +178,21 @@ const List<WalkthroughStep> walkthroughSteps = [
     id: 'ab.timerExit',
     screen: WalkthroughScreen.activeBreakTimer,
     type: _gated,
+    target: 'ab.back',
     completesOn: ScreenRevealed(WalkthroughScreen.activeBreaksMenu),
   ),
   WalkthroughStep(
     id: 'ab.exitToHome',
     screen: WalkthroughScreen.activeBreaksMenu,
     type: _gated,
+    target: 'ab.back',
     completesOn: ScreenRevealed(WalkthroughScreen.home),
   ),
   WalkthroughStep(
     id: 'nav.openSettings',
     screen: WalkthroughScreen.home,
     type: _gated,
+    target: 'nav.settings',
     completesOn: ScreenRevealed(WalkthroughScreen.settings),
   ),
   WalkthroughStep(

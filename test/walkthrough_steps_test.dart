@@ -39,6 +39,16 @@ void main() {
       },
     );
 
+    test('every gated step highlights a control', () {
+      for (final step in walkthroughSteps.where((step) => step.isGated)) {
+        expect(step.targetId, isNotNull, reason: step.id);
+      }
+      expect(
+        walkthroughSteps.where((step) => step.centered).map((s) => s.id),
+        ['home.welcome', 'diagnosis.overview', 'ab.routine'],
+      );
+    });
+
     test('the tour starts and ends on informational steps', () {
       expect(walkthroughSteps.first.isGated, isFalse);
       expect(walkthroughSteps.last.isGated, isFalse);

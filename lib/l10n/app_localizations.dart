@@ -1070,6 +1070,462 @@ abstract class AppLocalizations {
   /// **'Repasa la app paso a paso'**
   String get settingsReplayTourSubtitle;
 
+  /// No description provided for @tourHomeWelcomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te damos la bienvenida a Muévete'**
+  String get tourHomeWelcomeTitle;
+
+  /// No description provided for @tourHomeWelcomeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Te mostramos la app en unos minutos. Puedes cerrar la guía cuando quieras y volver a verla desde Ajustes.'**
+  String get tourHomeWelcomeBody;
+
+  /// No description provided for @tourHomeProfileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu perfil'**
+  String get tourHomeProfileTitle;
+
+  /// No description provided for @tourHomeProfileBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde aquí llegas a tu perfil y a los ajustes. Los visitaremos al final de la guía.'**
+  String get tourHomeProfileBody;
+
+  /// No description provided for @tourHomeWeeklyStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu semana'**
+  String get tourHomeWeeklyStatsTitle;
+
+  /// No description provided for @tourHomeWeeklyStatsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí ves cuántos entrenamientos llevas esta semana y el tiempo estimado que has entrenado.'**
+  String get tourHomeWeeklyStatsBody;
+
+  /// No description provided for @tourHomeHealthTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu salud también cuenta'**
+  String get tourHomeHealthTitle;
+
+  /// No description provided for @tourHomeHealthBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Un consejo breve para cuidar tu cuerpo. Esta tarjeta te lleva a tu progreso.'**
+  String get tourHomeHealthBody;
+
+  /// No description provided for @tourHomeStartWorkoutTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Empieza a entrenar'**
+  String get tourHomeStartWorkoutTitle;
+
+  /// No description provided for @tourHomeStartWorkoutBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Comenzar entrenamiento» para abrir tu próximo entrenamiento programado.'**
+  String get tourHomeStartWorkoutBody;
+
+  /// No description provided for @tourTrainingOverviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu entrenamiento'**
+  String get tourTrainingOverviewTitle;
+
+  /// No description provided for @tourTrainingOverviewBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Es una lista de ejercicios. Cada uno indica tus series y repeticiones, o cuánto tiempo mantener la posición.'**
+  String get tourTrainingOverviewBody;
+
+  /// No description provided for @tourTrainingOpenExerciseTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre un ejercicio'**
+  String get tourTrainingOpenExerciseTitle;
+
+  /// No description provided for @tourTrainingOpenExerciseBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el primero para ver cómo se hace.'**
+  String get tourTrainingOpenExerciseBody;
+
+  /// No description provided for @tourExercisePrescriptionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué te toca hacer'**
+  String get tourExercisePrescriptionTitle;
+
+  /// No description provided for @tourExercisePrescriptionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí ves las series, las repeticiones (o la duración, si es un ejercicio de mantener la posición) y el descanso.'**
+  String get tourExercisePrescriptionBody;
+
+  /// No description provided for @tourExerciseCompleteSetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca tu primera serie'**
+  String get tourExerciseCompleteSetTitle;
+
+  /// No description provided for @tourExerciseCompleteSetBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando termines una serie, márcala aquí. En los ejercicios de mantener la posición, espera a que termine el tiempo.'**
+  String get tourExerciseCompleteSetBody;
+
+  /// No description provided for @tourExerciseNextTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasa al siguiente'**
+  String get tourExerciseNextTitle;
+
+  /// No description provided for @tourExerciseNextBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Siguiente» para ir al próximo ejercicio de tu entrenamiento.'**
+  String get tourExerciseNextBody;
+
+  /// No description provided for @tourExerciseDoneTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Termina el ejercicio'**
+  String get tourExerciseDoneTitle;
+
+  /// No description provided for @tourExerciseDoneBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «¡Hecho!» para volver a la lista de ejercicios.'**
+  String get tourExerciseDoneBody;
+
+  /// No description provided for @tourTrainingFinishWorkoutTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Finaliza el entrenamiento'**
+  String get tourTrainingFinishWorkoutTitle;
+
+  /// No description provided for @tourTrainingFinishWorkoutBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Finalizar entrenamiento». Es solo una práctica: no se guardará nada.'**
+  String get tourTrainingFinishWorkoutBody;
+
+  /// No description provided for @tourHomePracticeNoteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'No se guardó nada'**
+  String get tourHomePracticeNoteTitle;
+
+  /// No description provided for @tourHomePracticeNoteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Como era una práctica, tu semana sigue igual. Cuando finalices un entrenamiento de verdad, se sumará aquí.'**
+  String get tourHomePracticeNoteBody;
+
+  /// No description provided for @tourNavOpenProgressTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre tu progreso'**
+  String get tourNavOpenProgressTitle;
+
+  /// No description provided for @tourNavOpenProgressBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Progreso» en la barra inferior.'**
+  String get tourNavOpenProgressBody;
+
+  /// No description provided for @tourProgressCalendarTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu calendario'**
+  String get tourProgressCalendarTitle;
+
+  /// No description provided for @tourProgressCalendarBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los días en verde son entrenamientos que terminaste de verdad. Aquí también ves cuántos llevas.'**
+  String get tourProgressCalendarBody;
+
+  /// No description provided for @tourProgressJointStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas por articulación'**
+  String get tourProgressJointStatsTitle;
+
+  /// No description provided for @tourProgressJointStatsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nivel de movilidad en cada articulación, de 0 a 5. Se actualiza cuando repites la evaluación.'**
+  String get tourProgressJointStatsBody;
+
+  /// No description provided for @tourProgressRetakeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Repite la evaluación'**
+  String get tourProgressRetakeTitle;
+
+  /// No description provided for @tourProgressRetakeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el botón para abrirla. En la guía no enviaremos nada.'**
+  String get tourProgressRetakeBody;
+
+  /// No description provided for @tourDiagnosisOverviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu evaluación física'**
+  String get tourDiagnosisOverviewTitle;
+
+  /// No description provided for @tourDiagnosisOverviewBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Con estas preguntas adaptamos tu programa a tu nivel. Ahora no hace falta responder nada.'**
+  String get tourDiagnosisOverviewBody;
+
+  /// No description provided for @tourDiagnosisLeaveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve atrás'**
+  String get tourDiagnosisLeaveTitle;
+
+  /// No description provided for @tourDiagnosisLeaveBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca la flecha de volver para salir sin cambiar nada.'**
+  String get tourDiagnosisLeaveBody;
+
+  /// No description provided for @tourNavOpenHomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve al inicio'**
+  String get tourNavOpenHomeTitle;
+
+  /// No description provided for @tourNavOpenHomeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Inicio» en la barra inferior.'**
+  String get tourNavOpenHomeBody;
+
+  /// No description provided for @tourHomeActiveBreaksTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausas activas'**
+  String get tourHomeActiveBreaksTitle;
+
+  /// No description provided for @tourHomeActiveBreaksBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Son rutinas cortas para romper con el tiempo sentado. Toca la sección para abrirlas.'**
+  String get tourHomeActiveBreaksBody;
+
+  /// No description provided for @tourAbOverviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Dos formas de moverte'**
+  String get tourAbOverviewTitle;
+
+  /// No description provided for @tourAbOverviewBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una rutina de la lista o usa el temporizador. Las pausas activas son aparte de tu programa de entrenamiento.'**
+  String get tourAbOverviewBody;
+
+  /// No description provided for @tourAbOpenBrowseTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Explora las rutinas'**
+  String get tourAbOpenBrowseTitle;
+
+  /// No description provided for @tourAbOpenBrowseBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca la opción para ver las rutinas disponibles.'**
+  String get tourAbOpenBrowseBody;
+
+  /// No description provided for @tourAbBrowseListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una rutina'**
+  String get tourAbBrowseListTitle;
+
+  /// No description provided for @tourAbBrowseListBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Escoge la que prefieras o usa el botón aleatorio para que la app elija por ti.'**
+  String get tourAbBrowseListBody;
+
+  /// No description provided for @tourAbOpenRoutineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre una rutina'**
+  String get tourAbOpenRoutineTitle;
+
+  /// No description provided for @tourAbOpenRoutineBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca la primera para ver cómo es.'**
+  String get tourAbOpenRoutineBody;
+
+  /// No description provided for @tourAbRoutineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Así funciona una rutina'**
+  String get tourAbRoutineTitle;
+
+  /// No description provided for @tourAbRoutineBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigues los ejercicios uno por uno. En esta guía no la terminaremos.'**
+  String get tourAbRoutineBody;
+
+  /// No description provided for @tourAbBackToMenuTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve al menú'**
+  String get tourAbBackToMenuTitle;
+
+  /// No description provided for @tourAbBackToMenuBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa la flecha de volver hasta llegar al menú de pausas activas.'**
+  String get tourAbBackToMenuBody;
+
+  /// No description provided for @tourAbOpenTimerTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba el temporizador'**
+  String get tourAbOpenTimerTitle;
+
+  /// No description provided for @tourAbOpenTimerBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca la opción del temporizador.'**
+  String get tourAbOpenTimerBody;
+
+  /// No description provided for @tourAbTimerExitTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'El temporizador'**
+  String get tourAbTimerExitTitle;
+
+  /// No description provided for @tourAbTimerExitBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cuántos minutos y cuenta el tiempo de tu pausa. Toca la flecha de volver para continuar.'**
+  String get tourAbTimerExitBody;
+
+  /// No description provided for @tourAbExitToHomeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal de pausas activas'**
+  String get tourAbExitToHomeTitle;
+
+  /// No description provided for @tourAbExitToHomeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca la flecha de volver para ir al inicio.'**
+  String get tourAbExitToHomeBody;
+
+  /// No description provided for @tourNavOpenSettingsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre los ajustes'**
+  String get tourNavOpenSettingsTitle;
+
+  /// No description provided for @tourNavOpenSettingsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Ajustes» en la barra inferior.'**
+  String get tourNavOpenSettingsBody;
+
+  /// No description provided for @tourSettingsLanguageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambia de idioma'**
+  String get tourSettingsLanguageTitle;
+
+  /// No description provided for @tourSettingsLanguageBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Con este selector alternas entre español e inglés cuando quieras. La guía conserva el paso en el que estás.'**
+  String get tourSettingsLanguageBody;
+
+  /// No description provided for @tourSettingsReplayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a ver la guía'**
+  String get tourSettingsReplayTitle;
+
+  /// No description provided for @tourSettingsReplayBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes repetirla desde aquí cuando quieras. ¡A moverse!'**
+  String get tourSettingsReplayBody;
+
+  /// No description provided for @tourInviteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quieres hacer la guía de Muévete?'**
+  String get tourInviteTitle;
+
+  /// No description provided for @tourInviteBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Te mostramos la app paso a paso. Si prefieres, la encuentras después en Ajustes → «Volver a ver la guía».'**
+  String get tourInviteBody;
+
+  /// No description provided for @tourInviteStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar guía'**
+  String get tourInviteStart;
+
+  /// No description provided for @tourInviteLater.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get tourInviteLater;
+
+  /// No description provided for @tourInviteNever.
+  ///
+  /// In es, this message translates to:
+  /// **'No volver a preguntar'**
+  String get tourInviteNever;
+
+  /// No description provided for @tourInviteNeverConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin problema. Encontrarás la guía en Ajustes.'**
+  String get tourInviteNeverConfirm;
+
+  /// No description provided for @tourResumeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu guía quedó a medias'**
+  String get tourResumeTitle;
+
+  /// No description provided for @tourResumeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Estabas en el paso {current} de {total}. ¿Quieres continuar donde te quedaste o empezar de nuevo?'**
+  String tourResumeBody(int current, int total);
+
+  /// No description provided for @tourResume.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get tourResume;
+
+  /// No description provided for @tourStartOver.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get tourStartOver;
+
   /// No description provided for @dayMonday.
   ///
   /// In es, this message translates to:

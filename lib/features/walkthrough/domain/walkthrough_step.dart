@@ -88,6 +88,8 @@ class WalkthroughStep {
     this.alsoAccepts,
     this.skipWhen,
     this.passThrough = false,
+    this.target,
+    this.centered = false,
   });
 
   /// Stable id, saved on the device and used as the copy's ARB stem.
@@ -115,6 +117,15 @@ class WalkthroughStep {
   /// Informational steps only: taps inside the highlight reach the real
   /// control, which can be used without moving the tour.
   final bool passThrough;
+
+  /// The anchor to highlight when it differs from [id].
+  final String? target;
+
+  /// The step points at nothing; its card sits in the middle of the screen.
+  final bool centered;
+
+  /// The anchor the step highlights, or null for a centered step.
+  String? get targetId => centered ? null : (target ?? id);
 
   bool get isGated => type == WalkthroughStepType.gated;
 

@@ -6,6 +6,7 @@ import 'package:muevete/app/router.dart';
 import 'package:muevete/features/localization/presentation/locale_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_host.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/theme/app_theme.dart';
@@ -88,6 +89,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       locale: activeLocale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
+      builder: (context, child) => WalkthroughHost(child: child!),
     );
   }
 }

@@ -552,6 +552,266 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsReplayTourSubtitle => 'Walk through the app step by step';
 
   @override
+  String get tourHomeWelcomeTitle => 'Welcome to Muévete';
+
+  @override
+  String get tourHomeWelcomeBody =>
+      'A quick tour of the app. You can close it any time and replay it from Settings.';
+
+  @override
+  String get tourHomeProfileTitle => 'Your profile';
+
+  @override
+  String get tourHomeProfileBody =>
+      'This takes you to your profile and settings. We\'ll visit them at the end of the tour.';
+
+  @override
+  String get tourHomeWeeklyStatsTitle => 'Your week';
+
+  @override
+  String get tourHomeWeeklyStatsBody =>
+      'See how many workouts you\'ve done this week and your estimated training time.';
+
+  @override
+  String get tourHomeHealthTitle => 'Your health matters too';
+
+  @override
+  String get tourHomeHealthBody =>
+      'A short tip to look after your body. This card takes you to your progress.';
+
+  @override
+  String get tourHomeStartWorkoutTitle => 'Start training';
+
+  @override
+  String get tourHomeStartWorkoutBody =>
+      'Tap “Start workout” to open your next scheduled workout.';
+
+  @override
+  String get tourTrainingOverviewTitle => 'Your workout';
+
+  @override
+  String get tourTrainingOverviewBody =>
+      'A list of exercises. Each one shows your sets and reps, or how long to hold.';
+
+  @override
+  String get tourTrainingOpenExerciseTitle => 'Open an exercise';
+
+  @override
+  String get tourTrainingOpenExerciseBody =>
+      'Tap the first one to see how it\'s done.';
+
+  @override
+  String get tourExercisePrescriptionTitle => 'What to do';
+
+  @override
+  String get tourExercisePrescriptionBody =>
+      'Here you see your sets, reps (or the duration, for holds) and rest.';
+
+  @override
+  String get tourExerciseCompleteSetTitle => 'Mark your first set';
+
+  @override
+  String get tourExerciseCompleteSetBody =>
+      'When you finish a set, mark it here. For holds, wait until the timer ends.';
+
+  @override
+  String get tourExerciseNextTitle => 'Move on';
+
+  @override
+  String get tourExerciseNextBody =>
+      'Tap “Next” to go to the next exercise in your workout.';
+
+  @override
+  String get tourExerciseDoneTitle => 'Finish the exercise';
+
+  @override
+  String get tourExerciseDoneBody =>
+      'Tap “Done!” to go back to the exercise list.';
+
+  @override
+  String get tourTrainingFinishWorkoutTitle => 'Finish the workout';
+
+  @override
+  String get tourTrainingFinishWorkoutBody =>
+      'Tap “Finish Workout”. This is just practice: nothing will be saved.';
+
+  @override
+  String get tourHomePracticeNoteTitle => 'Nothing was saved';
+
+  @override
+  String get tourHomePracticeNoteBody =>
+      'Since that was practice, your week is unchanged. A real finished workout will count here.';
+
+  @override
+  String get tourNavOpenProgressTitle => 'Open your progress';
+
+  @override
+  String get tourNavOpenProgressBody => 'Tap “Progress” in the bottom bar.';
+
+  @override
+  String get tourProgressCalendarTitle => 'Your calendar';
+
+  @override
+  String get tourProgressCalendarBody =>
+      'Green days are workouts you actually finished. You can also see how many you\'ve done.';
+
+  @override
+  String get tourProgressJointStatsTitle => 'Joint stats';
+
+  @override
+  String get tourProgressJointStatsBody =>
+      'Your mobility level for each joint, from 0 to 5. It updates when you retake the assessment.';
+
+  @override
+  String get tourProgressRetakeTitle => 'Retake the assessment';
+
+  @override
+  String get tourProgressRetakeBody =>
+      'Tap the button to open it. We won\'t submit anything during the tour.';
+
+  @override
+  String get tourDiagnosisOverviewTitle => 'Your physical assessment';
+
+  @override
+  String get tourDiagnosisOverviewBody =>
+      'These questions help adapt your program to your level. You don\'t need to answer anything now.';
+
+  @override
+  String get tourDiagnosisLeaveTitle => 'Go back';
+
+  @override
+  String get tourDiagnosisLeaveBody =>
+      'Tap the back arrow to leave without changing anything.';
+
+  @override
+  String get tourNavOpenHomeTitle => 'Back to Home';
+
+  @override
+  String get tourNavOpenHomeBody => 'Tap “Home” in the bottom bar.';
+
+  @override
+  String get tourHomeActiveBreaksTitle => 'Active breaks';
+
+  @override
+  String get tourHomeActiveBreaksBody =>
+      'Short routines to break up long periods of sitting. Tap the section to open them.';
+
+  @override
+  String get tourAbOverviewTitle => 'Two ways to move';
+
+  @override
+  String get tourAbOverviewBody =>
+      'Pick a routine from the list or use the timer. Active breaks are separate from your training program.';
+
+  @override
+  String get tourAbOpenBrowseTitle => 'Browse routines';
+
+  @override
+  String get tourAbOpenBrowseBody =>
+      'Tap the option to see the available routines.';
+
+  @override
+  String get tourAbBrowseListTitle => 'Pick a routine';
+
+  @override
+  String get tourAbBrowseListBody =>
+      'Choose one you like, or use the random button to let the app pick for you.';
+
+  @override
+  String get tourAbOpenRoutineTitle => 'Open a routine';
+
+  @override
+  String get tourAbOpenRoutineBody =>
+      'Tap the first one to see what it\'s like.';
+
+  @override
+  String get tourAbRoutineTitle => 'How a routine works';
+
+  @override
+  String get tourAbRoutineBody =>
+      'You follow the exercises one by one. We won\'t finish this one during the tour.';
+
+  @override
+  String get tourAbBackToMenuTitle => 'Back to the menu';
+
+  @override
+  String get tourAbBackToMenuBody =>
+      'Use the back arrow until you reach the active breaks menu.';
+
+  @override
+  String get tourAbOpenTimerTitle => 'Try the timer';
+
+  @override
+  String get tourAbOpenTimerBody => 'Tap the timer option.';
+
+  @override
+  String get tourAbTimerExitTitle => 'The timer';
+
+  @override
+  String get tourAbTimerExitBody =>
+      'Pick how many minutes and time your break. Tap the back arrow to continue.';
+
+  @override
+  String get tourAbExitToHomeTitle => 'Leave active breaks';
+
+  @override
+  String get tourAbExitToHomeBody => 'Tap the back arrow to return to Home.';
+
+  @override
+  String get tourNavOpenSettingsTitle => 'Open Settings';
+
+  @override
+  String get tourNavOpenSettingsBody => 'Tap “Settings” in the bottom bar.';
+
+  @override
+  String get tourSettingsLanguageTitle => 'Change language';
+
+  @override
+  String get tourSettingsLanguageBody =>
+      'Use this switch to move between Spanish and English any time. The tour keeps your place.';
+
+  @override
+  String get tourSettingsReplayTitle => 'Replay the tour';
+
+  @override
+  String get tourSettingsReplayBody =>
+      'You can repeat it from here any time. Let\'s get moving!';
+
+  @override
+  String get tourInviteTitle => 'Want a quick tour of Muévete?';
+
+  @override
+  String get tourInviteBody =>
+      'We\'ll walk you through the app step by step. You can also find it later in Settings → “Take the tour again”.';
+
+  @override
+  String get tourInviteStart => 'Start tour';
+
+  @override
+  String get tourInviteLater => 'Not now';
+
+  @override
+  String get tourInviteNever => 'Never ask again';
+
+  @override
+  String get tourInviteNeverConfirm =>
+      'No problem. You\'ll find the tour in Settings.';
+
+  @override
+  String get tourResumeTitle => 'Your tour is unfinished';
+
+  @override
+  String tourResumeBody(int current, int total) {
+    return 'You were on step $current of $total. Continue where you left off or start over?';
+  }
+
+  @override
+  String get tourResume => 'Continue';
+
+  @override
+  String get tourStartOver => 'Start over';
+
+  @override
   String get dayMonday => 'Monday';
 
   @override

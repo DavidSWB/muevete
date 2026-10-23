@@ -13,8 +13,10 @@ import 'package:muevete/features/active_breaks/presentation/screens/active_break
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_timer_screen.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_workout_screen.dart';
 import 'package:muevete/features/active_breaks/domain/entities/active_break.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_route_observer.dart';
 
 GoRouter router = GoRouter(
+  observers: [walkthroughRouteObserver],
   routes: [
     GoRoute(
       path: "/",
@@ -34,6 +36,7 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: "/diagnosis",
+      name: "diagnosis",
       builder: (context, state) => DiagnosisScreen() ,
     ),
     GoRoute(
@@ -54,18 +57,22 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: "/active-breaks",
+      name: "activeBreaks",
       builder: (context, state) => const ActiveBreaksScreen(),
       routes: [
         GoRoute(
           path: "browse",
+          name: "activeBreaksBrowse",
           builder: (context, state) => const ActiveBreakSelectionScreen(),
         ),
         GoRoute(
           path: "timer",
+          name: "activeBreaksTimer",
           builder: (context, state) => const ActiveBreakTimerScreen(),
         ),
         GoRoute(
           path: "workout",
+          name: "activeBreakRoutine",
           builder: (context, state) {
             final activeBreak = state.extra;
             if (activeBreak is! ActiveBreak) {

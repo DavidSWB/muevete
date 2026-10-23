@@ -564,6 +564,266 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsReplayTourSubtitle => 'Repasa la app paso a paso';
 
   @override
+  String get tourHomeWelcomeTitle => 'Te damos la bienvenida a Muévete';
+
+  @override
+  String get tourHomeWelcomeBody =>
+      'Te mostramos la app en unos minutos. Puedes cerrar la guía cuando quieras y volver a verla desde Ajustes.';
+
+  @override
+  String get tourHomeProfileTitle => 'Tu perfil';
+
+  @override
+  String get tourHomeProfileBody =>
+      'Desde aquí llegas a tu perfil y a los ajustes. Los visitaremos al final de la guía.';
+
+  @override
+  String get tourHomeWeeklyStatsTitle => 'Tu semana';
+
+  @override
+  String get tourHomeWeeklyStatsBody =>
+      'Aquí ves cuántos entrenamientos llevas esta semana y el tiempo estimado que has entrenado.';
+
+  @override
+  String get tourHomeHealthTitle => 'Tu salud también cuenta';
+
+  @override
+  String get tourHomeHealthBody =>
+      'Un consejo breve para cuidar tu cuerpo. Esta tarjeta te lleva a tu progreso.';
+
+  @override
+  String get tourHomeStartWorkoutTitle => 'Empieza a entrenar';
+
+  @override
+  String get tourHomeStartWorkoutBody =>
+      'Toca «Comenzar entrenamiento» para abrir tu próximo entrenamiento programado.';
+
+  @override
+  String get tourTrainingOverviewTitle => 'Tu entrenamiento';
+
+  @override
+  String get tourTrainingOverviewBody =>
+      'Es una lista de ejercicios. Cada uno indica tus series y repeticiones, o cuánto tiempo mantener la posición.';
+
+  @override
+  String get tourTrainingOpenExerciseTitle => 'Abre un ejercicio';
+
+  @override
+  String get tourTrainingOpenExerciseBody =>
+      'Toca el primero para ver cómo se hace.';
+
+  @override
+  String get tourExercisePrescriptionTitle => 'Qué te toca hacer';
+
+  @override
+  String get tourExercisePrescriptionBody =>
+      'Aquí ves las series, las repeticiones (o la duración, si es un ejercicio de mantener la posición) y el descanso.';
+
+  @override
+  String get tourExerciseCompleteSetTitle => 'Marca tu primera serie';
+
+  @override
+  String get tourExerciseCompleteSetBody =>
+      'Cuando termines una serie, márcala aquí. En los ejercicios de mantener la posición, espera a que termine el tiempo.';
+
+  @override
+  String get tourExerciseNextTitle => 'Pasa al siguiente';
+
+  @override
+  String get tourExerciseNextBody =>
+      'Toca «Siguiente» para ir al próximo ejercicio de tu entrenamiento.';
+
+  @override
+  String get tourExerciseDoneTitle => 'Termina el ejercicio';
+
+  @override
+  String get tourExerciseDoneBody =>
+      'Toca «¡Hecho!» para volver a la lista de ejercicios.';
+
+  @override
+  String get tourTrainingFinishWorkoutTitle => 'Finaliza el entrenamiento';
+
+  @override
+  String get tourTrainingFinishWorkoutBody =>
+      'Toca «Finalizar entrenamiento». Es solo una práctica: no se guardará nada.';
+
+  @override
+  String get tourHomePracticeNoteTitle => 'No se guardó nada';
+
+  @override
+  String get tourHomePracticeNoteBody =>
+      'Como era una práctica, tu semana sigue igual. Cuando finalices un entrenamiento de verdad, se sumará aquí.';
+
+  @override
+  String get tourNavOpenProgressTitle => 'Abre tu progreso';
+
+  @override
+  String get tourNavOpenProgressBody => 'Toca «Progreso» en la barra inferior.';
+
+  @override
+  String get tourProgressCalendarTitle => 'Tu calendario';
+
+  @override
+  String get tourProgressCalendarBody =>
+      'Los días en verde son entrenamientos que terminaste de verdad. Aquí también ves cuántos llevas.';
+
+  @override
+  String get tourProgressJointStatsTitle => 'Estadísticas por articulación';
+
+  @override
+  String get tourProgressJointStatsBody =>
+      'Tu nivel de movilidad en cada articulación, de 0 a 5. Se actualiza cuando repites la evaluación.';
+
+  @override
+  String get tourProgressRetakeTitle => 'Repite la evaluación';
+
+  @override
+  String get tourProgressRetakeBody =>
+      'Toca el botón para abrirla. En la guía no enviaremos nada.';
+
+  @override
+  String get tourDiagnosisOverviewTitle => 'Tu evaluación física';
+
+  @override
+  String get tourDiagnosisOverviewBody =>
+      'Con estas preguntas adaptamos tu programa a tu nivel. Ahora no hace falta responder nada.';
+
+  @override
+  String get tourDiagnosisLeaveTitle => 'Vuelve atrás';
+
+  @override
+  String get tourDiagnosisLeaveBody =>
+      'Toca la flecha de volver para salir sin cambiar nada.';
+
+  @override
+  String get tourNavOpenHomeTitle => 'Vuelve al inicio';
+
+  @override
+  String get tourNavOpenHomeBody => 'Toca «Inicio» en la barra inferior.';
+
+  @override
+  String get tourHomeActiveBreaksTitle => 'Pausas activas';
+
+  @override
+  String get tourHomeActiveBreaksBody =>
+      'Son rutinas cortas para romper con el tiempo sentado. Toca la sección para abrirlas.';
+
+  @override
+  String get tourAbOverviewTitle => 'Dos formas de moverte';
+
+  @override
+  String get tourAbOverviewBody =>
+      'Elige una rutina de la lista o usa el temporizador. Las pausas activas son aparte de tu programa de entrenamiento.';
+
+  @override
+  String get tourAbOpenBrowseTitle => 'Explora las rutinas';
+
+  @override
+  String get tourAbOpenBrowseBody =>
+      'Toca la opción para ver las rutinas disponibles.';
+
+  @override
+  String get tourAbBrowseListTitle => 'Elige una rutina';
+
+  @override
+  String get tourAbBrowseListBody =>
+      'Escoge la que prefieras o usa el botón aleatorio para que la app elija por ti.';
+
+  @override
+  String get tourAbOpenRoutineTitle => 'Abre una rutina';
+
+  @override
+  String get tourAbOpenRoutineBody => 'Toca la primera para ver cómo es.';
+
+  @override
+  String get tourAbRoutineTitle => 'Así funciona una rutina';
+
+  @override
+  String get tourAbRoutineBody =>
+      'Sigues los ejercicios uno por uno. En esta guía no la terminaremos.';
+
+  @override
+  String get tourAbBackToMenuTitle => 'Vuelve al menú';
+
+  @override
+  String get tourAbBackToMenuBody =>
+      'Usa la flecha de volver hasta llegar al menú de pausas activas.';
+
+  @override
+  String get tourAbOpenTimerTitle => 'Prueba el temporizador';
+
+  @override
+  String get tourAbOpenTimerBody => 'Toca la opción del temporizador.';
+
+  @override
+  String get tourAbTimerExitTitle => 'El temporizador';
+
+  @override
+  String get tourAbTimerExitBody =>
+      'Elige cuántos minutos y cuenta el tiempo de tu pausa. Toca la flecha de volver para continuar.';
+
+  @override
+  String get tourAbExitToHomeTitle => 'Sal de pausas activas';
+
+  @override
+  String get tourAbExitToHomeBody =>
+      'Toca la flecha de volver para ir al inicio.';
+
+  @override
+  String get tourNavOpenSettingsTitle => 'Abre los ajustes';
+
+  @override
+  String get tourNavOpenSettingsBody => 'Toca «Ajustes» en la barra inferior.';
+
+  @override
+  String get tourSettingsLanguageTitle => 'Cambia de idioma';
+
+  @override
+  String get tourSettingsLanguageBody =>
+      'Con este selector alternas entre español e inglés cuando quieras. La guía conserva el paso en el que estás.';
+
+  @override
+  String get tourSettingsReplayTitle => 'Vuelve a ver la guía';
+
+  @override
+  String get tourSettingsReplayBody =>
+      'Puedes repetirla desde aquí cuando quieras. ¡A moverse!';
+
+  @override
+  String get tourInviteTitle => '¿Quieres hacer la guía de Muévete?';
+
+  @override
+  String get tourInviteBody =>
+      'Te mostramos la app paso a paso. Si prefieres, la encuentras después en Ajustes → «Volver a ver la guía».';
+
+  @override
+  String get tourInviteStart => 'Empezar guía';
+
+  @override
+  String get tourInviteLater => 'Ahora no';
+
+  @override
+  String get tourInviteNever => 'No volver a preguntar';
+
+  @override
+  String get tourInviteNeverConfirm =>
+      'Sin problema. Encontrarás la guía en Ajustes.';
+
+  @override
+  String get tourResumeTitle => 'Tu guía quedó a medias';
+
+  @override
+  String tourResumeBody(int current, int total) {
+    return 'Estabas en el paso $current de $total. ¿Quieres continuar donde te quedaste o empezar de nuevo?';
+  }
+
+  @override
+  String get tourResume => 'Continuar';
+
+  @override
+  String get tourStartOver => 'Empezar de nuevo';
+
+  @override
   String get dayMonday => 'Lunes';
 
   @override
