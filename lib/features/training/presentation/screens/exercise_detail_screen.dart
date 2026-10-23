@@ -4,6 +4,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
+import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
 import 'package:muevete/l10n/app_localizations.dart';
@@ -12,9 +13,29 @@ import 'package:muevete/shared/utils/youtube_utils.dart';
 import 'package:muevete/shared/widgets/exercise_video_player.dart';
 
 class ExerciseDetailScreen extends StatefulWidget {
-  const ExerciseDetailScreen({super.key, required this.exercise});
+  const ExerciseDetailScreen({
+    super.key,
+    required this.exercise,
+    this.sequence,
+  });
+
+  static const routeName = 'exercise';
 
   final WorkoutExercise exercise;
+
+  /// The workout this exercise belongs to. When it has a following exercise,
+  /// the screen shows a Next button that opens it in place of this one.
+  final ExerciseSequence? sequence;
+
+  static Route<void> route(ExerciseSequence sequence) {
+    return MaterialPageRoute<void>(
+      settings: const RouteSettings(name: routeName),
+      builder: (_) => ExerciseDetailScreen(
+        exercise: sequence.current,
+        sequence: sequence,
+      ),
+    );
+  }
 
   @override
   State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
@@ -143,6 +164,14 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
     });
   }
 
+  void _openNextExercise() {
+    final sequence = widget.sequence;
+    if (sequence == null || !sequence.hasNext) return;
+    HapticFeedback.lightImpact();
+    Navigator.of(context)
+        .pushReplacement(ExerciseDetailScreen.route(sequence.next()));
+  }
+
   String _setValue(int index) {
     if (_isHold) return '${_remainingSeconds[index]}s';
     return '${widget.exercise.reps ?? '-'}';
@@ -252,22 +281,53 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
           child: SizedBox(
-            width: double.infinity,
             height: 54,
-            child: ElevatedButton(
-              key: const ValueKey('exercise-done-button'),
-              onPressed: () {
-                HapticFeedback.lightImpact();
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryDark,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox.expand(
+                    child: ElevatedButton(
+                      key: const ValueKey('exercise-done-button'),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryDark,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: Text(l10n.exerciseDone),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(l10n.exerciseDone),
+                if (widget.sequence?.hasNext ?? false) ...[
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: SizedBox.expand(
+                      child: OutlinedButton.icon(
+                        key: const ValueKey('exercise-next-button'),
+                        onPressed: _openNextExercise,
+                        iconAlignment: IconAlignment.end,
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: Text(l10n.exerciseNext),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primaryDark,
+                          side: const BorderSide(
+                            color: AppColors.primaryDark,
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
+import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/l10n/app_localizations.dart';
@@ -11,18 +12,23 @@ class ExerciseTile extends StatelessWidget {
   const ExerciseTile({
     super.key,
     required this.exercise,
+    this.sequence,
   });
 
   final WorkoutExercise exercise;
+  final ExerciseSequence? sequence;
 
   void _openExerciseDetail(BuildContext context) {
     HapticFeedback.lightImpact();
+    final sequence = this.sequence;
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ExerciseDetailScreen(
-          exercise: exercise,
-        ),
-      ),
+      sequence != null
+          ? ExerciseDetailScreen.route(sequence)
+          : MaterialPageRoute<void>(
+              settings:
+                  const RouteSettings(name: ExerciseDetailScreen.routeName),
+              builder: (_) => ExerciseDetailScreen(exercise: exercise),
+            ),
     );
   }
 

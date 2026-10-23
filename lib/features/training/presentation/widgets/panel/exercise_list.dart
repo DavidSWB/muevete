@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_tile.dart';
 
@@ -15,7 +16,10 @@ class ExerciseList extends StatelessWidget {
       sliver: SliverList.builder(
         itemCount: exercises.length,
         itemBuilder: (_, index) {
-          return ExerciseTile(exercise: exercises[index]);
+          return ExerciseTile(
+            exercise: exercises[index],
+            sequence: ExerciseSequence(exercises, index),
+          );
         },
       ),
     );
