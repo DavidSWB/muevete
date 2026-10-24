@@ -6,6 +6,7 @@ import 'package:muevete/features/progress/presentation/screens/progress_screen.d
 import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_launcher.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 
 final mainNavIndexProvider =
@@ -35,7 +36,7 @@ class MainScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final currentIndex = ref.watch(mainNavIndexProvider);
 
-    return Scaffold(
+    return WalkthroughLauncher(child: Scaffold(
       body: IndexedStack(
         index: currentIndex,
         children: _screens,
@@ -80,6 +81,6 @@ class MainScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
