@@ -6,6 +6,9 @@ import 'package:muevete/features/localization/presentation/widgets/locale_switch
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/settings/presentation/widgets/settings_tile.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_dialogs.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
@@ -21,7 +24,10 @@ class SettingsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.settingsTitle),
         actions: const [
-          LocaleSwitcher(compact: true),
+          WalkthroughAnchor(
+            id: 'settings.language',
+            child: LocaleSwitcher(compact: true),
+          ),
           SizedBox(width: 8),
         ],
       ),
@@ -77,6 +83,28 @@ class SettingsScreen extends ConsumerWidget {
                   onTap: () => context.push('/program-setup'),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          WalkthroughAnchor(
+            id: 'settings.replay',
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: const BorderSide(color: AppColors.border),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: SettingsTile(
+                key: const ValueKey('settings-replay-tour'),
+                icon: Icons.tour_outlined,
+                title: l10n.settingsReplayTour,
+                subtitle: l10n.settingsReplayTourSubtitle,
+                onTap: () => startWalkthrough(
+                  context,
+                  ref.read(walkthroughControllerProvider.notifier),
+                  ref.read(walkthroughControllerProvider),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 24),

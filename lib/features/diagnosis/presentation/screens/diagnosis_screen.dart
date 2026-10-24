@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muevete/features/diagnosis/domain/entities/question.dart';
 import 'package:muevete/features/diagnosis/presentation/providers/diagnosis_provider.dart';
 import 'package:muevete/features/diagnosis/presentation/widgets/my_quizoption_button.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_quiz_image.dart';
@@ -88,6 +89,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
     return Scaffold(
       backgroundColor: AppColors.surface,
       appBar: AppBar(
+        leading: walkthroughBackButton(context, 'diagnosis.back'),
         title: Text(l10n.diagTitle),
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,

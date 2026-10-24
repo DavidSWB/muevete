@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
@@ -13,6 +14,7 @@ class ActiveBreaksScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: walkthroughBackButton(context, 'ab.back'),
         title: Text(l10n.abTitle),
         actions: const [
           LocaleSwitcher(compact: true),
@@ -35,18 +37,31 @@ class ActiveBreaksScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _OptionCard(
-                icon: Icons.accessibility_new_rounded,
-                title: l10n.abBrowseTitle,
-                description: l10n.abBrowseDesc,
-                onTap: () => context.push('/active-breaks/browse'),
-              ),
-              const SizedBox(height: 16),
-              _OptionCard(
-                icon: Icons.timer_outlined,
-                title: l10n.abPersonalTimerTitle,
-                description: l10n.abPersonalTimerDesc,
-                onTap: () => context.push('/active-breaks/timer'),
+              WalkthroughAnchor(
+                id: 'ab.overview',
+                child: Column(
+                  children: [
+                    WalkthroughAnchor(
+                      id: 'ab.openBrowse',
+                      child: _OptionCard(
+                        icon: Icons.accessibility_new_rounded,
+                        title: l10n.abBrowseTitle,
+                        description: l10n.abBrowseDesc,
+                        onTap: () => context.push('/active-breaks/browse'),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    WalkthroughAnchor(
+                      id: 'ab.openTimer',
+                      child: _OptionCard(
+                        icon: Icons.timer_outlined,
+                        title: l10n.abPersonalTimerTitle,
+                        description: l10n.abPersonalTimerDesc,
+                        onTap: () => context.push('/active-breaks/timer'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

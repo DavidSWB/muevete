@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';import 'package:flutter_test/flutter_test.dart';
 import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
-import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';import 'package:muevete/l10n/app_localizations.dart';
 
 void main() {
   testWidgets('title is rendered below the visual', (tester) async {
@@ -34,7 +34,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(
-      MaterialApp(
+      _scoped(MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
@@ -53,7 +53,7 @@ void main() {
             child: const Text('Open'),
           ),
         ),
-      ),
+      )),
     );
 
     await tester.tap(find.byKey(const ValueKey('open-detail')));
@@ -136,13 +136,21 @@ void main() {
 }
 
 Widget _detailScreen({int? reps, int? duration, required int sets}) {
-  return MaterialApp(
+  return _scoped(MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('en'),
     home: ExerciseDetailScreen(
       exercise: _exercise(reps: reps, duration: duration, sets: sets),
     ),
+  ));
+}
+
+/// The exercise screen reports to the tour, which needs a provider scope.
+Widget _scoped(Widget app) {
+  return ProviderScope(
+    overrides: [walkthroughUserIdProvider.overrideWithValue(null)],
+    child: app,
   );
 }
 

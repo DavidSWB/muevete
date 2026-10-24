@@ -5,6 +5,7 @@ import 'package:muevete/app/home_screen.dart';
 import 'package:muevete/features/progress/presentation/screens/progress_screen.dart';
 import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 
 final mainNavIndexProvider =
@@ -48,25 +49,34 @@ class MainScreen extends ConsumerWidget {
           }
         },
         destinations: [
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.home_rounded),
-            icon: const Icon(Icons.home_outlined),
-            label: l10n.navHome,
+          WalkthroughAnchor(
+            id: 'nav.home',
+            child: NavigationDestination(
+              selectedIcon: const Icon(Icons.home_rounded),
+              icon: const Icon(Icons.home_outlined),
+              label: l10n.navHome,
+            ),
           ),
           NavigationDestination(
             selectedIcon: const Icon(Icons.fitness_center_rounded),
             icon: const Icon(Icons.fitness_center_outlined),
             label: l10n.navTraining,
           ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.insights_rounded),
-            icon: const Icon(Icons.insights_outlined),
-            label: l10n.navProgress,
+          WalkthroughAnchor(
+            id: 'nav.progress',
+            child: NavigationDestination(
+              selectedIcon: const Icon(Icons.insights_rounded),
+              icon: const Icon(Icons.insights_outlined),
+              label: l10n.navProgress,
+            ),
           ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.settings_rounded),
-            icon: const Icon(Icons.settings_outlined),
-            label: l10n.navSettings,
+          WalkthroughAnchor(
+            id: 'nav.settings',
+            child: NavigationDestination(
+              selectedIcon: const Icon(Icons.settings_rounded),
+              icon: const Icon(Icons.settings_outlined),
+              label: l10n.navSettings,
+            ),
           ),
         ],
       ),

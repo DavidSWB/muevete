@@ -10,6 +10,7 @@ import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/entities/plan_day.dart';
 import 'package:muevete/features/training/presentation/providers/next_training_provider.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -80,16 +81,22 @@ class HomeScreen extends ConsumerWidget {
                   onStartWorkout: () => openTab(1),
                 ),
                 const SizedBox(height: 18),
-                _WeeklyStatsRow(
-                  completedSessions: completedThisWeek,
-                  targetSessions: targetSessions,
-                  minutesTrained:
-                      completedThisWeek * _estimatedMinutesPerSession,
-                  targetMinutes: targetSessions * _estimatedMinutesPerSession,
-                  onTap: () => openTab(2),
+                WalkthroughAnchor(
+                  id: 'home.weeklyStats',
+                  child: _WeeklyStatsRow(
+                    completedSessions: completedThisWeek,
+                    targetSessions: targetSessions,
+                    minutesTrained:
+                        completedThisWeek * _estimatedMinutesPerSession,
+                    targetMinutes: targetSessions * _estimatedMinutesPerSession,
+                    onTap: () => openTab(2),
+                  ),
                 ),
                 const SizedBox(height: 18),
-                _HealthInsightCard(onTap: () => openTab(2)),
+                WalkthroughAnchor(
+                  id: 'home.health',
+                  child: _HealthInsightCard(onTap: () => openTab(2)),
+                ),
                 const SizedBox(height: 26),
                 const _ActiveBreaksSection(),
               ],
@@ -166,23 +173,26 @@ class _HomeGreetingHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        InkWell(
-          onTap: onAvatarTap,
-          customBorder: const CircleBorder(),
-          child: Container(
-            width: 48,
-            height: 48,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: Color(0xFFE0F2FE),
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              initial,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primaryDark,
+        WalkthroughAnchor(
+          id: 'home.profile',
+          child: InkWell(
+            onTap: onAvatarTap,
+            customBorder: const CircleBorder(),
+            child: Container(
+              width: 48,
+              height: 48,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                color: Color(0xFFE0F2FE),
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                initial,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primaryDark,
+                ),
               ),
             ),
           ),
@@ -348,41 +358,44 @@ class _NextWorkoutHeroCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Material(
-                    color: const Color(0xFF0077C2),
-                    borderRadius: BorderRadius.circular(999),
-                    elevation: 2,
-                    shadowColor: const Color(
-                      0xFF0077C2,
-                    ).withValues(alpha: 0.35),
-                    child: InkWell(
-                      onTap: onStartWorkout,
+                  WalkthroughAnchor(
+                    id: 'home.startWorkout',
+                    child: Material(
+                      color: const Color(0xFF0077C2),
                       borderRadius: BorderRadius.circular(999),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              ctaLabel,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.5,
-                                fontWeight: FontWeight.w700,
-                                height: 1.2,
+                      elevation: 2,
+                      shadowColor: const Color(
+                        0xFF0077C2,
+                      ).withValues(alpha: 0.35),
+                      child: InkWell(
+                        onTap: onStartWorkout,
+                        borderRadius: BorderRadius.circular(999),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                ctaLabel,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.2,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 14),
-                            const Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ],
+                              const SizedBox(width: 14),
+                              const Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -849,76 +862,79 @@ class _ActiveBreaksSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFF1F5F9)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 14,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                HapticFeedback.lightImpact();
-                context.push('/active-breaks');
-              },
+        WalkthroughAnchor(
+          id: 'home.activeBreaks',
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(22),
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE0F2FE),
-                        borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFF1F5F9)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 14,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  context.push('/active-breaks');
+                },
+                borderRadius: BorderRadius.circular(22),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE0F2FE),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Icon(
+                          Icons.directions_walk_rounded,
+                          size: 28,
+                          color: Color(0xFF0077C2),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.directions_walk_rounded,
-                        size: 28,
-                        color: Color(0xFF0077C2),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.homeActiveBreaks,
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.homeActiveBreaks,
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            cardDescription,
-                            style: const TextStyle(
-                              color: AppColors.textMuted,
-                              fontSize: 13,
-                              height: 1.35,
+                            const SizedBox(height: 4),
+                            Text(
+                              cardDescription,
+                              style: const TextStyle(
+                                color: AppColors.textMuted,
+                                fontSize: 13,
+                                height: 1.35,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.chevron_right_rounded,
-                      size: 22,
-                      color: Color(0xFF94A3B8),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 22,
+                        color: Color(0xFF94A3B8),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';import 'package:flutter_test/flutter_test.dart';
 import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_list.dart';
-import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';import 'package:muevete/l10n/app_localizations.dart';
 
 const _nextKey = ValueKey('exercise-next-button');
 const _doneKey = ValueKey('exercise-done-button');
@@ -188,12 +188,15 @@ Widget _app({
   String locale = 'en',
   List<NavigatorObserver> observers = const [],
 }) {
-  return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    locale: Locale(locale),
-    navigatorObservers: observers,
-    home: home,
+  return ProviderScope(
+    overrides: [walkthroughUserIdProvider.overrideWithValue(null)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Locale(locale),
+      navigatorObservers: observers,
+      home: home,
+    ),
   );
 }
 

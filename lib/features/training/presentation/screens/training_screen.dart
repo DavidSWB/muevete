@@ -6,6 +6,8 @@ import 'package:muevete/features/training/presentation/providers/workout_complet
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
+import 'package:muevete/features/walkthrough/domain/walkthrough_step.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/screens/loading_screen.dart';
@@ -26,7 +28,17 @@ class TrainingScreen extends ConsumerWidget {
               WorkoutHero(workout: workout),
               WorkoutSlidingPanel(
                 workout: workout,
+                panelAnchorId: 'training.overview',
+                firstExerciseAnchorId: 'training.openExercise',
+                finishAnchorId: 'training.finishWorkout',
                 onWorkoutFinished: () async {
+                  ref
+                      .read(walkthroughControllerProvider.notifier)
+                      .onSignal(
+                        const ActionReceipt(
+                          WalkthroughAction.workoutFinishPressed,
+                        ),
+                      );
                   await ref.read(workoutCompletionProvider).complete();
                   ref.read(mainNavIndexProvider.notifier).setIndex(0);
                   if (context.mounted) {

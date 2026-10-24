@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/progress/presentation/widgets/progress_calendar.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -84,79 +85,93 @@ class ProgressScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: const BorderSide(color: AppColors.border),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: ProgressCalendar(
-                        completedWorkouts: user.completedWorkouts,
+                  WalkthroughAnchor(
+                    id: 'progress.calendar',
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: const BorderSide(color: AppColors.border),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ProgressCalendar(
+                          completedWorkouts: user.completedWorkouts,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Text(
-                    l10n.progressMobilityStats,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.3,
+                  WalkthroughAnchor(
+                    id: 'progress.jointStats',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.progressMobilityStats,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _StatCard(
+                                title: l10n.progressShoulder,
+                                value: user.stats?.shoulder ?? 0,
+                                icon: Icons.accessibility_new_rounded,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _StatCard(
+                                title: l10n.progressHip,
+                                value: user.stats?.hip ?? 0,
+                                icon: Icons.directions_walk_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _StatCard(
+                                title: l10n.progressKnee,
+                                value: user.stats?.knee ?? 0,
+                                icon: Icons.directions_run_rounded,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _StatCard(
+                                title: l10n.progressAnkle,
+                                value: user.stats?.ankle ?? 0,
+                                icon: Icons.do_not_step_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _StatCard(
-                          title: l10n.progressShoulder,
-                          value: user.stats?.shoulder ?? 0,
-                          icon: Icons.accessibility_new_rounded,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _StatCard(
-                          title: l10n.progressHip,
-                          value: user.stats?.hip ?? 0,
-                          icon: Icons.directions_walk_rounded,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _StatCard(
-                          title: l10n.progressKnee,
-                          value: user.stats?.knee ?? 0,
-                          icon: Icons.directions_run_rounded,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _StatCard(
-                          title: l10n.progressAnkle,
-                          value: user.stats?.ankle ?? 0,
-                          icon: Icons.do_not_step_rounded,
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 54,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        context.push('/diagnosis');
-                      },
-                      icon: const Icon(Icons.assignment_outlined, size: 20),
-                      label: Text(l10n.progressRetake),
+                  WalkthroughAnchor(
+                    id: 'progress.retake',
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          context.push('/diagnosis');
+                        },
+                        icon: const Icon(Icons.assignment_outlined, size: 20),
+                        label: Text(l10n.progressRetake),
+                      ),
                     ),
                   ),
                 ],

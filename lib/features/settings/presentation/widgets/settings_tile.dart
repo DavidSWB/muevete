@@ -8,10 +8,12 @@ class SettingsTile extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.icon,
+    this.subtitle,
     this.isDestructive = false,
   });
 
   final String title;
+  final String? subtitle;
   final VoidCallback onTap;
   final IconData? icon;
   final bool isDestructive;
@@ -47,6 +49,15 @@ class SettingsTile extends StatelessWidget {
           fontSize: 15,
         ),
       ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: const TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 13,
+              ),
+            )
+          : null,
       trailing: Icon(
         Icons.chevron_right_rounded,
         color: isDestructive ? AppColors.error : AppColors.textMuted,

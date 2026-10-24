@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 
 class ActiveBreakTimerScreen extends StatefulWidget {
   const ActiveBreakTimerScreen({super.key});
@@ -71,6 +72,7 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: walkthroughBackButton(context, 'ab.back'),
         title: Text(l10n.abPersonalTimerTitle),
         actions: const [
           LocaleSwitcher(compact: true),

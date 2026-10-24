@@ -14,6 +14,9 @@ import 'package:muevete/features/training/domain/entities/workout_exercise.dart'
 import 'package:muevete/features/training/presentation/providers/workout_completion_provider.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
+import 'package:muevete/features/walkthrough/domain/walkthrough_progress.dart';
+import 'package:muevete/features/walkthrough/domain/walkthrough_store.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 
 void main() {
@@ -75,6 +78,20 @@ void main() {
       expect(harness.container.read(mainNavIndexProvider), 0);
       expect(find.text('home'), findsOneWidget);
     });
+
+    testWidgets('while the tour runs writes nothing but still goes Home',
+        (tester) async {
+      final harness = await _pumpTrainingScreen(tester, tourActive: true);
+      expect(harness.container.read(walkthroughControllerProvider).isActive,
+          isTrue);
+
+      await _pressFinish(tester);
+
+      expect(harness.repository.savedProfiles, isEmpty);
+      expect(harness.profileBuilds, 1);
+      expect(harness.container.read(mainNavIndexProvider), 0);
+      expect(find.text('home'), findsOneWidget);
+    });
   });
 }
 
@@ -112,9 +129,12 @@ class _Harness {
   int profileBuilds = 0;
 }
 
+/// With [tourActive], the real walkthrough decides whether finishing is a
+/// rehearsal; otherwise [rehearsal] is forced.
 Future<_Harness> _pumpTrainingScreen(
   WidgetTester tester, {
-  required bool rehearsal,
+  bool rehearsal = false,
+  bool tourActive = false,
 }) async {
   tester.view.physicalSize = const Size(800, 1600);
   tester.view.devicePixelRatio = 1.0;
@@ -130,11 +150,22 @@ Future<_Harness> _pumpTrainingScreen(
         () => _FakeProfile(() => harness.profileBuilds++),
       ),
       workoutControllerProvider.overrideWith(_FixedWorkoutController.new),
-      workoutCompletionIsRehearsalProvider.overrideWithValue(rehearsal),
+      if (tourActive) ...[
+        walkthroughStoreProvider.overrideWithValue(_MemoryWalkthroughStore()),
+        walkthroughUserIdProvider.overrideWithValue('user-1'),
+      ] else
+        workoutCompletionIsRehearsalProvider.overrideWithValue(rehearsal),
     ],
   );
   addTearDown(container.dispose);
   harness = _Harness(container, repository);
+
+  if (tourActive) {
+    container.listen(walkthroughControllerProvider, (_, _) {});
+    final tour = container.read(walkthroughControllerProvider.notifier);
+    await tour.loaded;
+    tour.start();
+  }
 
   // Keeps the profile alive, so an invalidation shows up as a second build.
   container.listen(profileProvider, (_, _) {});
@@ -194,6 +225,20 @@ class _FakeProfile extends Profile {
     _onBuild();
     return _user;
   }
+}
+
+class _MemoryWalkthroughStore implements WalkthroughStore {
+  final Map<String, WalkthroughProgress> data = {};
+
+  @override
+  Future<WalkthroughProgress?> load(String uid) async => data[uid];
+
+  @override
+  Future<void> save(String uid, WalkthroughProgress progress) async =>
+      data[uid] = progress;
+
+  @override
+  Future<void> clear(String uid) async => data.remove(uid);
 }
 
 class _CountingProfileRepository implements ProfileRepository {

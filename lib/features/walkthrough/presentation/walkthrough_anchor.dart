@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final walkthroughAnchorRegistryProvider = Provider<WalkthroughAnchorRegistry>(
@@ -35,15 +35,27 @@ class WalkthroughAnchorRegistry {
   }
 }
 
-/// Hidden tabs of the main screen stay mounted but offstage.
+/// Hidden tabs of the main screen stay mounted but offstage, or invisible
+/// inside an [IndexedStack].
 bool _isOffstage(BuildContext context) {
   var offstage = false;
   context.visitAncestorElements((element) {
     final widget = element.widget;
-    offstage = widget is Offstage && widget.offstage;
+    offstage =
+        (widget is Offstage && widget.offstage) ||
+        (widget is Visibility && !widget.visible);
     return !offstage;
   });
   return offstage;
+}
+
+/// The back arrow an [AppBar] shows by itself, marked as [id] for the tour.
+/// Null when the route has nothing to go back to, as the app bar would.
+Widget? walkthroughBackButton(BuildContext context, String id) {
+  final canGoBack = ModalRoute.of(context)?.impliesAppBarDismissal ?? false;
+  return canGoBack
+      ? WalkthroughAnchor(id: id, child: const BackButton())
+      : null;
 }
 
 /// Marks [child] as something the tour can highlight. It changes nothing

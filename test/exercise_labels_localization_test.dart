@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';import 'package:flutter_test/flutter_test.dart';
 import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
@@ -10,7 +10,7 @@ import 'package:muevete/features/training/domain/entities/workout_exercise.dart'
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_tile.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
-import 'package:muevete/l10n/app_localizations.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';import 'package:muevete/l10n/app_localizations.dart';
 
 Map<String, dynamic> _readArb(String path) =>
     jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
@@ -159,11 +159,14 @@ void main() {
 }
 
 Widget _app(String languageCode, Widget home) {
-  return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    locale: Locale(languageCode),
-    home: home,
+  return ProviderScope(
+    overrides: [walkthroughUserIdProvider.overrideWithValue(null)],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: Locale(languageCode),
+      home: home,
+    ),
   );
 }
 

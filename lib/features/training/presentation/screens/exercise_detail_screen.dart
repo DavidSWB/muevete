@@ -3,16 +3,20 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
+import 'package:muevete/features/walkthrough/domain/walkthrough_step.dart';
+import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/utils/youtube_utils.dart';
 import 'package:muevete/shared/widgets/exercise_video_player.dart';
 
-class ExerciseDetailScreen extends StatefulWidget {
+class ExerciseDetailScreen extends ConsumerStatefulWidget {
   const ExerciseDetailScreen({
     super.key,
     required this.exercise,
@@ -38,10 +42,11 @@ class ExerciseDetailScreen extends StatefulWidget {
   }
 
   @override
-  State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
+  ConsumerState<ExerciseDetailScreen> createState() =>
+      _ExerciseDetailScreenState();
 }
 
-class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
+class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
     with WidgetsBindingObserver {
   static const int _maxClampSeconds = 86400;
 
@@ -65,7 +70,18 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       widget.exercise.sets,
       widget.exercise.duration ?? 0,
     );
+    // Lets the tour skip its Next step on the last exercise of a workout.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _tour.setCondition(
+        WalkthroughCondition.noNextExercise,
+        !(widget.sequence?.hasNext ?? false),
+      );
+    });
   }
+
+  WalkthroughController get _tour =>
+      ref.read(walkthroughControllerProvider.notifier);
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -96,6 +112,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
 
     if (_activeSet == index) _pauseTimer();
     setState(() => _completed[index] = true);
+    _tour.onSignal(const ActionReceipt(WalkthroughAction.setCompleted));
   }
 
   void _toggleTimer(int index) {
@@ -162,15 +179,21 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
       _remainingSeconds[index] = 0;
       _completed[index] = true;
     });
+    _tour.onSignal(const ActionReceipt(WalkthroughAction.setCompleted));
   }
 
   void _openNextExercise() {
     final sequence = widget.sequence;
     if (sequence == null || !sequence.hasNext) return;
     HapticFeedback.lightImpact();
+    _tour.onSignal(const ActionReceipt(WalkthroughAction.exerciseNext));
     Navigator.of(context)
         .pushReplacement(ExerciseDetailScreen.route(sequence.next()));
   }
+
+  Widget _anchorFirstSet(int index, Widget row) => index == 0
+      ? WalkthroughAnchor(id: 'exercise.completeSet', child: row)
+      : row;
 
   String _setValue(int index) {
     if (_isHold) return '${_remainingSeconds[index]}s';
@@ -246,7 +269,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
                     ),
               ),
               const SizedBox(height: 20),
-              _PrescriptionStatsBar(exercise: widget.exercise),
+              WalkthroughAnchor(
+                id: 'exercise.prescription',
+                child: _PrescriptionStatsBar(exercise: widget.exercise),
+              ),
               const SizedBox(height: 20),
               ClipRRect(
                 borderRadius: BorderRadius.circular(999),
@@ -263,14 +289,17 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
               ),
               const SizedBox(height: 16),
               for (var index = 0; index < widget.exercise.sets; index++)
-                ExerciseSetRow(
-                  setNumber: index + 1,
-                  isHold: _isHold,
-                  isCompleted: _completed[index],
-                  isRunning: _activeSet == index,
-                  value: _setValue(index),
-                  onToggleCompleted: () => _toggleCompleted(index),
-                  onToggleTimer: () => _toggleTimer(index),
+                _anchorFirstSet(
+                  index,
+                  ExerciseSetRow(
+                    setNumber: index + 1,
+                    isHold: _isHold,
+                    isCompleted: _completed[index],
+                    isRunning: _activeSet == index,
+                    value: _setValue(index),
+                    onToggleCompleted: () => _toggleCompleted(index),
+                    onToggleTimer: () => _toggleTimer(index),
+                  ),
                 ),
             ],
           ),
@@ -285,42 +314,51 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen>
             child: Row(
               children: [
                 Expanded(
-                  child: SizedBox.expand(
-                    child: ElevatedButton(
-                      key: const ValueKey('exercise-done-button'),
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryDark,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                  child: WalkthroughAnchor(
+                    id: 'exercise.done',
+                    child: SizedBox.expand(
+                      child: ElevatedButton(
+                        key: const ValueKey('exercise-done-button'),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          _tour.onSignal(
+                            const ActionReceipt(WalkthroughAction.exerciseDone),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryDark,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
+                        child: Text(l10n.exerciseDone),
                       ),
-                      child: Text(l10n.exerciseDone),
                     ),
                   ),
                 ),
                 if (widget.sequence?.hasNext ?? false) ...[
                   const SizedBox(width: 12),
                   Expanded(
-                    child: SizedBox.expand(
-                      child: OutlinedButton.icon(
-                        key: const ValueKey('exercise-next-button'),
-                        onPressed: _openNextExercise,
-                        iconAlignment: IconAlignment.end,
-                        icon: const Icon(Icons.arrow_forward_rounded),
-                        label: Text(l10n.exerciseNext),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primaryDark,
-                          side: const BorderSide(
-                            color: AppColors.primaryDark,
-                            width: 1.5,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                    child: WalkthroughAnchor(
+                      id: 'exercise.next',
+                      child: SizedBox.expand(
+                        child: OutlinedButton.icon(
+                          key: const ValueKey('exercise-next-button'),
+                          onPressed: _openNextExercise,
+                          iconAlignment: IconAlignment.end,
+                          icon: const Icon(Icons.arrow_forward_rounded),
+                          label: Text(l10n.exerciseNext),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primaryDark,
+                            side: const BorderSide(
+                              color: AppColors.primaryDark,
+                              width: 1.5,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                         ),
                       ),

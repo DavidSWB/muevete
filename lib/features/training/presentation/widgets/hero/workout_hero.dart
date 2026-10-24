@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 
 class WorkoutHero extends StatelessWidget {
   const WorkoutHero({
@@ -74,13 +75,16 @@ class _HeroBackButton extends StatelessWidget {
       top: 12,
       left: 12,
       child: SafeArea(
-        child: Material(
-          color: Colors.black38,
-          shape: const CircleBorder(),
-          child: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        child: WalkthroughAnchor(
+          id: 'ab.back',
+          child: Material(
+            color: Colors.black38,
+            shape: const CircleBorder(),
+            child: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            ),
           ),
         ),
       ),

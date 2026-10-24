@@ -6,6 +6,7 @@ import 'package:muevete/features/active_breaks/domain/entities/active_break.dart
 import 'package:muevete/features/active_breaks/presentation/providers/active_break_providers.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 
 class ActiveBreakSelectionScreen extends ConsumerWidget {
   const ActiveBreakSelectionScreen({super.key});
@@ -17,6 +18,7 @@ class ActiveBreakSelectionScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: walkthroughBackButton(context, 'ab.back'),
         title: Text(l10n.abChooseTitle),
         actions: const [
           LocaleSwitcher(compact: true),
@@ -36,12 +38,19 @@ class ActiveBreakSelectionScreen extends ConsumerWidget {
           if (items.isEmpty) {
             return _Message(text: l10n.abNoAvailable);
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (_, index) =>
-                _ActiveBreakTile(activeBreak: items[index]),
+          return WalkthroughAnchor(
+            id: 'ab.browseList',
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: items.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (_, index) {
+                final tile = _ActiveBreakTile(activeBreak: items[index]);
+                return index == 0
+                    ? WalkthroughAnchor(id: 'ab.openRoutine', child: tile)
+                    : tile;
+              },
+            ),
           );
         },
       ),
