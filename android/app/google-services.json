@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "942017738617-43grm8cv5fkccpnrl7tjlot1jbt5doni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.muevete",
+            "certificate_hash": "36e07f7e308f6ec58c612a17a64b40c2a732f24a"
+          }
+        },
+        {
           "client_id": "942017738617-p2voc469i0r752taemtra6svsjg8qnm8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -57,6 +65,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "942017738617-nep11agek58f604snm4bnl02p8skoboa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.muevete_rico_mark_1",
+            "certificate_hash": "36e07f7e308f6ec58c612a17a64b40c2a732f24a"
+          }
+        },
         {
           "client_id": "942017738617-s4i64vcdfrfk0loj71sgf53cs4kvagtd.apps.googleusercontent.com",
           "client_type": 1,
