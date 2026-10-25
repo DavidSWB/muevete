@@ -196,7 +196,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       );
 
       signupStage = 'Firestore profile save';
-      await ref.read(profileRepositoryProvider).saveProfile(initialUser);
+      await ref.read(profileRepositoryProvider).createProfile(initialUser);
 
       signupStage = 'post-registration navigation';
       if (mounted) {

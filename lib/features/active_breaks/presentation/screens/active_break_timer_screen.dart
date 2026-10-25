@@ -1,24 +1,33 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muevete/features/active_breaks/presentation/providers/active_break_providers.dart';
+import 'package:muevete/features/profile/presentation/activity_save_failed.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 
-class ActiveBreakTimerScreen extends StatefulWidget {
+class ActiveBreakTimerScreen extends ConsumerStatefulWidget {
   const ActiveBreakTimerScreen({super.key});
 
   @override
-  State<ActiveBreakTimerScreen> createState() => _ActiveBreakTimerScreenState();
+  ConsumerState<ActiveBreakTimerScreen> createState() =>
+      _ActiveBreakTimerScreenState();
 }
 
-class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
+class _ActiveBreakTimerScreenState
+    extends ConsumerState<ActiveBreakTimerScreen> {
   Timer? timer;
   int selectedMinutes = 3;
   int remainingSeconds = 180;
   bool running = false;
   bool completed = false;
   bool markedCompleted = false;
+  bool saving = false;
+
+  /// Kept until the completion is saved, so a retry keeps a single entry.
+  DateTime? _pendingCompletion;
 
   @override
   void dispose() {
@@ -45,6 +54,23 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
     });
   }
 
+  /// A finished personal timer counts as a completed active break.
+  Future<void> markCompleted() async {
+    if (saving || markedCompleted) return;
+    final completedAt = _pendingCompletion ??= DateTime.now();
+    setState(() => saving = true);
+    try {
+      await ref.read(activeBreakCompletionProvider).complete(completedAt);
+      _pendingCompletion = null;
+      if (mounted) setState(() => markedCompleted = true);
+    } catch (error) {
+      debugPrint('Could not save the timer break: $error');
+      if (mounted) showActivitySaveFailed(context);
+    } finally {
+      if (mounted) setState(() => saving = false);
+    }
+  }
+
   void pause() {
     timer?.cancel();
     setState(() => running = false);
@@ -52,6 +78,7 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
 
   void reset() {
     timer?.cancel();
+    _pendingCompletion = null;
     setState(() {
       remainingSeconds = selectedMinutes * 60;
       running = false;
@@ -128,7 +155,7 @@ class _ActiveBreakTimerScreenState extends State<ActiveBreakTimerScreen> {
                 OutlinedButton(onPressed: reset, child: Text(l10n.abReset)),
                 if (completed && !markedCompleted)
                   FilledButton(
-                    onPressed: () => setState(() => markedCompleted = true),
+                    onPressed: saving ? null : markCompleted,
                     child: Text(l10n.abMarkCompleted),
                   ),
                 if (markedCompleted)

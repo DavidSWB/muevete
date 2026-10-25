@@ -1,4 +1,7 @@
+import 'dart:developer' as developer;
+
 import 'package:muevete/features/profile/domain/entities/user_stats.dart';
+import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/shared/entities/progresssummary.dart';
@@ -22,7 +25,17 @@ class UserModel {
   final ProgressSummary? progressSummary;
   final UserNotifications? notifications;
 
+  /// Completed training-plan workouts. Entries older than
+  /// [consistencyTrackedSince] may also include active breaks.
   final List<DateTime> completedWorkouts;
+
+  /// Completed active-break routines and personal-timer breaks.
+  final List<DateTime> completedActiveBreaks;
+
+  final UserStreak? streak;
+
+  /// From this moment workouts and active breaks are recorded separately.
+  final DateTime? consistencyTrackedSince;
 
   const UserModel({
     required this.id,
@@ -39,6 +52,9 @@ class UserModel {
     this.progressSummary,
     this.notifications,
     this.completedWorkouts = const [],
+    this.completedActiveBreaks = const [],
+    this.streak,
+    this.consistencyTrackedSince,
   });
 
   factory UserModel.fromJson({
@@ -85,16 +101,41 @@ class UserModel {
             ? null
             : UserNotifications.fromJson(json["notifications"]),
 
-        completedWorkouts:
-            (json["completedWorkouts"] as List<dynamic>? ?? [])
-                .map((e) => parseDateTime(e))
-                .toList(),
+        completedWorkouts: _parseDateList(json["completedWorkouts"]),
+
+        completedActiveBreaks: _parseDateList(json["completedActiveBreaks"]),
+
+        streak: json["streak"] is Map
+            ? UserStreak.fromJson(Map<String, dynamic>.from(json["streak"]))
+            : null,
+
+        consistencyTrackedSince: json["consistencyTrackedSince"] == null
+            ? null
+            : parseDateTime(json["consistencyTrackedSince"]),
       );
     } catch (e, s) {
       print(e);
       print(s);
       rethrow;
     }
+  }
+
+  /// Skips entries that cannot be read, so one bad value does not stop the
+  /// whole profile from loading.
+  static List<DateTime> _parseDateList(dynamic value) {
+    if (value is! List) return const [];
+    final dates = <DateTime>[];
+    for (final entry in value) {
+      try {
+        dates.add(parseDateTime(entry));
+      } on FormatException catch (e) {
+        developer.log(
+          'Skipping unreadable activity date: $e',
+          name: 'muevete.profile',
+        );
+      }
+    }
+    return dates;
   }
 
   static DateTime parseDateTime(dynamic value) {
@@ -131,6 +172,10 @@ class UserModel {
     throw FormatException("Formato de fecha no soportado: $value");
   }
 
+  /// Profile fields only. Activity history, the streak and
+  /// [consistencyTrackedSince] are written by
+  /// `ProfileRepository.recordCompletion` and `createProfile`, so saving a
+  /// profile can never overwrite completions recorded meanwhile.
   Map<String, dynamic> toJson() {
     return {
       "email": email,
@@ -145,8 +190,6 @@ class UserModel {
       "training": training?.toJson(),
       "progressSummary": progressSummary?.toJson(),
       "notifications": notifications?.toJson(),
-      "completedWorkouts":
-          completedWorkouts.map((e) => e.toIso8601String()).toList(),
     };
   }
 
@@ -164,6 +207,9 @@ class UserModel {
     ProgressSummary? progressSummary,
     UserNotifications? notifications,
     List<DateTime>? completedWorkouts,
+    List<DateTime>? completedActiveBreaks,
+    UserStreak? streak,
+    DateTime? consistencyTrackedSince,
   }) {
     return UserModel(
       id: id,
@@ -183,6 +229,11 @@ class UserModel {
       notifications: notifications ?? this.notifications,
       completedWorkouts:
           completedWorkouts ?? this.completedWorkouts,
+      completedActiveBreaks:
+          completedActiveBreaks ?? this.completedActiveBreaks,
+      streak: streak ?? this.streak,
+      consistencyTrackedSince:
+          consistencyTrackedSince ?? this.consistencyTrackedSince,
     );
   }
 }

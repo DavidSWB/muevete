@@ -884,6 +884,24 @@ abstract class AppLocalizations {
   /// **'No hay pausas activas disponibles en este momento.'**
   String get abNoAvailable;
 
+  /// No description provided for @abMarkRoutineCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar pausa activa como completada'**
+  String get abMarkRoutineCompleted;
+
+  /// No description provided for @abRoutineCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get abRoutineCompleted;
+
+  /// No description provided for @activitySaveFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar. Inténtalo de nuevo.'**
+  String get activitySaveFailed;
+
   /// No description provided for @notifTrainingTitle.
   ///
   /// In es, this message translates to:

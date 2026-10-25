@@ -173,6 +173,9 @@
   "abCompletedMarked": "¡Completada!",
   "abCouldNotLoad": "No se pudieron cargar las pausas activas.",
   "abNoAvailable": "No hay pausas activas disponibles en este momento.",
+  "abMarkRoutineCompleted": "Marcar pausa activa como completada",
+  "abRoutineCompleted": "Completada",
+  "activitySaveFailed": "No se pudo guardar. Inténtalo de nuevo.",
 
   "notifTrainingTitle": "¡Hora de entrenar!",
   "notifTrainingBody": "Sesión {session}: Tu entrenamiento programado está listo.",

@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/app/main_screen.dart';
+import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/repositories/profile_repository.dart';
+import 'package:muevete/features/profile/presentation/activity_recorder.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/exercise_level.dart';
@@ -57,11 +60,11 @@ void main() {
 
       await _pressFinish(tester);
 
-      expect(harness.repository.savedProfiles, hasLength(1));
-      expect(
-        harness.repository.savedProfiles.single.completedWorkouts,
-        hasLength(_user.completedWorkouts.length + 1),
-      );
+      expect(harness.repository.savedProfiles, isEmpty);
+      expect(harness.repository.completions, hasLength(1));
+      final completion = harness.repository.completions.single;
+      expect(completion.kind, ActivityKind.workout);
+      expect(completion.streak.lastActiveDate, isNotNull);
       expect(harness.profileBuilds, 2);
       expect(harness.container.read(mainNavIndexProvider), 0);
       expect(find.text('home'), findsOneWidget);
@@ -74,6 +77,7 @@ void main() {
       await _pressFinish(tester);
 
       expect(harness.repository.savedProfiles, isEmpty);
+      expect(harness.repository.completions, isEmpty);
       expect(harness.profileBuilds, 1);
       expect(harness.container.read(mainNavIndexProvider), 0);
       expect(find.text('home'), findsOneWidget);
@@ -88,6 +92,7 @@ void main() {
       await _pressFinish(tester);
 
       expect(harness.repository.savedProfiles, isEmpty);
+      expect(harness.repository.completions, isEmpty);
       expect(harness.profileBuilds, 1);
       expect(harness.container.read(mainNavIndexProvider), 0);
       expect(find.text('home'), findsOneWidget);
@@ -146,6 +151,7 @@ Future<_Harness> _pumpTrainingScreen(
   final container = ProviderContainer(
     overrides: [
       profileRepositoryProvider.overrideWithValue(repository),
+      deviceTimeZoneProvider.overrideWithValue(() async => 'America/Bogota'),
       profileProvider.overrideWith(
         () => _FakeProfile(() => harness.profileBuilds++),
       ),
@@ -243,10 +249,23 @@ class _MemoryWalkthroughStore implements WalkthroughStore {
 
 class _CountingProfileRepository implements ProfileRepository {
   final List<UserModel> savedProfiles = [];
+  final List<({ActivityKind kind, DateTime completedAt, UserStreak streak})>
+      completions = [];
 
   @override
   Future<UserModel> getProfile() async => _user;
 
   @override
   Future<void> saveProfile(UserModel user) async => savedProfiles.add(user);
+
+  @override
+  Future<void> createProfile(UserModel user) async => savedProfiles.add(user);
+
+  @override
+  Future<void> recordCompletion({
+    required ActivityKind kind,
+    required DateTime completedAt,
+    required UserStreak streak,
+  }) async =>
+      completions.add((kind: kind, completedAt: completedAt, streak: streak));
 }

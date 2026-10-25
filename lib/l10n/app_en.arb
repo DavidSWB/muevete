@@ -143,6 +143,9 @@
   "abCompletedMarked": "Completed",
   "abCouldNotLoad": "Could not load Active Breaks.",
   "abNoAvailable": "No Active Breaks are available right now.",
+  "abMarkRoutineCompleted": "Mark active break as completed",
+  "abRoutineCompleted": "Completed",
+  "activitySaveFailed": "Could not save. Please try again.",
 
   "notifTrainingTitle": "Time to train!",
   "notifTrainingBody": "Session {session}: Your scheduled workout is ready.",

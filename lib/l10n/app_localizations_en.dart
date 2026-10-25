@@ -441,6 +441,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get abNoAvailable => 'No Active Breaks are available right now.';
 
   @override
+  String get abMarkRoutineCompleted => 'Mark active break as completed';
+
+  @override
+  String get abRoutineCompleted => 'Completed';
+
+  @override
+  String get activitySaveFailed => 'Could not save. Please try again.';
+
+  @override
   String get notifTrainingTitle => 'Time to train!';
 
   @override

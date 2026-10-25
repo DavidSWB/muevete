@@ -451,6 +451,15 @@ class AppLocalizationsEs extends AppLocalizations {
       'No hay pausas activas disponibles en este momento.';
 
   @override
+  String get abMarkRoutineCompleted => 'Marcar pausa activa como completada';
+
+  @override
+  String get abRoutineCompleted => 'Completada';
+
+  @override
+  String get activitySaveFailed => 'No se pudo guardar. Inténtalo de nuevo.';
+
+  @override
   String get notifTrainingTitle => '¡Hora de entrenar!';
 
   @override

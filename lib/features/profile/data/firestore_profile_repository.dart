@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/repositories/profile_repository.dart';
 
 class FirestoreProfileRepository implements ProfileRepository{
@@ -47,5 +49,46 @@ class FirestoreProfileRepository implements ProfileRepository{
           user.toJson(),
           SetOptions(merge: true),
         );
+  }
+
+  @override
+  Future<void> createProfile(UserModel user) async {
+    await _firestore
+        .collection('users')
+        .doc(user.id)
+        .set(
+          {
+            ...user.toJson(),
+            'completedWorkouts': <String>[],
+            'completedActiveBreaks': <String>[],
+            'streak': UserStreak.empty.toJson(),
+            'consistencyTrackedSince': DateTime.now().toIso8601String(),
+          },
+          SetOptions(merge: true),
+        );
+  }
+
+  @override
+  Future<void> recordCompletion({
+    required ActivityKind kind,
+    required DateTime completedAt,
+    required UserStreak streak,
+  }) async {
+    final currentUser = _auth.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('User not authenticated.');
+    }
+
+    final field = switch (kind) {
+      ActivityKind.workout => 'completedWorkouts',
+      ActivityKind.activeBreak => 'completedActiveBreaks',
+    };
+
+    // Local wall-clock time without offset, the format already stored.
+    await _firestore.collection('users').doc(currentUser.uid).update({
+      field: FieldValue.arrayUnion([completedAt.toIso8601String()]),
+      'streak': streak.toJson(),
+    });
   }
 }

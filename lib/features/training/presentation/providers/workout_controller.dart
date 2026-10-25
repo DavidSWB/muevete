@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
+import 'package:muevete/features/profile/presentation/activity_recorder.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
-import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
 import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
@@ -67,23 +68,16 @@ class WorkoutController extends _$WorkoutController {
     );
   }
 
-  Future<void> finishWorkout() async{
-    final user = await ref.read(profileProvider.future);
+  /// Set on the first Finish press and kept until it is saved, so a retry
+  /// after an error records the same completion instead of a second one.
+  DateTime? _pendingCompletion;
 
-    final updatedWorkouts = [
-    ...user.completedWorkouts,
-    DateTime.now()
-    ];
-
-    final updatedUser = user.copyWith(
-      completedWorkouts: updatedWorkouts,
-    );
-    
+  Future<void> finishWorkout() async {
+    final completedAt = _pendingCompletion ??= DateTime.now();
     await ref
-      .read(profileRepositoryProvider)
-      .saveProfile(updatedUser);
-    
-    ref.invalidate(profileProvider);
+        .read(activityRecorderProvider)
+        .record(ActivityKind.workout, completedAt);
+    _pendingCompletion = null;
   }
 
   Future<void> refresh() async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/app/main_screen.dart';
+import 'package:muevete/features/profile/presentation/activity_save_failed.dart';
 import 'package:muevete/features/training/presentation/providers/workout_completion_provider.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
@@ -39,7 +40,13 @@ class TrainingScreen extends ConsumerWidget {
                           WalkthroughAction.workoutFinishPressed,
                         ),
                       );
-                  await ref.read(workoutCompletionProvider).complete();
+                  try {
+                    await ref.read(workoutCompletionProvider).complete();
+                  } catch (error) {
+                    debugPrint('Could not save the workout: $error');
+                    if (context.mounted) showActivitySaveFailed(context);
+                    return;
+                  }
                   ref.read(mainNavIndexProvider.notifier).setIndex(0);
                   if (context.mounted) {
                     context.go('/home');
