@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +36,8 @@ void main() {
     tester,
   ) async {
     useScreen(tester, const Size(400, 2400));
-    await tester.pumpWidget(_app(const HomeScreen()));
+    // HomeScreen is a MainScreen tab, so it relies on MainScreen's Scaffold.
+    await tester.pumpWidget(_app(const Scaffold(body: HomeScreen())));
     await tester.pumpAndSettle();
 
     final activeBreaks = tester.getTopLeft(_anchor('home.activeBreaks')).dy;
@@ -85,8 +88,18 @@ void main() {
       tester,
     ) async {
       useScreen(tester, const Size(320, 640));
-      await tester.pumpWidget(_app(const MainScreen(), locale: locale));
-      await tester.pumpAndSettle();
+      // Keep the tabs loading so only the navigation bar is laid out with
+      // content: this checks the tab labels, not the Home cards, whose text
+      // is far wider in the test font than on a device.
+      await tester.pumpWidget(
+        _app(
+          const MainScreen(),
+          container: _container(loadingContent: true),
+          locale: locale,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(tester.takeException(), isNull);
       expect(find.byType(NavigationDestination), findsNWidgets(5));
@@ -98,19 +111,25 @@ Finder _anchor(String id) => find.byWidgetPredicate(
   (widget) => widget is WalkthroughAnchor && widget.id == id,
 );
 
-ProviderContainer _container() {
+ProviderContainer _container({bool loadingContent = false}) {
   final container = ProviderContainer(
     overrides: [
       walkthroughStoreProvider.overrideWithValue(_MemoryStore()),
       walkthroughUserIdProvider.overrideWithValue('u'),
       // Already checked, so the launcher does not offer the tour.
       walkthroughCheckedUsersProvider.overrideWithValue({'u'}),
-      profileProvider.overrideWith(_FakeProfile.new),
+      profileProvider.overrideWith(
+        loadingContent ? _LoadingProfile.new : _FakeProfile.new,
+      ),
       nextTrainingProvider.overrideWith(
         (ref) async =>
             const PlanDay(day: 1, name: {'en': 'Day 1'}, exercises: []),
       ),
-      workoutControllerProvider.overrideWith(_FixedWorkoutController.new),
+      workoutControllerProvider.overrideWith(
+        loadingContent
+            ? _LoadingWorkoutController.new
+            : _FixedWorkoutController.new,
+      ),
     ],
   );
   addTearDown(container.dispose);
@@ -145,6 +164,16 @@ class _FakeProfile extends Profile {
       schedule: const UserSchedule(days: {1: 1, 3: 2}, preferredTime: '18:00'),
     ),
   );
+}
+
+class _LoadingProfile extends Profile {
+  @override
+  Future<UserModel> build() => Completer<UserModel>().future;
+}
+
+class _LoadingWorkoutController extends WorkoutController {
+  @override
+  Future<Workout> build() => Completer<Workout>().future;
 }
 
 class _FixedWorkoutController extends WorkoutController {

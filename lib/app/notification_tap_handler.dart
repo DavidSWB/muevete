@@ -55,8 +55,11 @@ class _NotificationTapHandlerState
 
   void _scheduleOpen() {
     if (NotificationScheduler.pendingTap.value == null) return;
-    // Wait for the frame, so the router and the tabs are ready.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _open());
+    // Wait for the frame, so the router and the tabs are ready. Ask for one:
+    // a tap while the app is already showing does not cause a frame itself.
+    WidgetsBinding.instance
+      ..addPostFrameCallback((_) => _open())
+      ..ensureVisualUpdate();
   }
 
   void _open() {

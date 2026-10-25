@@ -50,6 +50,9 @@ class ProgramSetup extends _$ProgramSetup {
     // Saving the plan completes onboarding, which unmounts ProgramSetupScreen
     // before the write returns. Stay alive until the save is done.
     final keepAlive = ref.keepAlive();
+    // Nothing watches the profile during onboarding, so it could be disposed
+    // while saveProfile waits for the write. Keep it mounted until then.
+    final profileSubscription = ref.listen(profileProvider, (_, _) {});
     try {
       final user = await ref.read(profileProvider.future);
       final existingTraining = user.training;
@@ -80,6 +83,7 @@ class ProgramSetup extends _$ProgramSetup {
       state = AsyncError(error, stackTrace);
       rethrow;
     } finally {
+      profileSubscription.close();
       keepAlive.close();
     }
   }

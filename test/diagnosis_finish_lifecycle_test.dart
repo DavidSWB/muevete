@@ -59,10 +59,13 @@ void main() {
       screen.close();
       await container.pump();
 
+      expect(profileBuilds, 0, reason: 'the profile waits for the save');
       diagnosisRepository.completeSave();
 
       await expectLater(finishing, completes);
-      expect(profileBuilds, 1, reason: 'the profile is reloaded once');
+      // Nothing watches the profile here, so reading its notifier builds it
+      // and refresh() then rebuilds it with the saved stats.
+      expect(profileBuilds, 2, reason: 'the profile is reloaded after the save');
     },
   );
 
