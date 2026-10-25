@@ -239,10 +239,18 @@ class NotificationScheduler {
 
     tz.initializeTimeZones();
     try {
-      final tzResult = await FlutterTimezone.getLocalTimezone();
-      final String timeZoneName = defaultLocationName ?? tzResult.toString();
+      final String timeZoneName = defaultLocationName ??
+          (await FlutterTimezone.getLocalTimezone()).identifier;
       tz.setLocalLocation(tz.getLocation(timeZoneName));
-    } catch (_) {
+    } catch (error, stackTrace) {
+      // Reminders are then scheduled in UTC, hours away from the times the
+      // user picked, so make the fallback visible.
+      developer.log(
+        'Unable to resolve the device time zone; scheduling in UTC',
+        name: 'muevete.notifications',
+        error: error,
+        stackTrace: stackTrace,
+      );
       try {
         tz.setLocalLocation(tz.getLocation('UTC'));
       } catch (_) {}
