@@ -47,6 +47,9 @@ class ProgramSetup extends _$ProgramSetup {
       canonicalSchedule = schedule.copyWith(days: canonicalDays);
     }
 
+    // Saving the plan completes onboarding, which unmounts ProgramSetupScreen
+    // before the write returns. Stay alive until the save is done.
+    final keepAlive = ref.keepAlive();
     try {
       final user = await ref.read(profileProvider.future);
       final existingTraining = user.training;
@@ -76,6 +79,8 @@ class ProgramSetup extends _$ProgramSetup {
     } catch (error, stackTrace) {
       state = AsyncError(error, stackTrace);
       rethrow;
+    } finally {
+      keepAlive.close();
     }
   }
 }

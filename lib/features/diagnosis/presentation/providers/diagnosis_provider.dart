@@ -103,8 +103,16 @@ class DiagnosisNotifier extends _$DiagnosisNotifier {
       final repository =
         ref.read(diagnosisRepositoryProvider);
 
-      await repository.saveDiagnosis(userDiagnosis);
-      await ref.read(profileProvider.notifier).refresh();
+      // Saving the stats moves onboarding past the diagnosis, which unmounts
+      // DiagnosisScreen before the write returns. Stay alive until the save
+      // and the profile refresh are done.
+      final keepAlive = ref.keepAlive();
+      try {
+        await repository.saveDiagnosis(userDiagnosis);
+        await ref.read(profileProvider.notifier).refresh();
+      } finally {
+        keepAlive.close();
+      }
     }
     catch(e){
       rethrow;
