@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/app/home_screen.dart';
+import 'package:muevete/features/active_breaks/presentation/screens/active_breaks_screen.dart';
 import 'package:muevete/features/progress/presentation/screens/progress_screen.dart';
 import 'package:muevete/features/settings/presentation/screens/settings_screen.dart';
 import 'package:muevete/features/training/presentation/screens/training_screen.dart';
@@ -24,9 +25,16 @@ class MainNavIndexNotifier extends Notifier<int> {
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
+  static const int homeTab = 0;
+  static const int trainingTab = 1;
+  static const int activeBreaksTab = 2;
+  static const int progressTab = 3;
+  static const int settingsTab = 4;
+
   static const List<Widget> _screens = [
     HomeScreen(),
     TrainingScreen(),
+    ActiveBreaksScreen(),
     ProgressScreen(),
     SettingsScreen(),
   ];
@@ -62,6 +70,11 @@ class MainScreen extends ConsumerWidget {
             selectedIcon: const Icon(Icons.fitness_center_rounded),
             icon: const Icon(Icons.fitness_center_outlined),
             label: l10n.navTraining,
+          ),
+          NavigationDestination(
+            selectedIcon: const Icon(Icons.directions_walk_rounded),
+            icon: const Icon(Icons.directions_walk_outlined),
+            label: l10n.navActiveBreaks,
           ),
           WalkthroughAnchor(
             id: 'nav.progress',

@@ -237,9 +237,23 @@ void main() {
       h.goTo('nav.openProgress');
       await tester.pumpAndSettle();
 
-      h.container.read(mainNavIndexProvider.notifier).setIndex(2);
+      h.container
+          .read(mainNavIndexProvider.notifier)
+          .setIndex(MainScreen.progressTab);
       await tester.pumpAndSettle();
       expect(h.stepId, 'progress.calendar');
+    });
+
+    testWidgets('the Active Breaks tab completes no step', (tester) async {
+      await h.pump(tester);
+      h.goTo('nav.openProgress');
+      await tester.pumpAndSettle();
+
+      h.container
+          .read(mainNavIndexProvider.notifier)
+          .setIndex(MainScreen.activeBreaksTab);
+      await tester.pumpAndSettle();
+      expect(h.stepId, 'nav.openProgress');
     });
 
     testWidgets('tab changes behind a pushed route are ignored', (
@@ -250,7 +264,9 @@ void main() {
       await tester.pumpAndSettle();
 
       h.routes.add('somethingElse');
-      h.container.read(mainNavIndexProvider.notifier).setIndex(2);
+      h.container
+          .read(mainNavIndexProvider.notifier)
+          .setIndex(MainScreen.progressTab);
       await tester.pumpAndSettle();
       expect(h.stepId, 'nav.openProgress');
     });

@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'Entrenamiento'**
   String get navTraining;
 
+  /// No description provided for @navActiveBreaks.
+  ///
+  /// In es, this message translates to:
+  /// **'Pausas'**
+  String get navActiveBreaks;
+
   /// No description provided for @navProgress.
   ///
   /// In es, this message translates to:

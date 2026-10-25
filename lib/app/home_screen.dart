@@ -72,13 +72,13 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 _HomeGreetingHeader(
                   username: user.username,
-                  onAvatarTap: () => openTab(3),
+                  onAvatarTap: () => openTab(MainScreen.settingsTab),
                 ),
                 const SizedBox(height: 22),
                 _NextWorkoutHeroCard(
                   user: user,
                   nextTraining: nextTraining,
-                  onStartWorkout: () => openTab(1),
+                  onStartWorkout: () => openTab(MainScreen.trainingTab),
                 ),
                 const SizedBox(height: 18),
                 WalkthroughAnchor(
@@ -89,16 +89,18 @@ class HomeScreen extends ConsumerWidget {
                     minutesTrained:
                         completedThisWeek * _estimatedMinutesPerSession,
                     targetMinutes: targetSessions * _estimatedMinutesPerSession,
-                    onTap: () => openTab(2),
+                    onTap: () => openTab(MainScreen.progressTab),
                   ),
-                ),
-                const SizedBox(height: 18),
-                WalkthroughAnchor(
-                  id: 'home.health',
-                  child: _HealthInsightCard(onTap: () => openTab(2)),
                 ),
                 const SizedBox(height: 26),
                 const _ActiveBreaksSection(),
+                const SizedBox(height: 18),
+                WalkthroughAnchor(
+                  id: 'home.health',
+                  child: _HealthInsightCard(
+                    onTap: () => openTab(MainScreen.progressTab),
+                  ),
+                ),
               ],
             ),
           ),

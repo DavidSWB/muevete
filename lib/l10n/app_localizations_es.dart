@@ -133,6 +133,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navTraining => 'Entrenamiento';
 
   @override
+  String get navActiveBreaks => 'Pausas';
+
+  @override
   String get navProgress => 'Progreso';
 
   @override

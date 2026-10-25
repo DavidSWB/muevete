@@ -25,9 +25,13 @@ const Map<String, WalkthroughScreen> walkthroughRouteScreens = {
   'activeBreaksTimer': WalkthroughScreen.activeBreakTimer,
 };
 
-const List<WalkthroughScreen> _tabs = [
+/// Screen of each main tab, by index. The Active Breaks tab has none: the tour
+/// visits Active Breaks through its pushed route and back button, so it must
+/// never land on the tab.
+const List<WalkthroughScreen?> _tabs = [
   WalkthroughScreen.home,
   WalkthroughScreen.training,
+  null,
   WalkthroughScreen.progress,
   WalkthroughScreen.settings,
 ];
@@ -92,9 +96,8 @@ class _WalkthroughHostState extends ConsumerState<WalkthroughHost> {
     if (name != null && walkthroughMainRouteNames.contains(name)) {
       _mainRouteOnTop = true;
       final index = ref.read(mainNavIndexProvider);
-      if (index >= 0 && index < _tabs.length) {
-        _controller.onSignal(ScreenRevealed(_tabs[index]));
-      }
+      final screen = index >= 0 && index < _tabs.length ? _tabs[index] : null;
+      if (screen != null) _controller.onSignal(ScreenRevealed(screen));
       return;
     }
     _mainRouteOnTop = false;
@@ -104,9 +107,8 @@ class _WalkthroughHostState extends ConsumerState<WalkthroughHost> {
 
   void _onTabChanged(int? previous, int next) {
     if (previous == next || !_mainRouteOnTop) return;
-    if (next >= 0 && next < _tabs.length) {
-      _controller.onSignal(ScreenRevealed(_tabs[next]));
-    }
+    final screen = next >= 0 && next < _tabs.length ? _tabs[next] : null;
+    if (screen != null) _controller.onSignal(ScreenRevealed(screen));
   }
 
   void _onTourChanged(WalkthroughState? previous, WalkthroughState next) {

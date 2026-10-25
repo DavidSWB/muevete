@@ -130,6 +130,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTraining => 'Training';
 
   @override
+  String get navActiveBreaks => 'Breaks';
+
+  @override
   String get navProgress => 'Progress';
 
   @override
