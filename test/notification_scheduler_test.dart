@@ -621,6 +621,9 @@ void main() {
           record.id: record.payload,
       };
       expect(payloads[1001], 'training');
+      for (final record in fakeAdapter.scheduled.values) {
+        expect(record.notificationDetails.android?.icon, 'ic_stat_muevete');
+      }
       expect(payloads[2001], 'active_break');
       expect(
         payloads.entries.where((e) => e.key >= 2001).map((e) => e.value),

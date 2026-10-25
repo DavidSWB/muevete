@@ -6,6 +6,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/features/training/domain/services/notification_target.dart';
+import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -54,7 +55,7 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
     void Function(NotificationResponse)? onTap,
   }) async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings(NotificationScheduler.androidIcon);
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
@@ -184,6 +185,9 @@ class NotificationScheduler {
   static NotificationPluginAdapter _adapter =
       DefaultNotificationPluginAdapter();
 
+  /// White silhouette drawable shown in the Android status bar.
+  static const String androidIcon = 'ic_stat_muevete';
+
   static const int trainingIdBase = 1000; // IDs 1001..1007
   static const int activeBreakIdBase = 2000; // IDs 2001..2050
   static const int maxActiveBreakSlots = 45;
@@ -290,6 +294,8 @@ class NotificationScheduler {
           channelDescription: 'Development diagnostics for local notifications',
           importance: Importance.high,
           priority: Priority.high,
+          icon: androidIcon,
+          color: AppColors.primaryDark,
         ),
         iOS: DarwinNotificationDetails(),
       ),
@@ -411,6 +417,8 @@ class NotificationScheduler {
             channelDescription: 'Reminders for your scheduled workouts',
             importance: Importance.high,
             priority: Priority.high,
+            icon: androidIcon,
+            color: AppColors.primaryDark,
           ),
           iOS: DarwinNotificationDetails(),
         ),
@@ -502,6 +510,8 @@ class NotificationScheduler {
                 channelDescription: 'Recurring active break reminders',
                 importance: Importance.defaultImportance,
                 priority: Priority.defaultPriority,
+                icon: androidIcon,
+                color: AppColors.primaryDark,
               ),
               iOS: DarwinNotificationDetails(),
             ),
