@@ -5,11 +5,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
+import 'package:muevete/features/training/domain/services/notification_target.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 abstract class NotificationPluginAdapter {
-  Future<void> initialize();
+  /// [onTap] receives taps on notifications while the app is running.
+  Future<void> initialize({void Function(NotificationResponse)? onTap});
   Future<bool> requestPermission();
   Future<bool> checkPermissionStatus();
   Future<void> zonedSchedule(
@@ -22,8 +24,12 @@ abstract class NotificationPluginAdapter {
     required UILocalNotificationDateInterpretation
         uiLocalNotificationDateInterpretation,
     DateTimeComponents? matchDateTimeComponents,
+    String? payload,
   });
   Future<void> cancel(int id);
+
+  /// The tap that launched the app from a terminated state, if any.
+  Future<NotificationResponse?> launchResponse() async => null;
 
   Future<void> showNow(
     int id,
@@ -44,7 +50,9 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
       : plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   @override
-  Future<void> initialize() async {
+  Future<void> initialize({
+    void Function(NotificationResponse)? onTap,
+  }) async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -58,7 +66,17 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
       ),
     );
 
-    await plugin.initialize(initializationSettings);
+    await plugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onTap,
+    );
+  }
+
+  @override
+  Future<NotificationResponse?> launchResponse() async {
+    final details = await plugin.getNotificationAppLaunchDetails();
+    if (details == null || !details.didNotificationLaunchApp) return null;
+    return details.notificationResponse;
   }
 
   @override
@@ -123,6 +141,7 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
     required UILocalNotificationDateInterpretation
         uiLocalNotificationDateInterpretation,
     DateTimeComponents? matchDateTimeComponents,
+    String? payload,
   }) {
     return plugin.zonedSchedule(
       id,
@@ -134,6 +153,7 @@ class DefaultNotificationPluginAdapter implements NotificationPluginAdapter {
       uiLocalNotificationDateInterpretation:
           uiLocalNotificationDateInterpretation,
       matchDateTimeComponents: matchDateTimeComponents,
+      payload: payload,
     );
   }
 
@@ -171,14 +191,38 @@ class NotificationScheduler {
 
   static String? _lastScheduledFingerprint;
 
+  /// The destination of the last tapped reminder, until the app acts on it.
+  static final ValueNotifier<NotificationTarget?> pendingTap =
+      ValueNotifier<NotificationTarget?>(null);
+
+  static bool _launchTapChecked = false;
+
   static void setAdapterForTesting(NotificationPluginAdapter adapter) {
     _adapter = adapter;
     _lastScheduledFingerprint = null;
+    _launchTapChecked = false;
+    pendingTap.value = null;
   }
 
   static void resetForTesting() {
     _adapter = DefaultNotificationPluginAdapter();
     _lastScheduledFingerprint = null;
+    _launchTapChecked = false;
+    pendingTap.value = null;
+  }
+
+  /// Records a tap on notification [id] carrying [payload]. Taps without a
+  /// known destination are ignored.
+  static void handleTap(int? id, String? payload) {
+    final target = notificationTargetFor(id: id, payload: payload);
+    if (target != null) pendingTap.value = target;
+  }
+
+  /// Returns the pending destination and clears it, so it is acted on once.
+  static NotificationTarget? takePendingTap() {
+    final target = pendingTap.value;
+    pendingTap.value = null;
+    return target;
   }
 
   static Future<void> initialize({
@@ -200,7 +244,25 @@ class NotificationScheduler {
       } catch (_) {}
     }
 
-    await _adapter.initialize();
+    await _adapter.initialize(
+      onTap: (response) => handleTap(response.id, response.payload),
+    );
+
+    // The launch tap stays readable for the whole process, so read it once.
+    if (!_launchTapChecked) {
+      _launchTapChecked = true;
+      try {
+        final launch = await _adapter.launchResponse();
+        if (launch != null) handleTap(launch.id, launch.payload);
+      } catch (error, stackTrace) {
+        developer.log(
+          'Unable to read the notification that launched the app',
+          name: 'muevete.notifications',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
   }
 
   static Future<bool> requestPermission() async {
@@ -356,6 +418,7 @@ class NotificationScheduler {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        payload: NotificationPayloads.training,
       );
       scheduledCount++;
     }
@@ -445,6 +508,7 @@ class NotificationScheduler {
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime,
+            payload: NotificationPayloads.activeBreak,
           );
           scheduledCount++;
         }

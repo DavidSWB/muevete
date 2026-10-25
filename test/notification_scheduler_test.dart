@@ -5,6 +5,7 @@ import 'package:muevete/features/profile/domain/entities/user_notifications.dart
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
+import 'package:muevete/features/training/domain/services/notification_target.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -18,6 +19,7 @@ class ScheduledNotificationRecord {
   final UILocalNotificationDateInterpretation
       uiLocalNotificationDateInterpretation;
   final DateTimeComponents? matchDateTimeComponents;
+  final String? payload;
 
   ScheduledNotificationRecord({
     required this.id,
@@ -28,6 +30,7 @@ class ScheduledNotificationRecord {
     required this.androidScheduleMode,
     required this.uiLocalNotificationDateInterpretation,
     this.matchDateTimeComponents,
+    this.payload,
   });
 }
 
@@ -37,10 +40,15 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
   bool initializeCalled = false;
   bool permissionRequested = false;
   bool isPermissionGranted = true;
+  void Function(NotificationResponse)? onTap;
+  NotificationResponse? launch;
 
   @override
-  Future<void> initialize() async {
+  Future<void> initialize({
+    void Function(NotificationResponse)? onTap,
+  }) async {
     initializeCalled = true;
+    this.onTap = onTap;
   }
 
   @override
@@ -65,6 +73,7 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
     required UILocalNotificationDateInterpretation
         uiLocalNotificationDateInterpretation,
     DateTimeComponents? matchDateTimeComponents,
+    String? payload,
   }) async {
     scheduled[id] = ScheduledNotificationRecord(
       id: id,
@@ -76,6 +85,7 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
       uiLocalNotificationDateInterpretation:
           uiLocalNotificationDateInterpretation,
       matchDateTimeComponents: matchDateTimeComponents,
+      payload: payload,
     );
   }
 
@@ -97,6 +107,9 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
   Future<List<PendingNotificationRequest>> pendingNotificationRequests() async {
     return const <PendingNotificationRequest>[];
   }
+
+  @override
+  Future<NotificationResponse?> launchResponse() async => launch;
 }
 
 void main() {
@@ -581,6 +594,106 @@ void main() {
       expect(rec!.scheduledDate.location.name, 'America/New_York');
       expect(rec.scheduledDate.hour, 9);
       expect(rec.scheduledDate.minute, 0);
+    });
+  });
+
+  group('Notification taps', () {
+    const tap = NotificationResponseType.selectedNotification;
+
+    test('Training and active-break reminders carry their payloads', () async {
+      final user = createTestUser(
+        notifications: const UserNotifications(
+          activeBreakReminderEnabled: true,
+          activeBreakStartTime: '08:00',
+          activeBreakEndTime: '09:00',
+          activeBreakIntervalMinutes: 60,
+        ),
+      );
+
+      await NotificationScheduler.scheduleTrainingReminders(user);
+      await NotificationScheduler.scheduleActiveBreaks(
+        user,
+        nowOverride: DateTime.utc(2026, 10, 12, 7, 0),
+      );
+
+      final payloads = {
+        for (final record in fakeAdapter.scheduled.values)
+          record.id: record.payload,
+      };
+      expect(payloads[1001], 'training');
+      expect(payloads[2001], 'active_break');
+      expect(
+        payloads.entries.where((e) => e.key >= 2001).map((e) => e.value),
+        everyElement('active_break'),
+      );
+    });
+
+    test('A tap while the app runs becomes the pending destination', () async {
+      await NotificationScheduler.initialize(adapter: fakeAdapter);
+
+      fakeAdapter.onTap!(
+        const NotificationResponse(
+          notificationResponseType: tap,
+          id: 2003,
+          payload: 'active_break',
+        ),
+      );
+
+      expect(NotificationScheduler.takePendingTap(), NotificationTarget.activeBreaks);
+      expect(NotificationScheduler.takePendingTap(), isNull);
+    });
+
+    test('The tap that launched the app is read once', () async {
+      fakeAdapter.launch = const NotificationResponse(
+        notificationResponseType: tap,
+        id: 1004,
+        payload: 'training',
+      );
+
+      await NotificationScheduler.initialize(adapter: fakeAdapter);
+      expect(NotificationScheduler.takePendingTap(), NotificationTarget.training);
+
+      await NotificationScheduler.initialize(adapter: fakeAdapter);
+      expect(NotificationScheduler.takePendingTap(), isNull);
+    });
+
+    test('Taps without a destination leave nothing pending', () async {
+      await NotificationScheduler.initialize(adapter: fakeAdapter);
+
+      fakeAdapter.onTap!(
+        const NotificationResponse(notificationResponseType: tap, id: 9000),
+      );
+      expect(NotificationScheduler.pendingTap.value, isNull);
+    });
+  });
+
+  group('notificationTargetFor', () {
+    test('Payloads decide the destination', () {
+      expect(
+        notificationTargetFor(id: 1001, payload: 'training'),
+        NotificationTarget.training,
+      );
+      expect(
+        notificationTargetFor(id: 2001, payload: 'active_break'),
+        NotificationTarget.activeBreaks,
+      );
+    });
+
+    test('Reminders without a payload fall back to their ID range', () {
+      expect(notificationTargetFor(id: 1001), NotificationTarget.training);
+      expect(notificationTargetFor(id: 1007), NotificationTarget.training);
+      expect(notificationTargetFor(id: 2001), NotificationTarget.activeBreaks);
+      expect(notificationTargetFor(id: 2050), NotificationTarget.activeBreaks);
+    });
+
+    test('Unknown notifications have no destination', () {
+      expect(notificationTargetFor(id: 9000), isNull);
+      expect(notificationTargetFor(id: 1000), isNull);
+      expect(notificationTargetFor(id: 1008), isNull);
+      expect(notificationTargetFor(id: 2000), isNull);
+      expect(notificationTargetFor(id: 2051), isNull);
+      expect(notificationTargetFor(), isNull);
+      expect(notificationTargetFor(id: 1001, payload: 'unknown'), isNull);
     });
   });
 }

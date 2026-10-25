@@ -11,9 +11,14 @@ class WalkthroughRouteObserver extends NavigatorObserver {
 
   Stream<String?> get revealed => _revealed.stream;
 
+  /// Name of the route last revealed, or null before any.
+  String? get current => _current;
+  String? _current;
+
   void _reveal(Route<dynamic>? route) {
     if (route == null || route is PopupRoute) return;
-    _revealed.add(route.settings.name);
+    _current = route.settings.name;
+    _revealed.add(_current);
   }
 
   @override

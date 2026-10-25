@@ -19,7 +19,9 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
   final Map<int, Map<String, dynamic>> scheduled = {};
 
   @override
-  Future<void> initialize() async {}
+  Future<void> initialize({
+    void Function(NotificationResponse)? onTap,
+  }) async {}
 
   @override
   Future<bool> requestPermission() async => true;
@@ -38,6 +40,7 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
     required UILocalNotificationDateInterpretation
         uiLocalNotificationDateInterpretation,
     DateTimeComponents? matchDateTimeComponents,
+    String? payload,
   }) async {
     scheduled[id] = {
       'id': id,
@@ -63,6 +66,9 @@ class FakeNotificationPluginAdapter implements NotificationPluginAdapter {
   @override
   Future<List<PendingNotificationRequest>> pendingNotificationRequests() async =>
       const <PendingNotificationRequest>[];
+
+  @override
+  Future<NotificationResponse?> launchResponse() async => null;
 }
 
 void main() {

@@ -107,7 +107,9 @@ class _ControlledProfileRepository implements ProfileRepository {
 
 class _SilentAdapter extends NotificationPluginAdapter {
   @override
-  Future<void> initialize() async {}
+  Future<void> initialize({
+    void Function(NotificationResponse)? onTap,
+  }) async {}
 
   @override
   Future<bool> requestPermission() async => true;
@@ -126,6 +128,7 @@ class _SilentAdapter extends NotificationPluginAdapter {
     required UILocalNotificationDateInterpretation
         uiLocalNotificationDateInterpretation,
     DateTimeComponents? matchDateTimeComponents,
+    String? payload,
   }) async {}
 
   @override
