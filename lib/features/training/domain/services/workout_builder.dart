@@ -79,7 +79,7 @@ class WorkoutBuilder {
     }
 
     return Workout(
-      name: plan.name,
+      name: planDay.name,
       day: day,
       exercises: exercises,
     );
