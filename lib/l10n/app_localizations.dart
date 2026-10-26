@@ -1633,6 +1633,108 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Dom'**
   String get daySunShort;
+
+  /// No description provided for @authSexLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Sexo biológico'**
+  String get authSexLabel;
+
+  /// No description provided for @sexMale.
+  ///
+  /// In es, this message translates to:
+  /// **'Hombre'**
+  String get sexMale;
+
+  /// No description provided for @sexFemale.
+  ///
+  /// In es, this message translates to:
+  /// **'Mujer'**
+  String get sexFemale;
+
+  /// No description provided for @valSelectSex.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor selecciona tu sexo biológico.'**
+  String get valSelectSex;
+
+  /// No description provided for @editProfileEmailReadOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu correo no se puede cambiar aquí.'**
+  String get editProfileEmailReadOnly;
+
+  /// No description provided for @editProfileSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get editProfileSave;
+
+  /// No description provided for @editProfileSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil actualizado.'**
+  String get editProfileSaved;
+
+  /// No description provided for @editProfileSaveFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar tu perfil. Inténtalo de nuevo.'**
+  String get editProfileSaveFailed;
+
+  /// No description provided for @homeTodayWorkoutBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'TU ENTRENAMIENTO DE HOY'**
+  String get homeTodayWorkoutBadge;
+
+  /// No description provided for @homeWorkoutDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Una rutina completa para activar tu cuerpo y mejorar tu condición física.'**
+  String get homeWorkoutDescription;
+
+  /// No description provided for @homeStartWorkoutCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar\nentrenamiento'**
+  String get homeStartWorkoutCta;
+
+  /// No description provided for @homeDoneEarly.
+  ///
+  /// In es, this message translates to:
+  /// **'Hecho antes'**
+  String get homeDoneEarly;
+
+  /// No description provided for @homeRestDayBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'DÍA DE DESCANSO'**
+  String get homeRestDayBadge;
+
+  /// No description provided for @homeRestDayTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Día ligero!'**
+  String get homeRestDayTitle;
+
+  /// No description provided for @homeRestDayDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy toca recuperarte. Mantente activo con movimientos suaves durante el día.'**
+  String get homeRestDayDescription;
+
+  /// No description provided for @homeRestDayActiveBreak.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacer una pausa activa'**
+  String get homeRestDayActiveBreak;
+
+  /// No description provided for @homeRestDayAdvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Adelantar próximo entrenamiento'**
+  String get homeRestDayAdvance;
 }
 
 class _AppLocalizationsDelegate

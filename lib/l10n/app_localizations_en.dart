@@ -864,4 +864,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daySunShort => 'Sun';
+
+  @override
+  String get authSexLabel => 'Biological sex';
+
+  @override
+  String get sexMale => 'Male';
+
+  @override
+  String get sexFemale => 'Female';
+
+  @override
+  String get valSelectSex => 'Please select your biological sex.';
+
+  @override
+  String get editProfileEmailReadOnly => 'Your email can\'t be changed here.';
+
+  @override
+  String get editProfileSave => 'Save changes';
+
+  @override
+  String get editProfileSaved => 'Profile updated.';
+
+  @override
+  String get editProfileSaveFailed =>
+      'Could not save your profile. Please try again.';
+
+  @override
+  String get homeTodayWorkoutBadge => 'TODAY\'S WORKOUT';
+
+  @override
+  String get homeWorkoutDescription =>
+      'A complete routine to activate your body and improve your fitness.';
+
+  @override
+  String get homeStartWorkoutCta => 'Start\nworkout';
+
+  @override
+  String get homeDoneEarly => 'Done early';
+
+  @override
+  String get homeRestDayBadge => 'REST DAY';
+
+  @override
+  String get homeRestDayTitle => 'Rest day!';
+
+  @override
+  String get homeRestDayDescription =>
+      'Take time to recover today, and keep moving gently throughout the day.';
+
+  @override
+  String get homeRestDayActiveBreak => 'Take an active break';
+
+  @override
+  String get homeRestDayAdvance => 'Start next workout early';
 }

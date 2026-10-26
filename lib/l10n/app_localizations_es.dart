@@ -876,4 +876,58 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get daySunShort => 'Dom';
+
+  @override
+  String get authSexLabel => 'Sexo biológico';
+
+  @override
+  String get sexMale => 'Hombre';
+
+  @override
+  String get sexFemale => 'Mujer';
+
+  @override
+  String get valSelectSex => 'Por favor selecciona tu sexo biológico.';
+
+  @override
+  String get editProfileEmailReadOnly => 'Tu correo no se puede cambiar aquí.';
+
+  @override
+  String get editProfileSave => 'Guardar cambios';
+
+  @override
+  String get editProfileSaved => 'Perfil actualizado.';
+
+  @override
+  String get editProfileSaveFailed =>
+      'No se pudo guardar tu perfil. Inténtalo de nuevo.';
+
+  @override
+  String get homeTodayWorkoutBadge => 'TU ENTRENAMIENTO DE HOY';
+
+  @override
+  String get homeWorkoutDescription =>
+      'Una rutina completa para activar tu cuerpo y mejorar tu condición física.';
+
+  @override
+  String get homeStartWorkoutCta => 'Comenzar\nentrenamiento';
+
+  @override
+  String get homeDoneEarly => 'Hecho antes';
+
+  @override
+  String get homeRestDayBadge => 'DÍA DE DESCANSO';
+
+  @override
+  String get homeRestDayTitle => '¡Día ligero!';
+
+  @override
+  String get homeRestDayDescription =>
+      'Hoy toca recuperarte. Mantente activo con movimientos suaves durante el día.';
+
+  @override
+  String get homeRestDayActiveBreak => 'Hacer una pausa activa';
+
+  @override
+  String get homeRestDayAdvance => 'Adelantar próximo entrenamiento';
 }

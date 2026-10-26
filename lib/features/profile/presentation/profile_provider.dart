@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
@@ -38,6 +39,14 @@ class Profile extends _$Profile {
     await repository.saveProfile(updatedUser);
 
     state = AsyncData(updatedUser);
+  }
+
+  /// Saves the user-edited fields only, so app-managed data written meanwhile
+  /// (stats, history, panel edits) is never overwritten.
+  Future<void> updatePersonalInfo(PersonalInfo info) async {
+    final currentUser = await future;
+    await ref.read(profileRepositoryProvider).updatePersonalInfo(info);
+    state = AsyncData(currentUser.withPersonalInfo(info));
   }
 
   Future<void> saveNotificationPreferences(UserNotifications notifications) async {

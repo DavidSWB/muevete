@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
+import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/profile/domain/entities/user_streak.dart';
@@ -93,6 +94,9 @@ class _ControlledProfileRepository implements ProfileRepository {
 
   @override
   Future<UserModel> getProfile() async => saved.last;
+
+  @override
+  Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
   Future<void> createProfile(UserModel user) async {}

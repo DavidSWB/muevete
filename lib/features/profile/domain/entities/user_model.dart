@@ -4,6 +4,7 @@ import 'package:muevete/features/profile/domain/entities/user_stats.dart';
 import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/entities/user_training.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
+import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/shared/entities/progresssummary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -191,6 +192,30 @@ class UserModel {
       "progressSummary": progressSummary?.toJson(),
       "notifications": notifications?.toJson(),
     };
+  }
+
+  /// This profile with [info] in place of the user-edited fields. Unlike
+  /// [copyWith], it can clear [medicalConditions].
+  UserModel withPersonalInfo(PersonalInfo info) {
+    return UserModel(
+      id: id,
+      email: email,
+      username: info.username,
+      sex: info.sex.storedValue,
+      age: info.age,
+      height: info.height,
+      weight: info.weight,
+      createdAt: createdAt,
+      medicalConditions: info.medicalConditions,
+      stats: stats,
+      training: training,
+      progressSummary: progressSummary,
+      notifications: notifications,
+      completedWorkouts: completedWorkouts,
+      completedActiveBreaks: completedActiveBreaks,
+      streak: streak,
+      consistencyTrackedSince: consistencyTrackedSince,
+    );
   }
 
   UserModel copyWith({

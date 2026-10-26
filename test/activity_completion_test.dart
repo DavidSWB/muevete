@@ -8,6 +8,7 @@ import 'package:muevete/features/active_breaks/presentation/providers/active_bre
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_workout_screen.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_timer_screen.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
+import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/repositories/profile_repository.dart';
@@ -337,6 +338,9 @@ class _RecordingProfileRepository implements ProfileRepository {
 
   @override
   Future<void> saveProfile(UserModel user) async => savedProfiles.add(user);
+
+  @override
+  Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
   Future<void> createProfile(UserModel user) async => savedProfiles.add(user);

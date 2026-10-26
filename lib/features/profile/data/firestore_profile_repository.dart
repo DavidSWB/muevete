@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
+import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_streak.dart';
 import 'package:muevete/features/profile/domain/repositories/profile_repository.dart';
@@ -49,6 +50,26 @@ class FirestoreProfileRepository implements ProfileRepository{
           user.toJson(),
           SetOptions(merge: true),
         );
+  }
+
+  @override
+  Future<void> updatePersonalInfo(PersonalInfo info) async {
+    final currentUser = _auth.currentUser;
+
+    if (currentUser == null) {
+      throw Exception('User not authenticated.');
+    }
+
+    // update() fails if the profile does not exist instead of creating a
+    // partial one.
+    await _firestore.collection('users').doc(currentUser.uid).update({
+      'username': info.username,
+      'age': info.age,
+      'height': info.height,
+      'weight': info.weight,
+      'sex': info.sex.storedValue,
+      'medicalConditions': info.medicalConditions,
+    });
   }
 
   @override

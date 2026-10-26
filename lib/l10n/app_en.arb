@@ -270,5 +270,23 @@
   "dayThuShort": "Thu",
   "dayFriShort": "Fri",
   "daySatShort": "Sat",
-  "daySunShort": "Sun"
+  "daySunShort": "Sun",
+
+  "authSexLabel": "Biological sex",
+  "sexMale": "Male",
+  "sexFemale": "Female",
+  "valSelectSex": "Please select your biological sex.",
+  "editProfileEmailReadOnly": "Your email can't be changed here.",
+  "editProfileSave": "Save changes",
+  "editProfileSaved": "Profile updated.",
+  "editProfileSaveFailed": "Could not save your profile. Please try again.",
+  "homeTodayWorkoutBadge": "TODAY'S WORKOUT",
+  "homeWorkoutDescription": "A complete routine to activate your body and improve your fitness.",
+  "homeStartWorkoutCta": "Start\nworkout",
+  "homeDoneEarly": "Done early",
+  "homeRestDayBadge": "REST DAY",
+  "homeRestDayTitle": "Rest day!",
+  "homeRestDayDescription": "Take time to recover today, and keep moving gently throughout the day.",
+  "homeRestDayActiveBreak": "Take an active break",
+  "homeRestDayAdvance": "Start next workout early"
 }

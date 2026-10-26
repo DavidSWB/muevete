@@ -339,5 +339,23 @@
   "dayThuShort": "Jue",
   "dayFriShort": "Vie",
   "daySatShort": "Sáb",
-  "daySunShort": "Dom"
+  "daySunShort": "Dom",
+
+  "authSexLabel": "Sexo biológico",
+  "sexMale": "Hombre",
+  "sexFemale": "Mujer",
+  "valSelectSex": "Por favor selecciona tu sexo biológico.",
+  "editProfileEmailReadOnly": "Tu correo no se puede cambiar aquí.",
+  "editProfileSave": "Guardar cambios",
+  "editProfileSaved": "Perfil actualizado.",
+  "editProfileSaveFailed": "No se pudo guardar tu perfil. Inténtalo de nuevo.",
+  "homeTodayWorkoutBadge": "TU ENTRENAMIENTO DE HOY",
+  "homeWorkoutDescription": "Una rutina completa para activar tu cuerpo y mejorar tu condición física.",
+  "homeStartWorkoutCta": "Comenzar\nentrenamiento",
+  "homeDoneEarly": "Hecho antes",
+  "homeRestDayBadge": "DÍA DE DESCANSO",
+  "homeRestDayTitle": "¡Día ligero!",
+  "homeRestDayDescription": "Hoy toca recuperarte. Mantente activo con movimientos suaves durante el día.",
+  "homeRestDayActiveBreak": "Hacer una pausa activa",
+  "homeRestDayAdvance": "Adelantar próximo entrenamiento"
 }

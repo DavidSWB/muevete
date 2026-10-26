@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/features/profile/domain/entities/biological_sex.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/services/personal_info_validator.dart';
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
+import 'package:muevete/features/profile/presentation/widgets/biological_sex_selector.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
@@ -24,9 +27,6 @@ class SignupScreen extends ConsumerStatefulWidget {
 
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   static const int _minPasswordLength = 6;
-  static const int _maxValidAge = 120;
-  static const double _maxValidWeightKg = 400;
-  static const double _maxValidHeightCm = 300;
 
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -35,6 +35,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _weightController = TextEditingController();
   final _heightController = TextEditingController();
   final _medicalConditionsController = TextEditingController();
+  BiologicalSex? _sex;
 
   String? errorMessage = '';
   bool _isLoading = false;
@@ -111,19 +112,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       return l10n.valPasswordMinLength;
     }
 
-    final age = int.tryParse(ageText);
-    if (age == null || age <= 0 || age > _maxValidAge) {
+    if (PersonalInfoValidator.parseAge(ageText) == null) {
       return l10n.valInvalidAge;
     }
 
-    final weight = double.tryParse(weightText);
-    if (weight == null || weight <= 0 || weight > _maxValidWeightKg) {
+    if (PersonalInfoValidator.parseWeightKg(weightText) == null) {
       return l10n.valInvalidWeight;
     }
 
-    final height = double.tryParse(heightText);
-    if (height == null || height <= 0 || height > _maxValidHeightCm) {
+    if (PersonalInfoValidator.parseHeightCm(heightText) == null) {
       return l10n.valInvalidHeight;
+    }
+
+    if (_sex == null) {
+      return l10n.valSelectSex;
     }
 
     return null;
@@ -185,6 +187,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         age: age,
         weight: weight,
         height: height,
+        sex: _sex!.storedValue,
         medicalConditions: medicalConditionsText.isNotEmpty
             ? [medicalConditionsText]
             : null,
@@ -405,6 +408,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     decimal: true,
                   ),
                   textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 14),
+
+                BiologicalSexSelector(
+                  value: _sex,
+                  enabled: !_isLoading,
+                  onChanged: (sex) => setState(() => _sex = sex),
                 ),
                 const SizedBox(height: 14),
 
