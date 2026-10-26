@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/profile/domain/entities/biological_sex.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/services/body_measure_options.dart';
 import 'package:muevete/features/profile/domain/services/personal_info_validator.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/profile/presentation/widgets/biological_sex_selector.dart';
+import 'package:muevete/features/profile/presentation/widgets/body_measure_wheels.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 import 'package:muevete/shared/widgets/my_textinputfield.dart';
+import 'package:muevete/shared/widgets/wheel_picker.dart';
 
 /// Lets the user change the personal fields they entered at sign-up.
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -24,11 +26,11 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _nameController = TextEditingController();
-  final _ageController = TextEditingController();
-  final _weightController = TextEditingController();
-  final _heightController = TextEditingController();
   final _medicalConditionsController = TextEditingController();
   BiologicalSex? _sex;
+  int? _age;
+  double? _weightKg;
+  double? _heightCm;
 
   bool _initialized = false;
   bool _isSaving = false;
@@ -37,9 +39,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _ageController.dispose();
-    _weightController.dispose();
-    _heightController.dispose();
     _medicalConditionsController.dispose();
     super.dispose();
   }
@@ -50,43 +49,73 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     if (_initialized) return;
     _initialized = true;
     _nameController.text = user.username;
-    _ageController.text = user.age?.toString() ?? '';
-    _weightController.text = _formatNumber(user.weight);
-    _heightController.text = _formatNumber(user.height);
+    _age = user.age;
+    _weightKg = user.weight;
+    _heightCm = user.height;
     _medicalConditionsController.text =
         user.medicalConditions?.join(', ') ?? '';
     _sex = BiologicalSex.fromStored(user.sex);
   }
 
-  static String _formatNumber(double? value) {
-    if (value == null) return '';
-    return value == value.roundToDouble()
-        ? value.toInt().toString()
-        : value.toString();
+  static String _formatNumber(double value) => value == value.roundToDouble()
+      ? value.toInt().toString()
+      : value.toStringAsFixed(1);
+
+  Future<void> _pickAge(AppLocalizations l10n) async {
+    final picked = await showWheelPickerSheet<int>(
+      context,
+      title: l10n.measureAgeTitle,
+      doneLabel: l10n.commonDone,
+      initialValue: _age ?? BodyMeasureOptions.defaultAge,
+      wheelBuilder: (onChanged) => AgeWheel(
+        value: _age ?? BodyMeasureOptions.defaultAge,
+        onChanged: onChanged,
+      ),
+    );
+    if (picked != null && mounted) setState(() => _age = picked);
+  }
+
+  Future<void> _pickWeight(AppLocalizations l10n) async {
+    final initial = _weightKg ?? BodyMeasureOptions.defaultWeightKg;
+    final picked = await showWheelPickerSheet<double>(
+      context,
+      title: l10n.measureWeightTitle,
+      doneLabel: l10n.commonDone,
+      initialValue: initial,
+      wheelBuilder: (onChanged) =>
+          WeightWheel(valueKg: initial, onChanged: onChanged),
+    );
+    if (picked != null && mounted) setState(() => _weightKg = picked);
+  }
+
+  Future<void> _pickHeight(AppLocalizations l10n) async {
+    final initial = _heightCm ?? BodyMeasureOptions.defaultHeightCm.toDouble();
+    final picked = await showWheelPickerSheet<double>(
+      context,
+      title: l10n.measureHeightTitle,
+      doneLabel: l10n.commonDone,
+      initialValue: initial,
+      wheelBuilder: (onChanged) =>
+          HeightWheel(valueCm: initial, onChanged: onChanged),
+    );
+    if (picked != null && mounted) setState(() => _heightCm = picked);
   }
 
   /// Returns the validated fields, or sets [_errorMessage] and returns null.
   PersonalInfo? _validate(AppLocalizations l10n) {
     final name = _nameController.text.trim();
-    final ageText = _ageController.text.trim();
-    final weightText = _weightController.text.trim();
-    final heightText = _heightController.text.trim();
+    final age = _age;
+    final weight = _weightKg;
+    final height = _heightCm;
 
     String? error;
-    final age = PersonalInfoValidator.parseAge(ageText);
-    final weight = PersonalInfoValidator.parseWeightKg(weightText);
-    final height = PersonalInfoValidator.parseHeightCm(heightText);
-
-    if (name.isEmpty ||
-        ageText.isEmpty ||
-        weightText.isEmpty ||
-        heightText.isEmpty) {
+    if (name.isEmpty || age == null || weight == null || height == null) {
       error = l10n.valMandatoryFields;
-    } else if (age == null) {
+    } else if (!PersonalInfoValidator.isValidAge(age)) {
       error = l10n.valInvalidAge;
-    } else if (weight == null) {
+    } else if (!PersonalInfoValidator.isValidWeightKg(weight)) {
       error = l10n.valInvalidWeight;
-    } else if (height == null) {
+    } else if (!PersonalInfoValidator.isValidHeightCm(height)) {
       error = l10n.valInvalidHeight;
     } else if (_sex == null) {
       error = l10n.valSelectSex;
@@ -246,36 +275,35 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                   const SizedBox(height: 14),
                 ],
-                MyTextinputfield(
-                  controller: _ageController,
-                  hintText: l10n.authAgeHint,
-                  prefixIcon: Icons.cake_outlined,
-                  obscureText: false,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                _MeasureField(
+                  key: const ValueKey('edit-profile-age'),
+                  label: l10n.profileAgeLabel,
+                  value: _age == null ? null : '$_age ${l10n.unitYears}',
+                  icon: Icons.cake_outlined,
+                  enabled: !_isSaving,
+                  onTap: () => _pickAge(l10n),
                 ),
                 const SizedBox(height: 14),
-                MyTextinputfield(
-                  controller: _weightController,
-                  hintText: l10n.authWeightHint,
-                  prefixIcon: Icons.monitor_weight_outlined,
-                  obscureText: false,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  textInputAction: TextInputAction.next,
+                _MeasureField(
+                  key: const ValueKey('edit-profile-weight'),
+                  label: l10n.profileWeightLabel,
+                  value: _weightKg == null
+                      ? null
+                      : '${_formatNumber(_weightKg!)} ${l10n.unitKg}',
+                  icon: Icons.monitor_weight_outlined,
+                  enabled: !_isSaving,
+                  onTap: () => _pickWeight(l10n),
                 ),
                 const SizedBox(height: 14),
-                MyTextinputfield(
-                  controller: _heightController,
-                  hintText: l10n.authHeightHint,
-                  prefixIcon: Icons.height_rounded,
-                  obscureText: false,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  textInputAction: TextInputAction.next,
+                _MeasureField(
+                  key: const ValueKey('edit-profile-height'),
+                  label: l10n.profileHeightLabel,
+                  value: _heightCm == null
+                      ? null
+                      : '${_formatNumber(_heightCm!)} ${l10n.unitCm}',
+                  icon: Icons.height_rounded,
+                  enabled: !_isSaving,
+                  onTap: () => _pickHeight(l10n),
                 ),
                 const SizedBox(height: 14),
                 BiologicalSexSelector(
@@ -302,6 +330,54 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// A read-only field that opens a wheel picker; styled like the text fields
+/// around it.
+class _MeasureField extends StatelessWidget {
+  const _MeasureField({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.onTap,
+    this.enabled = true,
+  });
+
+  final String label;
+  final String? value;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(12),
+        child: InputDecorator(
+          isEmpty: value == null,
+          decoration: InputDecoration(
+            labelText: label,
+            prefixIcon: Icon(icon, color: AppColors.textMuted, size: 20),
+            suffixIcon: const Icon(
+              Icons.unfold_more_rounded,
+              color: AppColors.textMuted,
+              size: 20,
+            ),
+            filled: true,
+            fillColor: AppColors.surface,
+          ),
+          child: Text(
+            value ?? '',
+            style: const TextStyle(fontSize: 15, color: AppColors.textPrimary),
+          ),
+        ),
       ),
     );
   }

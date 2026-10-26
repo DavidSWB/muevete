@@ -357,5 +357,20 @@
   "homeRestDayTitle": "¡Día ligero!",
   "homeRestDayDescription": "Hoy toca recuperarte. Mantente activo con movimientos suaves durante el día.",
   "homeRestDayActiveBreak": "Hacer una pausa activa",
-  "homeRestDayAdvance": "Adelantar próximo entrenamiento"
+  "homeRestDayAdvance": "Adelantar próximo entrenamiento",
+
+  "measureAgeTitle": "¿Cuántos años tienes?",
+  "measureWeightTitle": "¿Cuánto pesas?",
+  "measureHeightTitle": "¿Cuánto mides?",
+  "profileAgeLabel": "Edad",
+  "profileWeightLabel": "Peso",
+  "profileHeightLabel": "Altura",
+  "unitYears": "años",
+  "unitKg": "kg",
+  "unitLbs": "lbs",
+  "unitCm": "cm",
+  "commonNext": "Siguiente",
+  "commonDone": "Listo",
+  "timePickerHour": "Hora",
+  "timePickerMinute": "Minutos"
 }

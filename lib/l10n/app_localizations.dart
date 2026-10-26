@@ -1735,6 +1735,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Adelantar próximo entrenamiento'**
   String get homeRestDayAdvance;
+
+  /// No description provided for @measureAgeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuántos años tienes?'**
+  String get measureAgeTitle;
+
+  /// No description provided for @measureWeightTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto pesas?'**
+  String get measureWeightTitle;
+
+  /// No description provided for @measureHeightTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto mides?'**
+  String get measureHeightTitle;
+
+  /// No description provided for @profileAgeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get profileAgeLabel;
+
+  /// No description provided for @profileWeightLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso'**
+  String get profileWeightLabel;
+
+  /// No description provided for @profileHeightLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Altura'**
+  String get profileHeightLabel;
+
+  /// No description provided for @unitYears.
+  ///
+  /// In es, this message translates to:
+  /// **'años'**
+  String get unitYears;
+
+  /// No description provided for @unitKg.
+  ///
+  /// In es, this message translates to:
+  /// **'kg'**
+  String get unitKg;
+
+  /// No description provided for @unitLbs.
+  ///
+  /// In es, this message translates to:
+  /// **'lbs'**
+  String get unitLbs;
+
+  /// No description provided for @unitCm.
+  ///
+  /// In es, this message translates to:
+  /// **'cm'**
+  String get unitCm;
+
+  /// No description provided for @commonNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente'**
+  String get commonNext;
+
+  /// No description provided for @commonDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get commonDone;
+
+  /// No description provided for @timePickerHour.
+  ///
+  /// In es, this message translates to:
+  /// **'Hora'**
+  String get timePickerHour;
+
+  /// No description provided for @timePickerMinute.
+  ///
+  /// In es, this message translates to:
+  /// **'Minutos'**
+  String get timePickerMinute;
 }
 
 class _AppLocalizationsDelegate

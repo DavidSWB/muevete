@@ -26,21 +26,29 @@ import 'package:muevete/l10n/app_localizations.dart';
 void main() {
   group('PersonalInfoValidator', () {
     test('accepts the sign-up ranges', () {
-      expect(PersonalInfoValidator.parseAge(' 30 '), 30);
-      expect(PersonalInfoValidator.parseAge('120'), 120);
-      expect(PersonalInfoValidator.parseWeightKg('70.5'), 70.5);
-      expect(PersonalInfoValidator.parseHeightCm('175'), 175);
+      expect(PersonalInfoValidator.isValidAge(30), isTrue);
+      expect(PersonalInfoValidator.isValidAge(120), isTrue);
+      expect(PersonalInfoValidator.isValidWeightKg(70.5), isTrue);
+      expect(PersonalInfoValidator.isValidHeightCm(175), isTrue);
     });
 
-    test('rejects out-of-range and unreadable values', () {
-      for (final text in ['', '0', '-1', '121', 'abc', '30.5']) {
-        expect(PersonalInfoValidator.parseAge(text), isNull, reason: text);
+    test('rejects missing and out-of-range values', () {
+      for (final age in [null, 0, -1, 121]) {
+        expect(PersonalInfoValidator.isValidAge(age), isFalse, reason: '$age');
       }
-      for (final text in ['', '0', '401', 'NaN', 'Infinity']) {
-        expect(PersonalInfoValidator.parseWeightKg(text), isNull, reason: text);
+      for (final weight in [null, 0.0, 401.0, double.nan, double.infinity]) {
+        expect(
+          PersonalInfoValidator.isValidWeightKg(weight),
+          isFalse,
+          reason: '$weight',
+        );
       }
-      for (final text in ['', '0', '301', 'NaN']) {
-        expect(PersonalInfoValidator.parseHeightCm(text), isNull, reason: text);
+      for (final height in [null, 0.0, 301.0, double.nan]) {
+        expect(
+          PersonalInfoValidator.isValidHeightCm(height),
+          isFalse,
+          reason: '$height',
+        );
       }
     });
   });
@@ -153,9 +161,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(TextField, 'Old Name'), findsOneWidget);
-      expect(find.widgetWithText(TextField, '30'), findsOneWidget);
-      expect(find.widgetWithText(TextField, '70.5'), findsOneWidget);
-      expect(find.widgetWithText(TextField, '175'), findsOneWidget);
+      expect(find.text('30 years'), findsOneWidget);
+      expect(find.text('70.5 kg'), findsOneWidget);
+      expect(find.text('175 cm'), findsOneWidget);
       expect(find.widgetWithText(TextField, 'Asthma'), findsOneWidget);
       expect(find.text('old@example.com'), findsOneWidget);
       expect(_selectedSex(tester), {BiologicalSex.male});
@@ -172,19 +180,62 @@ void main() {
       expect(repository.saved, isEmpty);
     });
 
-    testWidgets('shows validation errors in Spanish', (tester) async {
-      final repository = _ControlledRepository();
+    testWidgets('a missing age is reported in Spanish', (tester) async {
+      final repository = _ControlledRepository(user: _userWithoutAge);
       await _pump(tester, repository, locale: const Locale('es'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.widgetWithText(TextField, '30'), '200');
       await _tapSave(tester);
 
       expect(
-        find.text('Por favor ingresa una edad válida (1-120).'),
+        find.text('Todos los campos obligatorios deben completarse.'),
         findsOneWidget,
       );
       expect(repository.saved, isEmpty);
+    });
+
+    testWidgets('age, weight and height are picked on wheels', (tester) async {
+      final repository = _ControlledRepository();
+      await _pump(tester, repository);
+      await tester.pumpAndSettle();
+
+      // Age: tapping a row scrolls it into the middle.
+      await tester.tap(find.byKey(const ValueKey('edit-profile-age')));
+      await tester.pumpAndSettle();
+      expect(find.text('How old are you?'), findsOneWidget);
+      await tester.tap(find.text('31'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('wheel-sheet-done')));
+      await tester.pumpAndSettle();
+      expect(find.text('31 years'), findsOneWidget);
+
+      // Weight in pounds is saved in kilograms.
+      await tester.tap(find.byKey(const ValueKey('edit-profile-weight')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('lbs'));
+      await tester.pumpAndSettle();
+      expect(find.text('155'), findsOneWidget);
+      await tester.tap(find.text('156'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('wheel-sheet-done')));
+      await tester.pumpAndSettle();
+      expect(find.text('70.8 kg'), findsOneWidget);
+
+      // Dismissing the sheet keeps the value.
+      await tester.tap(find.byKey(const ValueKey('edit-profile-height')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('176'));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      expect(find.text('175 cm'), findsOneWidget);
+
+      await _tapSave(tester);
+      await tester.pumpAndSettle();
+
+      expect(repository.saved.single.age, 31);
+      expect(repository.saved.single.weight, 70.8);
+      expect(repository.saved.single.height, 175);
     });
 
     testWidgets('saves once, even when Save is pressed again meanwhile', (
@@ -284,6 +335,15 @@ final _user = UserModel(
   completedActiveBreaks: [DateTime(2026, 10, 6, 9)],
   streak: UserStreak.empty,
   consistencyTrackedSince: DateTime(2026, 10, 2),
+);
+
+final _userWithoutAge = UserModel(
+  id: 'uid-1',
+  email: 'old@example.com',
+  username: 'Old Name',
+  sex: 'Male',
+  height: 175,
+  weight: 70.5,
 );
 
 final _userWithoutSex = UserModel(

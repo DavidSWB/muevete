@@ -930,4 +930,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeRestDayAdvance => 'Adelantar próximo entrenamiento';
+
+  @override
+  String get measureAgeTitle => '¿Cuántos años tienes?';
+
+  @override
+  String get measureWeightTitle => '¿Cuánto pesas?';
+
+  @override
+  String get measureHeightTitle => '¿Cuánto mides?';
+
+  @override
+  String get profileAgeLabel => 'Edad';
+
+  @override
+  String get profileWeightLabel => 'Peso';
+
+  @override
+  String get profileHeightLabel => 'Altura';
+
+  @override
+  String get unitYears => 'años';
+
+  @override
+  String get unitKg => 'kg';
+
+  @override
+  String get unitLbs => 'lbs';
+
+  @override
+  String get unitCm => 'cm';
+
+  @override
+  String get commonNext => 'Siguiente';
+
+  @override
+  String get commonDone => 'Listo';
+
+  @override
+  String get timePickerHour => 'Hora';
+
+  @override
+  String get timePickerMinute => 'Minutos';
 }

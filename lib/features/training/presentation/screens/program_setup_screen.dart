@@ -10,6 +10,7 @@ import 'package:muevete/features/training/presentation/providers/program_setup_p
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
+import 'package:muevete/shared/widgets/wheel_time_picker.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 
 class ProgramSetupScreen extends ConsumerStatefulWidget {
@@ -275,9 +276,13 @@ class _ProgramSetupScreenState extends ConsumerState<ProgramSetupScreen> {
                             ),
                           ),
                           onTap: () async {
-                            final time = await showTimePicker(
-                              context: context,
+                            final time = await showWheelTimePicker(
+                              context,
                               initialTime: _preferredTime,
+                              title: l10n.progReminderTime,
+                              doneLabel: l10n.commonDone,
+                              hourLabel: l10n.timePickerHour,
+                              minuteLabel: l10n.timePickerMinute,
                             );
                             if (time != null) {
                               setState(() => _preferredTime = time);

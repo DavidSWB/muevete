@@ -15,7 +15,7 @@ import 'package:muevete/features/profile/presentation/profile_repository_provide
 import 'package:muevete/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('sign-up requires a sex and stores the chosen value', (
+  testWidgets('sign-up asks for sex, then age, weight and height in turn', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(390, 1400);
@@ -56,25 +56,59 @@ void main() {
     await tester.enterText(fields.at(0), 'Ana');
     await tester.enterText(fields.at(1), 'ana@example.com');
     await tester.enterText(fields.at(2), 'secret123');
-    await tester.enterText(fields.at(3), '28');
-    await tester.enterText(fields.at(4), '60');
-    await tester.enterText(fields.at(5), '165');
 
-    final register = find.text('Register');
-    await tester.ensureVisible(register);
-    await tester.tap(register);
+    final next = find.text('Next');
+    await tester.ensureVisible(next);
+    await tester.tap(next);
     await tester.pumpAndSettle();
 
+    // The account form asks for a sex before moving on.
     expect(find.text('Please select your biological sex.'), findsOneWidget);
-    expect(profiles.created, isEmpty);
+    expect(find.text('How old are you?'), findsNothing);
 
     await tester.tap(find.text('Female'));
     await tester.pump();
-    await tester.tap(register);
+    await tester.ensureVisible(next);
+    await tester.tap(next);
     await tester.pumpAndSettle();
 
-    expect(profiles.created.single.sex, 'Female');
-    expect(profiles.created.single.id, 'new-uid');
+    // Age, then weight, then height, one screen each.
+    final stepButton = find.byKey(const ValueKey('signup-step-next'));
+    expect(find.text('How old are you?'), findsOneWidget);
+    await tester.tap(find.text('31'));
+    await tester.pumpAndSettle();
+    await tester.tap(stepButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('How much do you weigh?'), findsOneWidget);
+    await tester.tap(find.text('lbs'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('155'));
+    await tester.pumpAndSettle();
+    await tester.tap(stepButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('How tall are you?'), findsOneWidget);
+    // Back keeps what was picked.
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('How much do you weigh?'), findsOneWidget);
+    await tester.tap(stepButton);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('169'));
+    await tester.pumpAndSettle();
+    expect(find.text('Register'), findsOneWidget);
+    await tester.tap(stepButton);
+    await tester.pumpAndSettle();
+
+    final created = profiles.created.single;
+    expect(created.id, 'new-uid');
+    expect(created.sex, 'Female');
+    expect(created.age, 31);
+    // 155 lbs, stored in kilograms.
+    expect(created.weight, 70.3);
+    expect(created.height, 169);
   });
 }
 

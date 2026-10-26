@@ -8,6 +8,7 @@ import 'package:muevete/features/profile/domain/entities/user_notifications.dart
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
+import 'package:muevete/shared/widgets/wheel_time_picker.dart';
 import 'package:muevete/shared/widgets/my_button.dart';
 
 class NotificationSettingsScreen extends ConsumerStatefulWidget {
@@ -111,9 +112,14 @@ class _NotificationSettingsScreenState
   }
 
   Future<void> _pickStartTime() async {
-    final picked = await showTimePicker(
-      context: context,
+    final l10n = AppLocalizations.of(context)!;
+    final picked = await showWheelTimePicker(
+      context,
       initialTime: _activeBreakStartTime,
+      title: l10n.notifStartTime,
+      doneLabel: l10n.commonDone,
+      hourLabel: l10n.timePickerHour,
+      minuteLabel: l10n.timePickerMinute,
     );
     if (picked != null) {
       setState(() {
@@ -124,9 +130,14 @@ class _NotificationSettingsScreenState
   }
 
   Future<void> _pickEndTime() async {
-    final picked = await showTimePicker(
-      context: context,
+    final l10n = AppLocalizations.of(context)!;
+    final picked = await showWheelTimePicker(
+      context,
       initialTime: _activeBreakEndTime,
+      title: l10n.notifEndTime,
+      doneLabel: l10n.commonDone,
+      hourLabel: l10n.timePickerHour,
+      minuteLabel: l10n.timePickerMinute,
     );
     if (picked != null) {
       setState(() {

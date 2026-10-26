@@ -288,5 +288,20 @@
   "homeRestDayTitle": "Rest day!",
   "homeRestDayDescription": "Take time to recover today, and keep moving gently throughout the day.",
   "homeRestDayActiveBreak": "Take an active break",
-  "homeRestDayAdvance": "Start next workout early"
+  "homeRestDayAdvance": "Start next workout early",
+
+  "measureAgeTitle": "How old are you?",
+  "measureWeightTitle": "How much do you weigh?",
+  "measureHeightTitle": "How tall are you?",
+  "profileAgeLabel": "Age",
+  "profileWeightLabel": "Weight",
+  "profileHeightLabel": "Height",
+  "unitYears": "years",
+  "unitKg": "kg",
+  "unitLbs": "lbs",
+  "unitCm": "cm",
+  "commonNext": "Next",
+  "commonDone": "Done",
+  "timePickerHour": "Hour",
+  "timePickerMinute": "Minutes"
 }
