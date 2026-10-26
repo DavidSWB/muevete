@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/entities/user_notifications.dart';
@@ -17,11 +18,10 @@ class Profile extends _$Profile {
     try {
       await NotificationScheduler.rescheduleAll(user);
     } catch (error, stackTrace) {
-      developer.log(
+      _logSchedulingFailure(
         'Failed to schedule notifications after loading the profile',
-        name: 'muevete.notifications',
-        error: error,
-        stackTrace: stackTrace,
+        error,
+        stackTrace,
       );
     }
     return user;
@@ -56,11 +56,10 @@ class Profile extends _$Profile {
     try {
       await NotificationScheduler.rescheduleAll(updatedUser, force: true);
     } catch (error, stackTrace) {
-      developer.log(
+      _logSchedulingFailure(
         'Failed to schedule notifications after saving preferences',
-        name: 'muevete.notifications',
-        error: error,
-        stackTrace: stackTrace,
+        error,
+        stackTrace,
       );
       throw NotificationSchedulingException(error, stackTrace);
     }
@@ -70,6 +69,19 @@ class Profile extends _$Profile {
     ref.invalidateSelf();
     await future;
   }
+}
+
+/// `developer.log` never reaches logcat in release builds, so the failure is
+/// also printed; that is the only trace left on a physical device. The error
+/// comes from the notification plugin and carries no profile data.
+void _logSchedulingFailure(String message, Object error, StackTrace stackTrace) {
+  developer.log(
+    message,
+    name: 'muevete.notifications',
+    error: error,
+    stackTrace: stackTrace,
+  );
+  debugPrint('muevete.notifications: $message: $error');
 }
 
 class NotificationSchedulingException implements Exception {

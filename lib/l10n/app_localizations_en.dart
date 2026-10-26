@@ -278,7 +278,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifSavePreferences => 'Save Preferences';
 
   @override
-  String get notifSavedSuccess => 'Notification settings saved successfully.';
+  String get notifSavedSuccess => 'Preferences saved and reminders updated.';
 
   @override
   String get notifSavedDisabledDevice =>
@@ -296,7 +296,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifErrorSchedule =>
-      'Preferences were saved, but reminders could not be scheduled. Check notification permissions and try again.';
+      'Preferences were saved, but reminders could not be scheduled on this device. Please try again.';
+
+  @override
+  String get notifErrorScheduleNoPermission =>
+      'Preferences were saved, but reminders can\'t be shown because notifications are disabled on this device. Turn them on and save again.';
 
   @override
   String get diagTitle => 'Diagnosis';

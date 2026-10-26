@@ -605,7 +605,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifSavedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Ajustes de notificaciones guardados correctamente.'**
+  /// **'Preferencias guardadas y recordatorios actualizados.'**
   String get notifSavedSuccess;
 
   /// No description provided for @notifSavedDisabledDevice.
@@ -635,8 +635,14 @@ abstract class AppLocalizations {
   /// No description provided for @notifErrorSchedule.
   ///
   /// In es, this message translates to:
-  /// **'Se guardaron las preferencias, pero no se pudieron programar los recordatorios. Revisa los permisos y vuelve a intentarlo.'**
+  /// **'Se guardaron las preferencias, pero no se pudieron programar los recordatorios en este dispositivo. Vuelve a intentarlo.'**
   String get notifErrorSchedule;
+
+  /// No description provided for @notifErrorScheduleNoPermission.
+  ///
+  /// In es, this message translates to:
+  /// **'Se guardaron las preferencias, pero los recordatorios no se pueden mostrar porque las notificaciones están desactivadas en este dispositivo. Actívalas y vuelve a guardar.'**
+  String get notifErrorScheduleNoPermission;
 
   /// No description provided for @diagTitle.
   ///

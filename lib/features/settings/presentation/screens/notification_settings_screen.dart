@@ -157,6 +157,7 @@ class _NotificationSettingsScreenState
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       _isSaving = true;
       _errorMessage = null;
@@ -180,30 +181,33 @@ class _NotificationSettingsScreenState
       await _checkPermission();
 
       if (mounted) {
-        if (!_permissionGranted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Settings saved, but notifications are disabled on this device.',
-              ),
-              backgroundColor: Colors.orange,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _permissionGranted
+                  ? l10n.notifSavedSuccess
+                  : l10n.notifSavedDisabledDevice,
             ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Notification settings saved successfully.'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
+            backgroundColor:
+                _permissionGranted ? Colors.green : Colors.orange,
+          ),
+        );
       }
-    } catch (error) {
+    } on NotificationSchedulingException {
+      // The preferences are stored; only the reminders failed. Say which of
+      // the two causes applies instead of always blaming the permission.
+      await _checkPermission();
       if (mounted) {
         setState(() {
-          _errorMessage = error is NotificationSchedulingException
-              ? 'Preferences were saved, but reminders could not be scheduled. Check notification permissions and try again.'
-              : 'Could not save notification settings. Please try again.';
+          _errorMessage = _permissionGranted
+              ? l10n.notifErrorSchedule
+              : l10n.notifErrorScheduleNoPermission;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = l10n.notifErrorSave;
         });
       }
     } finally {

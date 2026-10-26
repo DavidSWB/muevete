@@ -284,7 +284,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notifSavedSuccess =>
-      'Ajustes de notificaciones guardados correctamente.';
+      'Preferencias guardadas y recordatorios actualizados.';
 
   @override
   String get notifSavedDisabledDevice =>
@@ -302,7 +302,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notifErrorSchedule =>
-      'Se guardaron las preferencias, pero no se pudieron programar los recordatorios. Revisa los permisos y vuelve a intentarlo.';
+      'Se guardaron las preferencias, pero no se pudieron programar los recordatorios en este dispositivo. Vuelve a intentarlo.';
+
+  @override
+  String get notifErrorScheduleNoPermission =>
+      'Se guardaron las preferencias, pero los recordatorios no se pueden mostrar porque las notificaciones están desactivadas en este dispositivo. Actívalas y vuelve a guardar.';
 
   @override
   String get diagTitle => 'Diagnóstico';
