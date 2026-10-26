@@ -9,11 +9,17 @@ import 'package:muevete/features/localization/domain/localized_map_extension.dar
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/entities/plan_day.dart';
+import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
 import 'package:muevete/features/training/presentation/providers/next_training_provider.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/screens/error_screen.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
+
+/// The current time as Home sees it; tests override it to fix the date.
+final homeClockProvider = Provider<DateTime Function()>(
+  (ref) => DateTime.now,
+);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -55,6 +61,12 @@ class HomeScreen extends ConsumerWidget {
           ref.read(mainNavIndexProvider.notifier).setIndex(index);
         }
 
+        const schedule = TrainingScheduleService();
+        final now = ref.read(homeClockProvider)();
+        final isRestDay = schedule.isRestDay(user: user, now: now);
+        final doneEarly =
+            !isRestDay && schedule.wasDoneEarly(user: user, now: now);
+
         final completedThisWeek = _countCompletedThisWeek(
           user.completedWorkouts,
         );
@@ -78,7 +90,13 @@ class HomeScreen extends ConsumerWidget {
                 _NextWorkoutHeroCard(
                   user: user,
                   nextTraining: nextTraining,
+                  isRestDay: isRestDay,
+                  doneEarly: doneEarly,
                   onStartWorkout: () => openTab(MainScreen.trainingTab),
+                  onActiveBreak: () {
+                    HapticFeedback.lightImpact();
+                    context.push('/active-breaks');
+                  },
                 ),
                 const SizedBox(height: 18),
                 WalkthroughAnchor(
@@ -208,12 +226,24 @@ class _NextWorkoutHeroCard extends StatelessWidget {
   const _NextWorkoutHeroCard({
     required this.user,
     required this.nextTraining,
+    required this.isRestDay,
+    required this.doneEarly,
     required this.onStartWorkout,
+    required this.onActiveBreak,
   });
 
   final UserModel user;
   final AsyncValue<PlanDay> nextTraining;
+
+  /// Shows the light-day message and its two actions instead of the session.
+  final bool isRestDay;
+
+  /// Today's session was already done on a rest day.
+  final bool doneEarly;
+
+  /// Opens the Training tab, which shows today's or the next session.
   final VoidCallback onStartWorkout;
+  final VoidCallback onActiveBreak;
 
   String _resolveLevelLabel(BuildContext context, double? overallLevel) {
     final isSpanish = Localizations.localeOf(context).languageCode == 'es';
@@ -234,21 +264,21 @@ class _NextWorkoutHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSpanish = Localizations.localeOf(context).languageCode == 'es';
-    final badgeText = isSpanish
-        ? 'TU PRÓXIMO ENTRENAMIENTO'
-        : 'YOUR NEXT WORKOUT';
-    final descriptionText = isSpanish
-        ? 'Una rutina completa para activar tu cuerpo y mejorar tu condición física.'
-        : 'A complete routine to activate your body and improve your fitness.';
-    final ctaLabel = isSpanish ? 'Comenzar\nentrenamiento' : 'Start\nworkout';
+    final l10n = AppLocalizations.of(context)!;
+    final badgeText =
+        isRestDay ? l10n.homeRestDayBadge : l10n.homeTodayWorkoutBadge;
+    final descriptionText = isRestDay
+        ? l10n.homeRestDayDescription
+        : l10n.homeWorkoutDescription;
 
     final planDay = nextTraining.asData?.value;
-    final workoutTitle = nextTraining.when(
-      loading: () => '...',
-      error: (_, __) => 'Full Body A',
-      data: (day) => day.name.localized(context, fallback: 'Full Body A'),
-    );
+    final workoutTitle = isRestDay
+        ? l10n.homeRestDayTitle
+        : nextTraining.when(
+            loading: () => '...',
+            error: (_, __) => 'Full Body A',
+            data: (day) => day.name.localized(context, fallback: 'Full Body A'),
+          );
     final durationMinutes = _resolveDurationMinutes(planDay);
     final levelLabel = _resolveLevelLabel(context, user.stats?.overallLevel);
 
@@ -311,41 +341,32 @@ class _NextWorkoutHeroCard extends StatelessWidget {
                       letterSpacing: -0.4,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.access_time_rounded,
-                        size: 16,
-                        color: AppColors.textMuted,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '$durationMinutes min',
-                        style: const TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textMuted,
-                          fontFeatures: [FontFeature.tabularFigures()],
+                  if (!isRestDay) ...[
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 14,
+                      runSpacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        _HeroMeta(
+                          icon: Icons.access_time_rounded,
+                          label: '$durationMinutes min',
+                          tabularFigures: true,
                         ),
-                      ),
-                      const SizedBox(width: 14),
-                      const Icon(
-                        Icons.bar_chart_rounded,
-                        size: 16,
-                        color: AppColors.textMuted,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        levelLabel,
-                        style: const TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textMuted,
+                        _HeroMeta(
+                          icon: Icons.bar_chart_rounded,
+                          label: levelLabel,
                         ),
-                      ),
-                    ],
-                  ),
+                        if (doneEarly)
+                          _HeroMeta(
+                            key: const ValueKey('home-done-early'),
+                            icon: Icons.check_circle_rounded,
+                            iconColor: AppColors.success,
+                            label: l10n.homeDoneEarly,
+                          ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 14),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 215),
@@ -360,52 +381,147 @@ class _NextWorkoutHeroCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  WalkthroughAnchor(
-                    id: 'home.startWorkout',
-                    child: Material(
-                      color: const Color(0xFF0077C2),
-                      borderRadius: BorderRadius.circular(999),
-                      elevation: 2,
-                      shadowColor: const Color(
-                        0xFF0077C2,
-                      ).withValues(alpha: 0.35),
-                      child: InkWell(
+                  if (isRestDay)
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 240),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _HeroPillButton(
+                            key: const ValueKey('home-rest-active-break'),
+                            label: l10n.homeRestDayActiveBreak,
+                            onTap: onActiveBreak,
+                          ),
+                          const SizedBox(height: 10),
+                          // Same destination as the training-day CTA, so the
+                          // tour step on it works on rest days too.
+                          WalkthroughAnchor(
+                            id: 'home.startWorkout',
+                            child: _HeroPillButton(
+                              key: const ValueKey('home-rest-advance'),
+                              label: l10n.homeRestDayAdvance,
+                              onTap: onStartWorkout,
+                              outlined: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    WalkthroughAnchor(
+                      id: 'home.startWorkout',
+                      child: _HeroPillButton(
+                        label: l10n.homeStartWorkoutCta,
                         onTap: onStartWorkout,
-                        borderRadius: BorderRadius.circular(999),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                ctaLabel,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14.5,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.2,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              const Icon(
-                                Icons.arrow_forward_rounded,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ],
-                          ),
-                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroMeta extends StatelessWidget {
+  const _HeroMeta({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.iconColor = AppColors.textMuted,
+    this.tabularFigures = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color iconColor;
+  final bool tabularFigures;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: iconColor),
+        const SizedBox(width: 5),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textMuted,
+            fontFeatures:
+                tabularFigures ? const [FontFeature.tabularFigures()] : null,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The hero card's pill action. Filled is the card's primary action;
+/// [outlined] marks a secondary one beside it.
+class _HeroPillButton extends StatelessWidget {
+  const _HeroPillButton({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.outlined = false,
+    this.textAlign = TextAlign.start,
+  });
+
+  static const Color _blue = Color(0xFF0077C2);
+
+  final String label;
+  final VoidCallback onTap;
+  final bool outlined;
+  final TextAlign textAlign;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = outlined ? _blue : Colors.white;
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(999),
+      side: outlined
+          ? const BorderSide(color: _blue, width: 1.5)
+          : BorderSide.none,
+    );
+
+    return Material(
+      color: outlined ? Colors.white : _blue,
+      shape: shape,
+      elevation: outlined ? 0 : 2,
+      shadowColor: _blue.withValues(alpha: 0.35),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: shape,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    label,
+                    textAlign: textAlign,
+                    style: TextStyle(
+                      color: foreground,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Icon(Icons.arrow_forward_rounded, color: foreground, size: 18),
+              ],
+            ),
+          ),
         ),
       ),
     );
