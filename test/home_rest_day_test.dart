@@ -46,6 +46,16 @@ void main() {
     expect(_anchor('home.startWorkout'), findsOneWidget);
   });
 
+  testWidgets('the workout card spans the screen width', (tester) async {
+    await _pump(tester, now: _monday, size: const Size(400, 2400));
+
+    final card = tester.getSize(
+      find.byKey(const ValueKey('home-workout-card')),
+    );
+    // Home's horizontal padding is 20 on each side.
+    expect(card.width, 360);
+  });
+
   testWidgets('a rest day shows the light-day message and both actions', (
     tester,
   ) async {

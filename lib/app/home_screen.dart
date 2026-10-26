@@ -283,6 +283,10 @@ class _NextWorkoutHeroCard extends StatelessWidget {
     final levelLabel = _resolveLevelLabel(context, user.stats?.overallLevel);
 
     return Container(
+      key: const ValueKey('home-workout-card'),
+      // Full width, so the card doesn't shrink to its text and leave an empty
+      // strip beside it.
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
         gradient: const LinearGradient(
