@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/education/presentation/widgets/tip_frequency_tile.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
@@ -70,6 +71,8 @@ class SettingsScreen extends ConsumerWidget {
                   title: l10n.settingsNotifications,
                   onTap: () => context.push('/notifications'),
                 ),
+                const Divider(indent: 68),
+                const TipFrequencyTile(),
                 const Divider(indent: 68),
                 SettingsTile(
                   icon: Icons.language_rounded,

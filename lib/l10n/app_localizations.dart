@@ -1825,6 +1825,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Minutos'**
   String get timePickerMinute;
+
+  /// No description provided for @tourHomeMissionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuestra misión'**
+  String get tourHomeMissionTitle;
+
+  /// No description provided for @tourHomeMissionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Muévete te ayuda a pasar menos tiempo sentado y a moverte más cada día, con entrenamientos guiados y pausas activas cortas.'**
+  String get tourHomeMissionBody;
+
+  /// No description provided for @tourHomeHabitsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un hábito que crece contigo'**
+  String get tourHomeHabitsTitle;
+
+  /// No description provided for @tourHomeHabitsBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Los entrenamientos y las pausas activas te ayudan a crear el hábito de moverte. Los ejercicios se adaptan a tu nivel y pueden avanzar contigo cuando repites la evaluación.'**
+  String get tourHomeHabitsBody;
+
+  /// No description provided for @tipTypeTip.
+  ///
+  /// In es, this message translates to:
+  /// **'CONSEJO'**
+  String get tipTypeTip;
+
+  /// No description provided for @tipTypeEvidence.
+  ///
+  /// In es, this message translates to:
+  /// **'LO QUE DICE LA EVIDENCIA'**
+  String get tipTypeEvidence;
+
+  /// No description provided for @tipDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar consejo'**
+  String get tipDismiss;
+
+  /// No description provided for @tipSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuente: {source}'**
+  String tipSource(String source);
+
+  /// No description provided for @tipOpenSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir la fuente: {source}'**
+  String tipOpenSource(String source);
+
+  /// No description provided for @tipSourceFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir el enlace. Inténtalo de nuevo más tarde.'**
+  String get tipSourceFailed;
+
+  /// No description provided for @settingsTips.
+  ///
+  /// In es, this message translates to:
+  /// **'Consejos de salud'**
+  String get settingsTips;
+
+  /// No description provided for @settingsTipsDaily.
+  ///
+  /// In es, this message translates to:
+  /// **'Uno al día'**
+  String get settingsTipsDaily;
+
+  /// No description provided for @settingsTipsEveryOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada vez que abro la app'**
+  String get settingsTipsEveryOpen;
+
+  /// No description provided for @settingsTipsOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Desactivados'**
+  String get settingsTipsOff;
 }
 
 class _AppLocalizationsDelegate

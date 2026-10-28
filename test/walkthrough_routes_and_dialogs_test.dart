@@ -137,7 +137,7 @@ void main() {
       await h.openStart(tester);
       expect(
         find.text(
-          'You were on step 5 of 33. Continue where you left off or start over?',
+          'You were on step 7 of 35. Continue where you left off or start over?',
         ),
         findsOneWidget,
       );

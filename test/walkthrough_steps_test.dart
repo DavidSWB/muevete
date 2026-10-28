@@ -12,15 +12,15 @@ int _index(String id) {
 
 void main() {
   group('step map', () {
-    test('has 33 steps with unique ids', () {
-      expect(walkthroughSteps, hasLength(33));
+    test('has 35 steps with unique ids', () {
+      expect(walkthroughSteps, hasLength(35));
       final ids = walkthroughSteps.map((step) => step.id).toSet();
-      expect(ids, hasLength(33));
+      expect(ids, hasLength(35));
     });
 
-    test('has 15 informational and 18 gated steps', () {
+    test('has 17 informational and 18 gated steps', () {
       expect(walkthroughSteps.where((step) => step.isGated), hasLength(18));
-      expect(walkthroughSteps.where((step) => !step.isGated), hasLength(15));
+      expect(walkthroughSteps.where((step) => !step.isGated), hasLength(17));
     });
 
     test(
@@ -45,7 +45,13 @@ void main() {
       }
       expect(
         walkthroughSteps.where((step) => step.centered).map((s) => s.id),
-        ['home.welcome', 'diagnosis.overview', 'ab.routine'],
+        [
+          'home.welcome',
+          'home.mission',
+          'home.habits',
+          'diagnosis.overview',
+          'ab.routine',
+        ],
       );
     });
 

@@ -141,12 +141,12 @@ void main() {
       controller.start();
 
       expect(controller.next(), isTrue);
-      expect(stepId(), 'home.profile');
+      expect(stepId(), 'home.mission');
       expect(
         store.data['user-a'],
         const WalkthroughProgress(
           status: WalkthroughStatus.active,
-          stepId: 'home.profile',
+          stepId: 'home.mission',
         ),
       );
     });

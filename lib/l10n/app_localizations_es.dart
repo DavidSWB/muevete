@@ -976,4 +976,53 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get timePickerMinute => 'Minutos';
+
+  @override
+  String get tourHomeMissionTitle => 'Nuestra misión';
+
+  @override
+  String get tourHomeMissionBody =>
+      'Muévete te ayuda a pasar menos tiempo sentado y a moverte más cada día, con entrenamientos guiados y pausas activas cortas.';
+
+  @override
+  String get tourHomeHabitsTitle => 'Un hábito que crece contigo';
+
+  @override
+  String get tourHomeHabitsBody =>
+      'Los entrenamientos y las pausas activas te ayudan a crear el hábito de moverte. Los ejercicios se adaptan a tu nivel y pueden avanzar contigo cuando repites la evaluación.';
+
+  @override
+  String get tipTypeTip => 'CONSEJO';
+
+  @override
+  String get tipTypeEvidence => 'LO QUE DICE LA EVIDENCIA';
+
+  @override
+  String get tipDismiss => 'Cerrar consejo';
+
+  @override
+  String tipSource(String source) {
+    return 'Fuente: $source';
+  }
+
+  @override
+  String tipOpenSource(String source) {
+    return 'Abrir la fuente: $source';
+  }
+
+  @override
+  String get tipSourceFailed =>
+      'No pudimos abrir el enlace. Inténtalo de nuevo más tarde.';
+
+  @override
+  String get settingsTips => 'Consejos de salud';
+
+  @override
+  String get settingsTipsDaily => 'Uno al día';
+
+  @override
+  String get settingsTipsEveryOpen => 'Cada vez que abro la app';
+
+  @override
+  String get settingsTipsOff => 'Desactivados';
 }
