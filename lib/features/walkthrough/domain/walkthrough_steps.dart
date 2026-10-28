@@ -11,6 +11,19 @@ const List<WalkthroughStep> walkthroughSteps = [
     type: _info,
     centered: true,
   ),
+  // The mission introduction: why Muévete exists and how it helps.
+  WalkthroughStep(
+    id: 'home.mission',
+    screen: WalkthroughScreen.home,
+    type: _info,
+    centered: true,
+  ),
+  WalkthroughStep(
+    id: 'home.habits',
+    screen: WalkthroughScreen.home,
+    type: _info,
+    centered: true,
+  ),
   WalkthroughStep(
     id: 'home.profile',
     screen: WalkthroughScreen.home,

@@ -373,5 +373,29 @@
   "commonNext": "Siguiente",
   "commonDone": "Listo",
   "timePickerHour": "Hora",
-  "timePickerMinute": "Minutos"
+  "timePickerMinute": "Minutos",
+  "tourHomeMissionTitle": "Nuestra misión",
+  "tourHomeMissionBody": "Muévete te ayuda a pasar menos tiempo sentado y a moverte más cada día, con entrenamientos guiados y pausas activas cortas.",
+  "tourHomeHabitsTitle": "Un hábito que crece contigo",
+  "tourHomeHabitsBody": "Los entrenamientos y las pausas activas te ayudan a crear el hábito de moverte. Los ejercicios se adaptan a tu nivel y pueden avanzar contigo cuando repites la evaluación.",
+  "tipTypeTip": "CONSEJO",
+  "tipTypeEvidence": "LO QUE DICE LA EVIDENCIA",
+  "tipDismiss": "Cerrar consejo",
+  "tipSource": "Fuente: {source}",
+  "@tipSource": {
+    "placeholders": {
+      "source": {"type": "String"}
+    }
+  },
+  "tipOpenSource": "Abrir la fuente: {source}",
+  "@tipOpenSource": {
+    "placeholders": {
+      "source": {"type": "String"}
+    }
+  },
+  "tipSourceFailed": "No pudimos abrir el enlace. Inténtalo de nuevo más tarde.",
+  "settingsTips": "Consejos de salud",
+  "settingsTipsDaily": "Uno al día",
+  "settingsTipsEveryOpen": "Cada vez que abro la app",
+  "settingsTipsOff": "Desactivados"
 }

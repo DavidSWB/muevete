@@ -964,4 +964,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get timePickerMinute => 'Minutes';
+
+  @override
+  String get tourHomeMissionTitle => 'Our mission';
+
+  @override
+  String get tourHomeMissionBody =>
+      'Muévete helps you spend less time sitting and move more every day, with guided workouts and short active breaks.';
+
+  @override
+  String get tourHomeHabitsTitle => 'A habit that grows with you';
+
+  @override
+  String get tourHomeHabitsBody =>
+      'Workouts and active breaks help you build a habit of moving. Exercises match your level and can move up with you when you retake the assessment.';
+
+  @override
+  String get tipTypeTip => 'TIP';
+
+  @override
+  String get tipTypeEvidence => 'WHAT THE EVIDENCE SAYS';
+
+  @override
+  String get tipDismiss => 'Dismiss tip';
+
+  @override
+  String tipSource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String tipOpenSource(String source) {
+    return 'Open the source: $source';
+  }
+
+  @override
+  String get tipSourceFailed =>
+      'We couldn\'t open the link. Please try again later.';
+
+  @override
+  String get settingsTips => 'Health tips';
+
+  @override
+  String get settingsTipsDaily => 'One a day';
+
+  @override
+  String get settingsTipsEveryOpen => 'Every time I open the app';
+
+  @override
+  String get settingsTipsOff => 'Off';
 }

@@ -4,6 +4,8 @@ import 'package:muevete/l10n/app_localizations.dart';
 (String, String) walkthroughStepCopy(AppLocalizations l10n, String stepId) {
   return switch (stepId) {
     'home.welcome' => (l10n.tourHomeWelcomeTitle, l10n.tourHomeWelcomeBody),
+    'home.mission' => (l10n.tourHomeMissionTitle, l10n.tourHomeMissionBody),
+    'home.habits' => (l10n.tourHomeHabitsTitle, l10n.tourHomeHabitsBody),
     'home.profile' => (l10n.tourHomeProfileTitle, l10n.tourHomeProfileBody),
     'home.weeklyStats' => (
       l10n.tourHomeWeeklyStatsTitle,

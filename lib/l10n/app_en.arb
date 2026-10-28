@@ -304,5 +304,19 @@
   "commonNext": "Next",
   "commonDone": "Done",
   "timePickerHour": "Hour",
-  "timePickerMinute": "Minutes"
+  "timePickerMinute": "Minutes",
+  "tourHomeMissionTitle": "Our mission",
+  "tourHomeMissionBody": "Muévete helps you spend less time sitting and move more every day, with guided workouts and short active breaks.",
+  "tourHomeHabitsTitle": "A habit that grows with you",
+  "tourHomeHabitsBody": "Workouts and active breaks help you build a habit of moving. Exercises match your level and can move up with you when you retake the assessment.",
+  "tipTypeTip": "TIP",
+  "tipTypeEvidence": "WHAT THE EVIDENCE SAYS",
+  "tipDismiss": "Dismiss tip",
+  "tipSource": "Source: {source}",
+  "tipOpenSource": "Open the source: {source}",
+  "tipSourceFailed": "We couldn't open the link. Please try again later.",
+  "settingsTips": "Health tips",
+  "settingsTipsDaily": "One a day",
+  "settingsTipsEveryOpen": "Every time I open the app",
+  "settingsTipsOff": "Off"
 }
