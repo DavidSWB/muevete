@@ -459,5 +459,20 @@
     }
   },
   "progressMedalsLoading": "Cargando medallas",
-  "progressMedalsError": "No se pudieron cargar las medallas."
+  "progressMedalsError": "No se pudieron cargar las medallas.",
+  "homeWeeklyBreaksCount": "{count}/{goal}",
+  "@homeWeeklyBreaksCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "goal": {"type": "int"}
+    }
+  },
+  "homeWeeklyBreaksCaption": "pausas esta semana",
+  "homeWeeklyBreaksLabel": "{count} de {goal} pausas activas esta semana",
+  "@homeWeeklyBreaksLabel": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "goal": {"type": "int"}
+    }
+  }
 }

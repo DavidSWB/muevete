@@ -1999,6 +1999,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudieron cargar las medallas.'**
   String get progressMedalsError;
+
+  /// No description provided for @homeWeeklyBreaksCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count}/{goal}'**
+  String homeWeeklyBreaksCount(int count, int goal);
+
+  /// No description provided for @homeWeeklyBreaksCaption.
+  ///
+  /// In es, this message translates to:
+  /// **'pausas esta semana'**
+  String get homeWeeklyBreaksCaption;
+
+  /// No description provided for @homeWeeklyBreaksLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} de {goal} pausas activas esta semana'**
+  String homeWeeklyBreaksLabel(int count, int goal);
 }
 
 class _AppLocalizationsDelegate

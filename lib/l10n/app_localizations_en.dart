@@ -1081,4 +1081,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get progressMedalsError => 'Couldn\'t load your medals.';
+
+  @override
+  String homeWeeklyBreaksCount(int count, int goal) {
+    return '$count/$goal';
+  }
+
+  @override
+  String get homeWeeklyBreaksCaption => 'breaks this week';
+
+  @override
+  String homeWeeklyBreaksLabel(int count, int goal) {
+    return '$count of $goal active breaks this week';
+  }
 }

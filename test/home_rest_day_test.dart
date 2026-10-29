@@ -160,6 +160,72 @@ void main() {
     expect(find.text('TU ENTRENAMIENTO DE HOY'), findsOneWidget);
     expect(find.text('Comenzar\nentrenamiento'), findsOneWidget);
   });
+
+  group('Weekly active-break goal', () {
+    // Six breaks this week and one the Sunday before, which does not count.
+    final breaks = [
+      DateTime(2026, 10, 11, 23, 59),
+      for (var i = 0; i < 6; i++) DateTime(2026, 10, 12, 8 + i),
+    ];
+
+    testWidgets('replaces the old subtitle with the ring in English', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        now: _wednesday,
+        user: _user(completedActiveBreaks: breaks),
+      );
+
+      expect(find.text('6/10'), findsOneWidget);
+      expect(find.text('breaks this week'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('6 of 10 active breaks this week'),
+        findsOneWidget,
+      );
+      expect(find.text("Let’s keep moving."), findsNothing);
+    });
+
+    testWidgets('reads in Spanish', (tester) async {
+      await _pump(
+        tester,
+        now: _wednesday,
+        locale: const Locale('es'),
+        user: _user(completedActiveBreaks: breaks),
+      );
+
+      expect(find.text('6/10'), findsOneWidget);
+      expect(find.text('pausas esta semana'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('6 de 10 pausas activas esta semana'),
+        findsOneWidget,
+      );
+      expect(find.text('Hoy es un buen día para moverte'), findsNothing);
+    });
+
+    testWidgets('fills the ring and keeps counting past the goal', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        now: _wednesday,
+        user: _user(
+          completedActiveBreaks: [
+            for (var i = 0; i < 12; i++) DateTime(2026, 10, 13, 8, i),
+          ],
+        ),
+      );
+
+      expect(find.text('12/10'), findsOneWidget);
+      final ring = tester.widget<CircularProgressIndicator>(
+        find.descendant(
+          of: find.byKey(const ValueKey('home-weekly-break-goal')),
+          matching: find.byType(CircularProgressIndicator),
+        ),
+      );
+      expect(ring.value, 1.0);
+    });
+  });
 }
 
 enum _NextTraining { data, loading, error }
@@ -171,6 +237,7 @@ Finder _anchor(String id) => find.byWidgetPredicate(
 UserModel _user({
   UserSchedule? schedule = const UserSchedule(days: {1: 1, 3: 2}),
   List<DateTime> completedWorkouts = const [],
+  List<DateTime> completedActiveBreaks = const [],
 }) {
   return UserModel(
     id: 'u',
@@ -182,6 +249,7 @@ UserModel _user({
       schedule: schedule,
     ),
     completedWorkouts: completedWorkouts,
+    completedActiveBreaks: completedActiveBreaks,
   );
 }
 
