@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muevete/features/gamification/domain/achievement.dart';
 import 'package:muevete/features/gamification/domain/achievement_evaluator.dart';
 import 'package:muevete/features/gamification/presentation/gamification_providers.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -26,7 +27,14 @@ class BadgeSync {
   }) async {
     final earned = <String>{};
     try {
-      final catalogue = await _ref.read(achievementsProvider.future);
+      final List<Achievement> catalogue;
+      try {
+        catalogue = await _ref.read(achievementsProvider.future);
+      } catch (_) {
+        // Read it again next time instead of keeping the failure.
+        _ref.invalidate(achievementsProvider);
+        rethrow;
+      }
       earned.addAll(
         const AchievementEvaluator().newlyEarned(
           catalogue: catalogue,

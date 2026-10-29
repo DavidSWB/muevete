@@ -85,6 +85,10 @@ class FirestoreProfileRepository implements ProfileRepository{
             'completedActiveBreaks': <String>[],
             'streak': UserStreak.empty.toJson(),
             'consistencyTrackedSince': DateTime.now().toIso8601String(),
+            // The same starting point existing users were given.
+            'movementXp': 0,
+            'jointProgress': {for (final joint in progressionJoints) joint: 0},
+            'unlockedBadgeIds': <String>[],
           },
           SetOptions(merge: true),
         );
