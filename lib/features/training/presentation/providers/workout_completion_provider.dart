@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/training/domain/repositories/workout_completion_port.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
@@ -27,7 +28,8 @@ class PersistingWorkoutCompletion implements WorkoutCompletionPort {
   final WorkoutController _controller;
 
   @override
-  Future<void> complete() => _controller.finishWorkout();
+  Future<void> complete(CompletedWorkout workout) =>
+      _controller.finishWorkout(workout);
 }
 
 /// Lets the tour rehearse Finish Workout without recording anything.
@@ -35,5 +37,5 @@ class TutorialWorkoutCompletion implements WorkoutCompletionPort {
   const TutorialWorkoutCompletion();
 
   @override
-  Future<void> complete() async {}
+  Future<void> complete(CompletedWorkout workout) async {}
 }

@@ -74,6 +74,7 @@ class WorkoutBuilder {
           reps: cycle.reps,
           rest: cycle.rest ?? 90,
           duration: cycle.duration,
+          targets: exercise.targets,
         ),
       );
     }

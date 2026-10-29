@@ -38,6 +38,13 @@ class UserModel {
   /// From this moment workouts and active breaks are recorded separately.
   final DateTime? consistencyTrackedSince;
 
+  /// Motivational XP from completions. It never changes exercise difficulty.
+  final int movementXp;
+
+  /// Cumulative progression points per joint (`ankle`, `knee`, `hip`,
+  /// `shoulder`). Display only; [stats] still chooses exercise variants.
+  final Map<String, int> jointProgress;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -56,6 +63,8 @@ class UserModel {
     this.completedActiveBreaks = const [],
     this.streak,
     this.consistencyTrackedSince,
+    this.movementXp = 0,
+    this.jointProgress = const {},
   });
 
   factory UserModel.fromJson({
@@ -113,12 +122,25 @@ class UserModel {
         consistencyTrackedSince: json["consistencyTrackedSince"] == null
             ? null
             : parseDateTime(json["consistencyTrackedSince"]),
+
+        movementXp: (json["movementXp"] as num?)?.toInt() ?? 0,
+
+        jointProgress: _parsePoints(json["jointProgress"]),
       );
     } catch (e, s) {
       print(e);
       print(s);
       rethrow;
     }
+  }
+
+  static Map<String, int> _parsePoints(dynamic value) {
+    if (value is! Map) return const {};
+    return {
+      for (final entry in value.entries)
+        if (entry.key is String && entry.value is num)
+          entry.key as String: (entry.value as num).toInt(),
+    };
   }
 
   /// Skips entries that cannot be read, so one bad value does not stop the
@@ -173,7 +195,7 @@ class UserModel {
     throw FormatException("Formato de fecha no soportado: $value");
   }
 
-  /// Profile fields only. Activity history, the streak and
+  /// Profile fields only. Activity history, the streak, rewards and
   /// [consistencyTrackedSince] are written by
   /// `ProfileRepository.recordCompletion` and `createProfile`, so saving a
   /// profile can never overwrite completions recorded meanwhile.
@@ -215,6 +237,8 @@ class UserModel {
       completedActiveBreaks: completedActiveBreaks,
       streak: streak,
       consistencyTrackedSince: consistencyTrackedSince,
+      movementXp: movementXp,
+      jointProgress: jointProgress,
     );
   }
 
@@ -235,6 +259,8 @@ class UserModel {
     List<DateTime>? completedActiveBreaks,
     UserStreak? streak,
     DateTime? consistencyTrackedSince,
+    int? movementXp,
+    Map<String, int>? jointProgress,
   }) {
     return UserModel(
       id: id,
@@ -259,6 +285,8 @@ class UserModel {
       streak: streak ?? this.streak,
       consistencyTrackedSince:
           consistencyTrackedSince ?? this.consistencyTrackedSince,
+      movementXp: movementXp ?? this.movementXp,
+      jointProgress: jointProgress ?? this.jointProgress,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/active_breaks/domain/entities/active_break.dart';
 import 'package:muevete/features/active_breaks/presentation/providers/active_break_providers.dart';
 import 'package:muevete/features/profile/presentation/activity_save_failed.dart';
+import 'package:muevete/features/training/presentation/providers/workout_set_progress_provider.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
 import 'package:muevete/l10n/app_localizations.dart';
@@ -16,10 +17,12 @@ class ActiveBreakWorkoutScreen extends ConsumerStatefulWidget {
   final ActiveBreak activeBreak;
 
   @override
-  ConsumerState<ActiveBreakWorkoutScreen> createState() => _ActiveBreakWorkoutScreenState();
+  ConsumerState<ActiveBreakWorkoutScreen> createState() =>
+      _ActiveBreakWorkoutScreenState();
 }
 
-class _ActiveBreakWorkoutScreenState extends ConsumerState<ActiveBreakWorkoutScreen> {
+class _ActiveBreakWorkoutScreenState
+    extends ConsumerState<ActiveBreakWorkoutScreen> {
   bool completed = false;
 
   /// Kept until the completion is saved, so a retry keeps a single entry.
@@ -48,7 +51,9 @@ class _ActiveBreakWorkoutScreenState extends ConsumerState<ActiveBreakWorkoutScr
     return workout.when(
       loading: () => const LoadingScreen(),
       error: (error, stackTrace) {
-        debugPrint('Could not load Active Break "${widget.activeBreak.activeBreakId}": $error');
+        debugPrint(
+          'Could not load Active Break "${widget.activeBreak.activeBreakId}": $error',
+        );
         debugPrintStack(stackTrace: stackTrace);
         final message = error.toString().replaceFirst('FormatException: ', '');
         return Scaffold(
@@ -63,20 +68,24 @@ class _ActiveBreakWorkoutScreenState extends ConsumerState<ActiveBreakWorkoutScr
           ),
         );
       },
-      data: (value) => Scaffold(
-        body: Stack(
-          children: [
-            WorkoutHero(workout: value),
-            WorkoutSlidingPanel(
-              workout: value,
-              finishButtonLabel: completed
-                  ? l10n.abRoutineCompleted
-                  : l10n.abMarkRoutineCompleted,
-              onWorkoutFinished: _complete,
-            ),
-          ],
-        ),
-      ),
+      data: (value) {
+        // Keeps the ticked sets while the user moves between exercises.
+        ref.watch(workoutSetProgressProvider(value.exercises));
+        return Scaffold(
+          body: Stack(
+            children: [
+              WorkoutHero(workout: value),
+              WorkoutSlidingPanel(
+                workout: value,
+                finishButtonLabel: completed
+                    ? l10n.abRoutineCompleted
+                    : l10n.abMarkRoutineCompleted,
+                onWorkoutFinished: _complete,
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

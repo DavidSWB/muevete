@@ -4,6 +4,7 @@ import 'package:muevete/features/training/domain/entities/exercise_level.dart';
 import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/exercise_variant.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
+import 'package:muevete/features/training/presentation/providers/workout_set_progress_provider.dart';
 import 'package:muevete/features/training/presentation/screens/exercise_detail_screen.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/exercise_list.dart';
 import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';import 'package:muevete/l10n/app_localizations.dart';
@@ -142,6 +143,31 @@ void main() {
       expect(find.byIcon(Icons.check_circle), findsNothing);
     });
 
+    testWidgets('keeps the ticked sets of each exercise for Finish Workout',
+        (tester) async {
+      _setSurface(tester);
+      final exercises = [_exercise('A'), _exercise('B')];
+      await tester.pumpWidget(_app(home: _TrackedList(exercises)));
+      expect(find.text('ticked 0'), findsOneWidget);
+
+      await tester.tap(find.text('Exercise A'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Mark set complete'));
+      await tester.pump();
+      await tester.tap(find.byKey(_nextKey));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Mark set complete'));
+      await tester.pump();
+      await tester.tap(find.byKey(_doneKey));
+      await tester.pumpAndSettle();
+      expect(find.text('ticked 2'), findsOneWidget);
+
+      // Reopening an exercise shows the sets ticked before.
+      await tester.tap(find.text('Exercise A'));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    });
+
     testWidgets('stops a running hold timer when moving on', (tester) async {
       _setSurface(tester);
       final exercises = [
@@ -229,6 +255,28 @@ WorkoutExercise _exercise(String name, {int? duration}) {
     rest: 30,
     duration: duration,
   );
+}
+
+/// Stands in for the training screen, which keeps the workout's ticks.
+class _TrackedList extends ConsumerWidget {
+  const _TrackedList(this.exercises);
+
+  final List<WorkoutExercise> exercises;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progress = workoutSetProgressProvider(exercises);
+    ref.watch(progress);
+    final ticked = ref.read(progress.notifier).summary().completedSets;
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: Text('ticked $ticked')),
+          ExerciseList(exercises: exercises),
+        ],
+      ),
+    );
+  }
 }
 
 class _RouteCounter extends NavigatorObserver {

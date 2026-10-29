@@ -1909,6 +1909,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Desactivados'**
   String get settingsTipsOff;
+
+  /// No description provided for @progressMovementTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu progreso de movimiento'**
+  String get progressMovementTitle;
+
+  /// No description provided for @progressMovementXp.
+  ///
+  /// In es, this message translates to:
+  /// **'{xp} XP'**
+  String progressMovementXp(int xp);
+
+  /// No description provided for @progressMovementXpHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Sumas XP al completar entrenamientos y pausas activas. No cambia la dificultad de tus ejercicios.'**
+  String get progressMovementXpHint;
+
+  /// No description provided for @progressJointHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada serie completada suma puntos a las articulaciones que trabaja.'**
+  String get progressJointHint;
+
+  /// No description provided for @progressJointLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nivel {level}'**
+  String progressJointLevel(int level);
+
+  /// No description provided for @progressJointPoints.
+  ///
+  /// In es, this message translates to:
+  /// **'{points}/{next} pts'**
+  String progressJointPoints(int points, int next);
+
+  /// No description provided for @progressJointMaxLevel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nivel máximo'**
+  String get progressJointMaxLevel;
+
+  /// No description provided for @progressJointLevelLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{joint}: nivel {level}, {points} de {next} puntos'**
+  String progressJointLevelLabel(String joint, int level, int points, int next);
+
+  /// No description provided for @progressJointMaxLevelLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{joint}: nivel {level}, nivel máximo'**
+  String progressJointMaxLevelLabel(String joint, int level);
 }
 
 class _AppLocalizationsDelegate

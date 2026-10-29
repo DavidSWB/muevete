@@ -1025,4 +1025,48 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsTipsOff => 'Desactivados';
+
+  @override
+  String get progressMovementTitle => 'Tu progreso de movimiento';
+
+  @override
+  String progressMovementXp(int xp) {
+    return '$xp XP';
+  }
+
+  @override
+  String get progressMovementXpHint =>
+      'Sumas XP al completar entrenamientos y pausas activas. No cambia la dificultad de tus ejercicios.';
+
+  @override
+  String get progressJointHint =>
+      'Cada serie completada suma puntos a las articulaciones que trabaja.';
+
+  @override
+  String progressJointLevel(int level) {
+    return 'Nivel $level';
+  }
+
+  @override
+  String progressJointPoints(int points, int next) {
+    return '$points/$next pts';
+  }
+
+  @override
+  String get progressJointMaxLevel => 'Nivel máximo';
+
+  @override
+  String progressJointLevelLabel(
+    String joint,
+    int level,
+    int points,
+    int next,
+  ) {
+    return '$joint: nivel $level, $points de $next puntos';
+  }
+
+  @override
+  String progressJointMaxLevelLabel(String joint, int level) {
+    return '$joint: nivel $level, nivel máximo';
+  }
 }

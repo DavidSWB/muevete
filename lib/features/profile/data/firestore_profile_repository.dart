@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -94,6 +95,7 @@ class FirestoreProfileRepository implements ProfileRepository{
     required ActivityKind kind,
     required DateTime completedAt,
     required UserStreak streak,
+    RewardForHistory? reward,
   }) async {
     final currentUser = _auth.currentUser;
 
@@ -105,11 +107,38 @@ class FirestoreProfileRepository implements ProfileRepository{
       ActivityKind.workout => 'completedWorkouts',
       ActivityKind.activeBreak => 'completedActiveBreaks',
     };
-
     // Local wall-clock time without offset, the format already stored.
-    await _firestore.collection('users').doc(currentUser.uid).update({
-      field: FieldValue.arrayUnion([completedAt.toIso8601String()]),
-      'streak': streak.toJson(),
+    final entry = completedAt.toIso8601String();
+    final ref = _firestore.collection('users').doc(currentUser.uid);
+
+    // A transaction, so the history it checks is the one it writes to: a
+    // retry of a completion that was already saved changes nothing.
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(ref);
+      final rawHistory = snapshot.data()?[field];
+      final history = rawHistory is List ? rawHistory : const [];
+      if (history.contains(entry)) return;
+
+      final earned = reward?.call(_readDates(history)) ?? ActivityReward.none;
+      transaction.update(ref, {
+        field: FieldValue.arrayUnion([entry]),
+        'streak': streak.toJson(),
+        if (earned.xp > 0) 'movementXp': FieldValue.increment(earned.xp),
+        for (final joint in earned.jointPoints.entries)
+          'jointProgress.${joint.key}': FieldValue.increment(joint.value),
+      });
     });
+  }
+
+  static List<DateTime> _readDates(List<dynamic> history) {
+    final dates = <DateTime>[];
+    for (final value in history) {
+      try {
+        dates.add(UserModel.parseDateTime(value));
+      } on FormatException {
+        // An unreadable entry cannot count toward a daily limit.
+      }
+    }
+    return dates;
   }
 }

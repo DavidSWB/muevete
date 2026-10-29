@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/training/domain/entities/exercise_sequence.dart';
 import 'package:muevete/features/training/domain/entities/workout_exercise.dart';
+import 'package:muevete/features/training/presentation/providers/workout_set_progress_provider.dart';
 import 'package:muevete/features/training/presentation/widgets/set_completion_row.dart';
 import 'package:muevete/features/walkthrough/domain/walkthrough_step.dart';
 import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_controller.dart';
@@ -70,6 +71,18 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
       widget.exercise.sets,
       widget.exercise.duration ?? 0,
     );
+    // Sets ticked earlier in this workout, before leaving the exercise.
+    final sequence = widget.sequence;
+    if (sequence != null) {
+      final saved = ref
+          .read(workoutSetProgressProvider(sequence.exercises).notifier)
+          .completedSets(sequence.index);
+      for (final index in saved) {
+        if (index >= _completed.length) continue;
+        _completed[index] = true;
+        _remainingSeconds[index] = 0;
+      }
+    }
     // Lets the tour skip its Next step on the last exercise of a workout.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -82,6 +95,18 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
 
   WalkthroughController get _tour =>
       ref.read(walkthroughControllerProvider.notifier);
+
+  /// Keeps the workout's record of ticked sets in step with this screen.
+  void _saveProgress() {
+    final sequence = widget.sequence;
+    if (sequence == null) return;
+    ref
+        .read(workoutSetProgressProvider(sequence.exercises).notifier)
+        .setCompleted(sequence.index, {
+          for (var i = 0; i < _completed.length; i++)
+            if (_completed[i]) i,
+        });
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -107,11 +132,13 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
         _completed[index] = false;
         if (_isHold) _remainingSeconds[index] = widget.exercise.duration ?? 0;
       });
+      _saveProgress();
       return;
     }
 
     if (_activeSet == index) _pauseTimer();
     setState(() => _completed[index] = true);
+    _saveProgress();
     _tour.onSignal(const ActionReceipt(WalkthroughAction.setCompleted));
   }
 
@@ -179,6 +206,7 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
       _remainingSeconds[index] = 0;
       _completed[index] = true;
     });
+    _saveProgress();
     _tour.onSignal(const ActionReceipt(WalkthroughAction.setCompleted));
   }
 
@@ -216,6 +244,11 @@ class _ExerciseDetailScreenState extends ConsumerState<ExerciseDetailScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final sequence = widget.sequence;
+    // Keeps the workout's ticked sets alive while this screen is open.
+    if (sequence != null) {
+      ref.watch(workoutSetProgressProvider(sequence.exercises));
+    }
     final variant = widget.exercise.exercise;
     final totalSets = widget.exercise.sets;
     final progressRatio =

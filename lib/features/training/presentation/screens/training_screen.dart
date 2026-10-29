@@ -5,6 +5,7 @@ import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/profile/presentation/activity_save_failed.dart';
 import 'package:muevete/features/training/presentation/providers/workout_completion_provider.dart';
 import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
+import 'package:muevete/features/training/presentation/providers/workout_set_progress_provider.dart';
 import 'package:muevete/features/training/presentation/widgets/hero/workout_hero.dart';
 import 'package:muevete/features/training/presentation/widgets/panel/workout_sliding_panel.dart';
 import 'package:muevete/features/walkthrough/domain/walkthrough_step.dart';
@@ -23,6 +24,9 @@ class TrainingScreen extends ConsumerWidget {
 
     return workoutAsync.when(
       data: (workout) {
+        final setProgress = workoutSetProgressProvider(workout.exercises);
+        // Keeps the ticked sets while the user moves between exercises.
+        ref.watch(setProgress);
         return Scaffold(
           body: Stack(
             children: [
@@ -41,12 +45,16 @@ class TrainingScreen extends ConsumerWidget {
                         ),
                       );
                   try {
-                    await ref.read(workoutCompletionProvider).complete();
+                    await ref
+                        .read(workoutCompletionProvider)
+                        .complete(ref.read(setProgress.notifier).summary());
                   } catch (error) {
                     debugPrint('Could not save the workout: $error');
                     if (context.mounted) showActivitySaveFailed(context);
                     return;
                   }
+                  // The next time this workout is done starts unticked.
+                  ref.invalidate(setProgress);
                   ref.read(mainNavIndexProvider.notifier).setIndex(0);
                   if (context.mounted) {
                     context.go('/home');

@@ -38,6 +38,7 @@ class ActiveBreakBuilder {
           reps: null,
           rest: 0,
           duration: reference.durationSeconds,
+          targets: exercise.targets,
         ));
       } catch (error, stackTrace) {
         Error.throwWithStackTrace(

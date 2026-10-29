@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -227,5 +228,6 @@ class _Repository implements ProfileRepository {
     required ActivityKind kind,
     required DateTime completedAt,
     required UserStreak streak,
+    RewardForHistory? reward,
   }) => throw UnimplementedError();
 }

@@ -397,5 +397,44 @@
   "settingsTips": "Consejos de salud",
   "settingsTipsDaily": "Uno al día",
   "settingsTipsEveryOpen": "Cada vez que abro la app",
-  "settingsTipsOff": "Desactivados"
+  "settingsTipsOff": "Desactivados",
+  "progressMovementTitle": "Tu progreso de movimiento",
+  "progressMovementXp": "{xp} XP",
+  "@progressMovementXp": {
+    "placeholders": {
+      "xp": {"type": "int"}
+    }
+  },
+  "progressMovementXpHint": "Sumas XP al completar entrenamientos y pausas activas. No cambia la dificultad de tus ejercicios.",
+  "progressJointHint": "Cada serie completada suma puntos a las articulaciones que trabaja.",
+  "progressJointLevel": "Nivel {level}",
+  "@progressJointLevel": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "progressJointPoints": "{points}/{next} pts",
+  "@progressJointPoints": {
+    "placeholders": {
+      "points": {"type": "int"},
+      "next": {"type": "int"}
+    }
+  },
+  "progressJointMaxLevel": "Nivel máximo",
+  "progressJointLevelLabel": "{joint}: nivel {level}, {points} de {next} puntos",
+  "@progressJointLevelLabel": {
+    "placeholders": {
+      "joint": {"type": "String"},
+      "level": {"type": "int"},
+      "points": {"type": "int"},
+      "next": {"type": "int"}
+    }
+  },
+  "progressJointMaxLevelLabel": "{joint}: nivel {level}, nivel máximo",
+  "@progressJointMaxLevelLabel": {
+    "placeholders": {
+      "joint": {"type": "String"},
+      "level": {"type": "int"}
+    }
+  }
 }
