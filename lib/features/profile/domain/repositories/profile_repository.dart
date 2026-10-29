@@ -1,3 +1,4 @@
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -17,9 +18,15 @@ abstract class ProfileRepository {
 
   /// Adds one completion to the history for [kind] and stores [streak] in the
   /// same write. Recording the same [completedAt] twice keeps a single entry.
+  ///
+  /// [reward] receives the history of [kind] recorded before this
+  /// completion; what it returns is added to `movementXp` and
+  /// `jointProgress` in that same write. A completion that is already
+  /// recorded writes nothing, so its reward is never given twice.
   Future<void> recordCompletion({
     required ActivityKind kind,
     required DateTime completedAt,
     required UserStreak streak,
+    RewardForHistory? reward,
   });
 }

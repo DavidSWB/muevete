@@ -7,6 +7,7 @@ import 'package:muevete/features/active_breaks/domain/entities/active_break.dart
 import 'package:muevete/features/active_breaks/presentation/providers/active_break_providers.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_workout_screen.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_break_timer_screen.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -350,6 +351,7 @@ class _RecordingProfileRepository implements ProfileRepository {
     required ActivityKind kind,
     required DateTime completedAt,
     required UserStreak streak,
+    RewardForHistory? reward,
   }) async {
     attempts.add(completedAt);
     if (failNext) {

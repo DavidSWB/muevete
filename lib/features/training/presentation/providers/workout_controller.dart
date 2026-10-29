@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/presentation/activity_recorder.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
@@ -72,11 +73,14 @@ class WorkoutController extends _$WorkoutController {
   /// after an error records the same completion instead of a second one.
   DateTime? _pendingCompletion;
 
-  Future<void> finishWorkout() async {
+  /// [workout] holds the sets marked as completed, which set the rewards.
+  Future<void> finishWorkout([
+    CompletedWorkout workout = CompletedWorkout.empty,
+  ]) async {
     final completedAt = _pendingCompletion ??= DateTime.now();
     await ref
         .read(activityRecorderProvider)
-        .record(ActivityKind.workout, completedAt);
+        .record(ActivityKind.workout, completedAt, workout: workout);
     _pendingCompletion = null;
   }
 

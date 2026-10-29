@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/domain/repositories/auth_repository.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/auth/presentation/signup_screen.dart';
+import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -152,5 +153,6 @@ class _RecordingProfileRepository implements ProfileRepository {
     required ActivityKind kind,
     required DateTime completedAt,
     required UserStreak streak,
+    RewardForHistory? reward,
   }) => throw UnimplementedError();
 }

@@ -318,5 +318,14 @@
   "settingsTips": "Health tips",
   "settingsTipsDaily": "One a day",
   "settingsTipsEveryOpen": "Every time I open the app",
-  "settingsTipsOff": "Off"
+  "settingsTipsOff": "Off",
+  "progressMovementTitle": "Your movement progress",
+  "progressMovementXp": "{xp} XP",
+  "progressMovementXpHint": "You earn XP by completing workouts and active breaks. It doesn't change how hard your exercises are.",
+  "progressJointHint": "Each completed set adds points to the joints it works.",
+  "progressJointLevel": "Level {level}",
+  "progressJointPoints": "{points}/{next} pts",
+  "progressJointMaxLevel": "Top level",
+  "progressJointLevelLabel": "{joint}: level {level}, {points} of {next} points",
+  "progressJointMaxLevelLabel": "{joint}: level {level}, top level"
 }
