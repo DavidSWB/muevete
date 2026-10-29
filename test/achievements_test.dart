@@ -225,6 +225,31 @@ void main() {
       expect(repository.unlockCalls, hasLength(1));
     });
 
+    test('reads the catalogue again after it failed to load', () async {
+      repository = _BadgeRepository(user(activeBreaks: 1));
+      var attempts = 0;
+      final container = ProviderContainer(
+        overrides: [
+          profileRepositoryProvider.overrideWithValue(repository),
+          profileProvider.overrideWith(() => _FakeProfile(repository)),
+          achievementsProvider.overrideWith((ref) async {
+            attempts++;
+            if (attempts == 1) throw StateError('offline');
+            return catalogue;
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      container.listen(profileProvider, (_, _) {});
+      final profile = await container.read(profileProvider.future);
+      final sync = container.read(badgeSyncProvider);
+
+      expect(await sync.sync(profile, walkthroughCompleted: false), isEmpty);
+      expect(await sync.sync(profile, walkthroughCompleted: false), {
+        'first-active-break',
+      });
+    });
+
     test('a failed save is logged, not thrown', () async {
       final container = makeContainer(user(activeBreaks: 1));
       final profile = await container.read(profileProvider.future);
