@@ -327,5 +327,11 @@
   "progressJointPoints": "{points}/{next} pts",
   "progressJointMaxLevel": "Top level",
   "progressJointLevelLabel": "{joint}: level {level}, {points} of {next} points",
-  "progressJointMaxLevelLabel": "{joint}: level {level}, top level"
+  "progressJointMaxLevelLabel": "{joint}: level {level}, top level",
+  "progressMedalsTitle": "Your medals",
+  "progressMedalsCount": "{unlocked} of {total}",
+  "progressMedalUnlockedLabel": "{name}: medal unlocked",
+  "progressMedalLockedLabel": "{name}: medal locked. {hint}",
+  "progressMedalsLoading": "Loading medals",
+  "progressMedalsError": "Couldn't load your medals."
 }

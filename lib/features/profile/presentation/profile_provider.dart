@@ -65,6 +65,17 @@ class Profile extends _$Profile {
     }
   }
 
+  /// Shows [badgeIds] as unlocked once they are saved, without reloading.
+  void markBadgesUnlocked(Set<String> badgeIds) {
+    final user = state.value;
+    if (user == null) return;
+    state = AsyncData(
+      user.copyWith(
+        unlockedBadgeIds: {...user.unlockedBadgeIds, ...badgeIds}.toList(),
+      ),
+    );
+  }
+
   Future<void> refresh() async {
     ref.invalidateSelf();
     await future;

@@ -130,6 +130,18 @@ class FirestoreProfileRepository implements ProfileRepository{
     });
   }
 
+  @override
+  Future<void> unlockBadges(Set<String> badgeIds) async {
+    if (badgeIds.isEmpty) return;
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      throw Exception('User not authenticated.');
+    }
+    await _firestore.collection('users').doc(currentUser.uid).update({
+      'unlockedBadgeIds': FieldValue.arrayUnion(badgeIds.toList()),
+    });
+  }
+
   static List<DateTime> _readDates(List<dynamic> history) {
     final dates = <DateTime>[];
     for (final value in history) {

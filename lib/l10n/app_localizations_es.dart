@@ -1069,4 +1069,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String progressJointMaxLevelLabel(String joint, int level) {
     return '$joint: nivel $level, nivel máximo';
   }
+
+  @override
+  String get progressMedalsTitle => 'Tus medallas';
+
+  @override
+  String progressMedalsCount(int unlocked, int total) {
+    return '$unlocked de $total';
+  }
+
+  @override
+  String progressMedalUnlockedLabel(String name) {
+    return '$name: medalla desbloqueada';
+  }
+
+  @override
+  String progressMedalLockedLabel(String name, String hint) {
+    return '$name: medalla bloqueada. $hint';
+  }
+
+  @override
+  String get progressMedalsLoading => 'Cargando medallas';
+
+  @override
+  String get progressMedalsError => 'No se pudieron cargar las medallas.';
 }

@@ -449,6 +449,11 @@ class _ControlledRepository implements ProfileRepository {
   Future<void> createProfile(UserModel user) => throw UnimplementedError();
 
   @override
+
+  Future<void> unlockBadges(Set<String> badgeIds) async {}
+
+
+  @override
   Future<void> recordCompletion({
     required ActivityKind kind,
     required DateTime completedAt,

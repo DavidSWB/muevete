@@ -347,6 +347,11 @@ class _RecordingProfileRepository implements ProfileRepository {
   Future<void> createProfile(UserModel user) async => savedProfiles.add(user);
 
   @override
+
+  Future<void> unlockBadges(Set<String> badgeIds) async {}
+
+
+  @override
   Future<void> recordCompletion({
     required ActivityKind kind,
     required DateTime completedAt,
