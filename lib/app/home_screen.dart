@@ -8,6 +8,7 @@ import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/education/presentation/widgets/daily_tip_card.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
+import 'package:muevete/features/profile/domain/services/weekly_activity.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/entities/plan_day.dart';
 import 'package:muevete/features/training/domain/services/training_schedule_service.dart';
@@ -27,21 +28,6 @@ class HomeScreen extends ConsumerWidget {
 
   static const int _estimatedMinutesPerSession = 35;
   static const int _defaultWeeklyGoalSessions = 3;
-
-  int _countCompletedThisWeek(List<DateTime> completedWorkouts) {
-    final now = DateTime.now();
-    final startOfToday = DateTime(now.year, now.month, now.day);
-    final startOfWeek = startOfToday.subtract(Duration(days: now.weekday - 1));
-
-    return completedWorkouts.where((workoutDate) {
-      final normalized = DateTime(
-        workoutDate.year,
-        workoutDate.month,
-        workoutDate.day,
-      );
-      return !normalized.isBefore(startOfWeek);
-    }).length;
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,9 +54,7 @@ class HomeScreen extends ConsumerWidget {
         final doneEarly =
             !isRestDay && schedule.wasDoneEarly(user: user, now: now);
 
-        final completedThisWeek = _countCompletedThisWeek(
-          user.completedWorkouts,
-        );
+        final completedThisWeek = countThisWeek(user.completedWorkouts, now);
         final plannedDaysPerWeek =
             user.training!.schedule?.days.length ?? _defaultWeeklyGoalSessions;
         final targetSessions = plannedDaysPerWeek > 0
@@ -85,6 +69,10 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 _HomeGreetingHeader(
                   username: user.username,
+                  activeBreaksThisWeek: countThisWeek(
+                    user.completedActiveBreaks,
+                    now,
+                  ),
                   onAvatarTap: () => openTab(MainScreen.settingsTab),
                 ),
                 const SizedBox(height: 22),
@@ -133,19 +121,17 @@ class HomeScreen extends ConsumerWidget {
 class _HomeGreetingHeader extends StatelessWidget {
   const _HomeGreetingHeader({
     required this.username,
+    required this.activeBreaksThisWeek,
     required this.onAvatarTap,
   });
 
   final String username;
+  final int activeBreaksThisWeek;
   final VoidCallback onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isSpanish = Localizations.localeOf(context).languageCode == 'es';
-    final subGreetingText = isSpanish
-        ? 'Hoy es un buen día para moverte'
-        : l10n.homeSubGreeting;
 
     final initial = username.trim().isNotEmpty
         ? username.trim()[0].toUpperCase()
@@ -167,30 +153,8 @@ class _HomeGreetingHeader extends StatelessWidget {
                   letterSpacing: -0.6,
                 ),
               ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      subGreetingText,
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    width: 18,
-                    height: 2.5,
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryDark,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 8),
+              _WeeklyBreakGoal(count: activeBreaksThisWeek),
             ],
           ),
         ),
@@ -220,6 +184,79 @@ class _HomeGreetingHeader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Progress toward [weeklyActiveBreakGoal] this week, as a small ring. The
+/// count keeps going past the goal; the ring turns green once it is met.
+class _WeeklyBreakGoal extends StatelessWidget {
+  const _WeeklyBreakGoal({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    const goal = weeklyActiveBreakGoal;
+    final reached = count >= goal;
+    final color = reached ? AppColors.success : AppColors.primaryDark;
+
+    return Semantics(
+      key: const ValueKey('home-weekly-break-goal'),
+      container: true,
+      label: l10n.homeWeeklyBreaksLabel(count, goal),
+      excludeSemantics: true,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 44,
+            height: 44,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox.expand(
+                  child: CircularProgressIndicator(
+                    value: math.min(count / goal, 1.0),
+                    strokeWidth: 5,
+                    strokeCap: StrokeCap.round,
+                    backgroundColor: AppColors.softGrey,
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
+                ),
+                Icon(
+                  reached
+                      ? Icons.check_rounded
+                      : Icons.self_improvement_rounded,
+                  size: 20,
+                  color: color,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            l10n.homeWeeklyBreaksCount(count, goal),
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              l10n.homeWeeklyBreaksCaption,
+              style: const TextStyle(
+                color: AppColors.textMuted,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

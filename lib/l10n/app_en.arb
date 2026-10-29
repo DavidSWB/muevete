@@ -333,5 +333,8 @@
   "progressMedalUnlockedLabel": "{name}: medal unlocked",
   "progressMedalLockedLabel": "{name}: medal locked. {hint}",
   "progressMedalsLoading": "Loading medals",
-  "progressMedalsError": "Couldn't load your medals."
+  "progressMedalsError": "Couldn't load your medals.",
+  "homeWeeklyBreaksCount": "{count}/{goal}",
+  "homeWeeklyBreaksCaption": "breaks this week",
+  "homeWeeklyBreaksLabel": "{count} of {goal} active breaks this week"
 }
