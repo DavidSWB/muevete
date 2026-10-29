@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:muevete/app/badge_sync_listener.dart';
 import 'package:muevete/app/home_screen.dart';
 import 'package:muevete/app/notification_tap_handler.dart';
 import 'package:muevete/features/active_breaks/presentation/screens/active_breaks_screen.dart';
@@ -45,7 +46,7 @@ class MainScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final currentIndex = ref.watch(mainNavIndexProvider);
 
-    return WalkthroughLauncher(child: NotificationTapHandler(child: Scaffold(
+    return WalkthroughLauncher(child: BadgeSyncListener(child: NotificationTapHandler(child: Scaffold(
       body: IndexedStack(
         index: currentIndex,
         children: _screens,
@@ -95,6 +96,6 @@ class MainScreen extends ConsumerWidget {
           ),
         ],
       ),
-    )));
+    ))));
   }
 }

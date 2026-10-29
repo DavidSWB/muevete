@@ -103,6 +103,11 @@ class _ControlledProfileRepository implements ProfileRepository {
   Future<void> createProfile(UserModel user) async {}
 
   @override
+
+  Future<void> unlockBadges(Set<String> badgeIds) async {}
+
+
+  @override
   Future<void> recordCompletion({
     required ActivityKind kind,
     required DateTime completedAt,

@@ -2,7 +2,9 @@ import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:muevete/core/firebase/firebase_providers.dart';
+import 'package:muevete/features/gamification/data/firebase_achievement_repository.dart';
 import 'package:muevete/features/gamification/data/firebase_reward_rules_repository.dart';
+import 'package:muevete/features/gamification/domain/achievement.dart';
 import 'package:muevete/features/gamification/domain/reward_rules.dart';
 
 final rewardRulesRepositoryProvider = Provider<RewardRulesRepository>((ref) {
@@ -25,4 +27,15 @@ final rewardRulesProvider = FutureProvider<RewardRules>((ref) async {
     );
     return RewardRules.defaults;
   }
+});
+
+final achievementRepositoryProvider = Provider<AchievementRepository>((ref) {
+  return FirebaseAchievementRepository(
+    firestore: ref.read(firebaseFirestoreProvider),
+  );
+});
+
+/// The badge catalogue, in medal-case order.
+final achievementsProvider = FutureProvider<List<Achievement>>((ref) {
+  return ref.read(achievementRepositoryProvider).getAchievements();
 });

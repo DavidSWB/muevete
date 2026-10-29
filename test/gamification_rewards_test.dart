@@ -560,6 +560,7 @@ class _FakeProfile extends Profile {
 /// changes nothing; otherwise the reward is worked out from what was there.
 class _RewardingProfileRepository implements ProfileRepository {
   UserModel user = const UserModel(id: 'u', email: 'e', username: 'n');
+  final List<Set<String>> unlockCalls = [];
 
   @override
   Future<UserModel> getProfile() async => user;
@@ -572,6 +573,21 @@ class _RewardingProfileRepository implements ProfileRepository {
 
   @override
   Future<void> createProfile(UserModel user) async {}
+
+  @override
+
+  Future<void> unlockBadges(Set<String> badgeIds) async {
+
+    unlockCalls.add(badgeIds);
+
+    user = user.copyWith(
+
+      unlockedBadgeIds: {...user.unlockedBadgeIds, ...badgeIds}.toList(),
+
+    );
+
+  }
+
 
   @override
   Future<void> recordCompletion({

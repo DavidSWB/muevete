@@ -29,4 +29,7 @@ abstract class ProfileRepository {
     required UserStreak streak,
     RewardForHistory? reward,
   });
+
+  /// Adds [badgeIds] to `unlockedBadgeIds`; ids already there stay once.
+  Future<void> unlockBadges(Set<String> badgeIds);
 }

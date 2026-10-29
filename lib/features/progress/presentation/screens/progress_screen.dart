@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/gamification/presentation/medal_case_section.dart';
 import 'package:muevete/features/gamification/presentation/movement_progress_section.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/progress/presentation/widgets/progress_calendar.dart';
@@ -177,6 +178,8 @@ class ProgressScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 28),
                   MovementProgressSection(user: user),
+                  const SizedBox(height: 28),
+                  MedalCaseSection(user: user),
                 ],
               ),
             );

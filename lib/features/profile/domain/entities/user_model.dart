@@ -45,6 +45,9 @@ class UserModel {
   /// `shoulder`). Display only; [stats] still chooses exercise variants.
   final Map<String, int> jointProgress;
 
+  /// Ids of the achievements the user has earned.
+  final List<String> unlockedBadgeIds;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -65,6 +68,7 @@ class UserModel {
     this.consistencyTrackedSince,
     this.movementXp = 0,
     this.jointProgress = const {},
+    this.unlockedBadgeIds = const [],
   });
 
   factory UserModel.fromJson({
@@ -126,6 +130,12 @@ class UserModel {
         movementXp: (json["movementXp"] as num?)?.toInt() ?? 0,
 
         jointProgress: _parsePoints(json["jointProgress"]),
+
+        unlockedBadgeIds: [
+          if (json["unlockedBadgeIds"] is List)
+            for (final id in json["unlockedBadgeIds"] as List)
+              if (id is String) id,
+        ],
       );
     } catch (e, s) {
       print(e);
@@ -195,7 +205,7 @@ class UserModel {
     throw FormatException("Formato de fecha no soportado: $value");
   }
 
-  /// Profile fields only. Activity history, the streak, rewards and
+  /// Profile fields only. Activity history, the streak, rewards, badges and
   /// [consistencyTrackedSince] are written by
   /// `ProfileRepository.recordCompletion` and `createProfile`, so saving a
   /// profile can never overwrite completions recorded meanwhile.
@@ -239,6 +249,7 @@ class UserModel {
       consistencyTrackedSince: consistencyTrackedSince,
       movementXp: movementXp,
       jointProgress: jointProgress,
+      unlockedBadgeIds: unlockedBadgeIds,
     );
   }
 
@@ -261,6 +272,7 @@ class UserModel {
     DateTime? consistencyTrackedSince,
     int? movementXp,
     Map<String, int>? jointProgress,
+    List<String>? unlockedBadgeIds,
   }) {
     return UserModel(
       id: id,
@@ -287,6 +299,7 @@ class UserModel {
           consistencyTrackedSince ?? this.consistencyTrackedSince,
       movementXp: movementXp ?? this.movementXp,
       jointProgress: jointProgress ?? this.jointProgress,
+      unlockedBadgeIds: unlockedBadgeIds ?? this.unlockedBadgeIds,
     );
   }
 }

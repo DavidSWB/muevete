@@ -149,6 +149,11 @@ class _RecordingProfileRepository implements ProfileRepository {
       throw UnimplementedError();
 
   @override
+
+  Future<void> unlockBadges(Set<String> badgeIds) async {}
+
+
+  @override
   Future<void> recordCompletion({
     required ActivityKind kind,
     required DateTime completedAt,

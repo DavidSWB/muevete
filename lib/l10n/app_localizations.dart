@@ -1963,6 +1963,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{joint}: nivel {level}, nivel máximo'**
   String progressJointMaxLevelLabel(String joint, int level);
+
+  /// No description provided for @progressMedalsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus medallas'**
+  String get progressMedalsTitle;
+
+  /// No description provided for @progressMedalsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{unlocked} de {total}'**
+  String progressMedalsCount(int unlocked, int total);
+
+  /// No description provided for @progressMedalUnlockedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}: medalla desbloqueada'**
+  String progressMedalUnlockedLabel(String name);
+
+  /// No description provided for @progressMedalLockedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{name}: medalla bloqueada. {hint}'**
+  String progressMedalLockedLabel(String name, String hint);
+
+  /// No description provided for @progressMedalsLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando medallas'**
+  String get progressMedalsLoading;
+
+  /// No description provided for @progressMedalsError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las medallas.'**
+  String get progressMedalsError;
 }
 
 class _AppLocalizationsDelegate

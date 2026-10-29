@@ -436,5 +436,28 @@
       "joint": {"type": "String"},
       "level": {"type": "int"}
     }
-  }
+  },
+  "progressMedalsTitle": "Tus medallas",
+  "progressMedalsCount": "{unlocked} de {total}",
+  "@progressMedalsCount": {
+    "placeholders": {
+      "unlocked": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "progressMedalUnlockedLabel": "{name}: medalla desbloqueada",
+  "@progressMedalUnlockedLabel": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "progressMedalLockedLabel": "{name}: medalla bloqueada. {hint}",
+  "@progressMedalLockedLabel": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "hint": {"type": "String"}
+    }
+  },
+  "progressMedalsLoading": "Cargando medallas",
+  "progressMedalsError": "No se pudieron cargar las medallas."
 }
