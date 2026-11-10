@@ -1147,4 +1147,71 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get privacyHealthConsentCheckbox =>
       'Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.';
+
+  @override
+  String get settingsDeleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountBody =>
+      'Se borrarán de forma permanente tu perfil, tu diagnóstico, tu plan de entrenamiento, tu historial, tus medallas y tu cuenta de acceso. Esta acción no se puede deshacer.';
+
+  @override
+  String get deleteAccountContinue => 'Continuar';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Confirma la eliminación';
+
+  @override
+  String deleteAccountTypeWord(String word) {
+    return 'Escribe $word para confirmar.';
+  }
+
+  @override
+  String get deleteAccountWord => 'ELIMINAR';
+
+  @override
+  String get deleteAccountPasswordHint => 'Tu contraseña';
+
+  @override
+  String get deleteAccountReauthNote =>
+      'Antes de borrar, verificaremos tu identidad con tu método de inicio de sesión.';
+
+  @override
+  String get deleteAccountConfirmButton => 'Eliminar definitivamente';
+
+  @override
+  String get deleteAccountInProgress => 'Eliminando tu cuenta…';
+
+  @override
+  String get deleteAccountDone => 'Tu cuenta y tus datos fueron eliminados.';
+
+  @override
+  String get deleteAccountCancelled =>
+      'Cancelaste la verificación. No se eliminó nada.';
+
+  @override
+  String get deleteAccountWrongPassword =>
+      'La contraseña no es correcta. No se eliminó nada.';
+
+  @override
+  String get deleteAccountWrongAccount =>
+      'Elegiste una cuenta distinta a la de esta sesión. No se eliminó nada.';
+
+  @override
+  String get deleteAccountFailed =>
+      'No pudimos eliminar tu cuenta y no se borró nada. Revisa tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get deleteAccountPartialTitle => 'Falta un paso';
+
+  @override
+  String deleteAccountPartialBody(String email) {
+    return 'Tus datos de la aplicación ya se borraron, pero no pudimos eliminar tu cuenta de acceso. Puedes reintentar ahora o cerrar sesión y pedir la eliminación a $email.';
+  }
+
+  @override
+  String get deleteAccountRetry => 'Reintentar';
 }

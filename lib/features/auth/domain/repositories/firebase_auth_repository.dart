@@ -115,6 +115,97 @@ class FirebaseAuthRepository implements AuthRepository {
     return _auth.currentUser;
   }
 
+  // ─── Reauthentication and deletion ─────────────────────────────────────────
+
+  @override
+  ReauthMethod? get reauthMethod {
+    final providers =
+        _auth.currentUser?.providerData.map((p) => p.providerId).toSet() ??
+        const <String>{};
+    if (providers.contains('password')) return ReauthMethod.password;
+    if (providers.contains('google.com')) return ReauthMethod.google;
+    if (providers.contains('apple.com')) return ReauthMethod.apple;
+    return null;
+  }
+
+  @override
+  Future<ReauthResult> reauthenticate({String? password}) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(code: 'no-current-user');
+    }
+
+    switch (reauthMethod) {
+      case ReauthMethod.password:
+        final email = user.email;
+        if (email == null || password == null || password.isEmpty) {
+          throw FirebaseAuthException(code: 'missing-password');
+        }
+        await user.reauthenticateWithCredential(
+          EmailAuthProvider.credential(email: email, password: password),
+        );
+        return const ReauthResult.done();
+      case ReauthMethod.google:
+        final googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) return const ReauthResult.cancelled();
+        final googleAuth = await googleUser.authentication;
+        await user.reauthenticateWithCredential(
+          GoogleAuthProvider.credential(
+            accessToken: googleAuth.accessToken,
+            idToken: googleAuth.idToken,
+          ),
+        );
+        return const ReauthResult.done();
+      case ReauthMethod.apple:
+        final rawNonce = _generateNonce();
+        final AuthorizationCredentialAppleID appleCredential;
+        try {
+          appleCredential = await SignInWithApple.getAppleIDCredential(
+            scopes: const [],
+            nonce: _sha256ofString(rawNonce),
+          );
+        } on SignInWithAppleAuthorizationException catch (e) {
+          if (e.code == AuthorizationErrorCode.canceled) {
+            return const ReauthResult.cancelled();
+          }
+          rethrow;
+        }
+        await user.reauthenticateWithCredential(
+          OAuthProvider('apple.com').credential(
+            idToken: appleCredential.identityToken,
+            accessToken: appleCredential.authorizationCode,
+            rawNonce: rawNonce,
+          ),
+        );
+        return ReauthResult.done(
+          appleAuthorizationCode: appleCredential.authorizationCode,
+        );
+      case null:
+        throw FirebaseAuthException(code: 'unsupported-provider');
+    }
+  }
+
+  @override
+  Future<void> revokeAppleToken(String authorizationCode) {
+    return _auth.revokeTokenWithAuthorizationCode(authorizationCode);
+  }
+
+  @override
+  Future<void> deleteCurrentUser() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(code: 'no-current-user');
+    }
+    final usedGoogle = reauthMethod == ReauthMethod.google;
+    await user.delete();
+    if (usedGoogle) {
+      // Forget the chosen Google account so the next sign-in asks again.
+      try {
+        await GoogleSignIn().signOut();
+      } catch (_) {}
+    }
+  }
+
   // ─── Helpers ───────────────────────────────────────────────────────────────
 
   /// Generates a cryptographically secure random nonce.
@@ -132,4 +223,4 @@ class FirebaseAuthRepository implements AuthRepository {
     final digest = sha256.convert(bytes);
     return digest.toString();
   }
-}
+}

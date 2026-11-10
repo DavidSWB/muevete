@@ -1134,4 +1134,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacyHealthConsentCheckbox =>
       'I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I understand that, as sensitive data, I am not obliged to authorize it.';
+
+  @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'Your profile, diagnosis, training plan, history, badges and sign-in account will be permanently deleted. This cannot be undone.';
+
+  @override
+  String get deleteAccountContinue => 'Continue';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Confirm deletion';
+
+  @override
+  String deleteAccountTypeWord(String word) {
+    return 'Type $word to confirm.';
+  }
+
+  @override
+  String get deleteAccountWord => 'DELETE';
+
+  @override
+  String get deleteAccountPasswordHint => 'Your password';
+
+  @override
+  String get deleteAccountReauthNote =>
+      'Before deleting, we will verify your identity with your sign-in method.';
+
+  @override
+  String get deleteAccountConfirmButton => 'Delete permanently';
+
+  @override
+  String get deleteAccountInProgress => 'Deleting your account…';
+
+  @override
+  String get deleteAccountDone => 'Your account and data were deleted.';
+
+  @override
+  String get deleteAccountCancelled =>
+      'You cancelled the verification. Nothing was deleted.';
+
+  @override
+  String get deleteAccountWrongPassword =>
+      'The password is incorrect. Nothing was deleted.';
+
+  @override
+  String get deleteAccountWrongAccount =>
+      'You chose a different account from the one signed in. Nothing was deleted.';
+
+  @override
+  String get deleteAccountFailed =>
+      'We could not delete your account and nothing was deleted. Check your connection and try again.';
+
+  @override
+  String get deleteAccountPartialTitle => 'One step left';
+
+  @override
+  String deleteAccountPartialBody(String email) {
+    return 'Your app data was already deleted, but we could not delete your sign-in account. You can try again now, or sign out and request deletion at $email.';
+  }
+
+  @override
+  String get deleteAccountRetry => 'Try again';
 }

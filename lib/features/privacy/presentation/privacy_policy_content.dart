@@ -66,7 +66,7 @@ const List<PrivacyPolicySection> _es = [
     'Antes de acudir a la Superintendencia de Industria y Comercio debes haber presentado tu consulta o reclamo al responsable.',
   ]),
   PrivacyPolicySection('8. Conservación y seguridad', [
-    'Tus datos se conservan mientras tu cuenta exista. Si solicitas su eliminación, se borrarán de la aplicación, salvo que una obligación legal exija conservarlos.',
+    'Tus datos se conservan mientras tu cuenta exista. Puedes eliminar tu cuenta y sus datos en cualquier momento desde Ajustes > Eliminar cuenta, o solicitarlo por correo; en ambos casos se borran de la aplicación, salvo que una obligación legal exija conservarlos.',
     'Los datos viajan cifrados entre tu teléfono y los servidores de Firebase.',
   ]),
   PrivacyPolicySection('9. Cambios y vigencia', [
@@ -124,7 +124,7 @@ const List<PrivacyPolicySection> _en = [
     'Before going to the Superintendencia de Industria y Comercio you must have filed your inquiry or complaint with the controller.',
   ]),
   PrivacyPolicySection('8. Retention and security', [
-    'Your data is kept while your account exists. If you request deletion, it will be removed from the app unless a legal obligation requires keeping it.',
+    'Your data is kept while your account exists. You can delete your account and its data at any time from Settings > Delete account, or request it by email; either way it is removed from the app unless a legal obligation requires keeping it.',
     'Data travels encrypted between your phone and the Firebase servers.',
   ]),
   PrivacyPolicySection('9. Changes and effective date', [
