@@ -109,6 +109,9 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
 
           return SafeArea(
             child: SingleChildScrollView(
+              // A new key per question gives it a fresh scroll position, so
+              // it opens at the top instead of keeping the last offset.
+              key: ValueKey('diagnosis-scroll-${currentQuestion.id}'),
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
