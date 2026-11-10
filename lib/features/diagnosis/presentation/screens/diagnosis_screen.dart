@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muevete/features/diagnosis/domain/entities/question.dart';
 import 'package:muevete/features/diagnosis/presentation/providers/diagnosis_provider.dart';
 import 'package:muevete/features/diagnosis/presentation/widgets/my_quizoption_button.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
@@ -19,7 +20,8 @@ class DiagnosisScreen extends ConsumerStatefulWidget {
 }
 
 class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
-  String? selectedOption;
+  /// Index of the chosen option in the current question.
+  int? selectedOption;
 
   void _handleNextOrFinish({
     required BuildContext context,
@@ -99,7 +101,7 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
           final totalQuestions = state.questions.length;
           final currentIndex = state.currentQuestion;
           final currentQuestion = state.questions[currentIndex];
-          final description = currentQuestion.question;
+          final description = currentQuestion.question.localized(context);
           final options = currentQuestion.options.toList();
           final progress = totalQuestions > 0
               ? (currentIndex + 1) / totalQuestions
@@ -155,17 +157,16 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
                         ),
                   ),
                   const SizedBox(height: 16),
-                  ...options.map((option) {
-                    return MyQuizoptionButton(
-                      text: option.text,
-                      isSelected: selectedOption == option.text,
+                  for (final (index, option) in options.indexed)
+                    MyQuizoptionButton(
+                      text: option.text.localized(context),
+                      isSelected: selectedOption == index,
                       onTap: () {
                         setState(() {
-                          selectedOption = option.text;
+                          selectedOption = index;
                         });
                       },
-                    );
-                  }),
+                    ),
                 ],
               ),
             ),
@@ -191,11 +192,9 @@ class _DiagnosisScreenState extends ConsumerState<DiagnosisScreen> {
               currentQuestion.order == 5;
 
           int getSelectedValue() {
-            if (selectedOption == null) throw Exception('No option selected');
-            final selectedOptionValue = options.firstWhere(
-              (opt) => opt.text == selectedOption,
-            );
-            return selectedOptionValue.value;
+            final index = selectedOption;
+            if (index == null) throw Exception('No option selected');
+            return options[index].value;
           }
 
           return SafeArea(

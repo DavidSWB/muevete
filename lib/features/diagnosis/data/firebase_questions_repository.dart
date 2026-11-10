@@ -13,7 +13,7 @@ class FirebaseQuestionsRepository implements QuestionsRepository{
   @override
   Future<List<Question>> getQuestions () async {
     final snapshot =  await _firestore
-                        .collection('preguntas')
+                        .collection('questions')
                         .get();
     
     final questions = snapshot.docs
