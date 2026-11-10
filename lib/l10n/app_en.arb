@@ -336,5 +336,16 @@
   "progressMedalsError": "Couldn't load your medals.",
   "homeWeeklyBreaksCount": "{count}/{goal}",
   "homeWeeklyBreaksCaption": "breaks this week",
-  "homeWeeklyBreaksLabel": "{count} of {goal} active breaks this week"
+  "homeWeeklyBreaksLabel": "{count} of {goal} active breaks this week",
+  "settingsPrivacyPolicy": "Privacy policy",
+  "privacyPolicyTitle": "Personal data processing policy",
+  "privacyPolicyVersionLabel": "Current version: {version}",
+  "privacyConsentCheckbox": "I have read and accept the personal data processing policy, including the transfer of my data to Google servers in the United States.",
+  "privacyReadPolicy": "Read the policy",
+  "valPrivacyRequired": "You must accept the policy and authorize the processing of your health data to continue.",
+  "privacyConsentTitle": "Review our data policy",
+  "privacyConsentBody": "To keep using Muévete you must review and accept the current personal data processing policy. If you do not accept it now, your data is not deleted.",
+  "privacyConsentAccept": "Accept and continue",
+  "privacyConsentSaveFailed": "We could not save your acceptance. Check your connection and try again.",
+  "privacyHealthConsentCheckbox": "I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I understand that, as sensitive data, I am not obliged to authorize it."
 }

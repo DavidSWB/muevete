@@ -344,7 +344,7 @@ class _RecordingProfileRepository implements ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
-  Future<void> createProfile(UserModel user) async => savedProfiles.add(user);
+  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) async => savedProfiles.add(user);
 
   @override
 

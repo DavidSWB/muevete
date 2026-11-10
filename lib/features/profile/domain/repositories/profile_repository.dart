@@ -14,7 +14,9 @@ abstract class ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info);
 
   /// Creates the document for a new account, with empty activity history.
-  Future<void> createProfile(UserModel user);
+  /// [privacyPolicyVersion], when given, records in the same write that the
+  /// user accepted that policy version, with a server timestamp.
+  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion});
 
   /// Adds one completion to the history for [kind] and stores [streak] in the
   /// same write. Recording the same [completedAt] twice keeps a single entry.

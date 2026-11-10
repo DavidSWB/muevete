@@ -1094,4 +1094,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String homeWeeklyBreaksLabel(int count, int goal) {
     return '$count of $goal active breaks this week';
   }
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get privacyPolicyTitle => 'Personal data processing policy';
+
+  @override
+  String privacyPolicyVersionLabel(String version) {
+    return 'Current version: $version';
+  }
+
+  @override
+  String get privacyConsentCheckbox =>
+      'I have read and accept the personal data processing policy, including the transfer of my data to Google servers in the United States.';
+
+  @override
+  String get privacyReadPolicy => 'Read the policy';
+
+  @override
+  String get valPrivacyRequired =>
+      'You must accept the policy and authorize the processing of your health data to continue.';
+
+  @override
+  String get privacyConsentTitle => 'Review our data policy';
+
+  @override
+  String get privacyConsentBody =>
+      'To keep using Muévete you must review and accept the current personal data processing policy. If you do not accept it now, your data is not deleted.';
+
+  @override
+  String get privacyConsentAccept => 'Accept and continue';
+
+  @override
+  String get privacyConsentSaveFailed =>
+      'We could not save your acceptance. Check your connection and try again.';
+
+  @override
+  String get privacyHealthConsentCheckbox =>
+      'I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I understand that, as sensitive data, I am not obliged to authorize it.';
 }

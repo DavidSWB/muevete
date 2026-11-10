@@ -446,7 +446,7 @@ class _ControlledRepository implements ProfileRepository {
       throw UnimplementedError('Edit Profile must not save the whole profile');
 
   @override
-  Future<void> createProfile(UserModel user) => throw UnimplementedError();
+  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) => throw UnimplementedError();
 
   @override
 

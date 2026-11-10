@@ -2017,6 +2017,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count} de {goal} pausas activas esta semana'**
   String homeWeeklyBreaksLabel(int count, int goal);
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de tratamiento de datos personales'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacyPolicyVersionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión vigente: {version}'**
+  String privacyPolicyVersionLabel(String version);
+
+  /// No description provided for @privacyConsentCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'He leído y acepto la política de tratamiento de datos personales, incluida la transferencia de mis datos a servidores de Google en Estados Unidos.'**
+  String get privacyConsentCheckbox;
+
+  /// No description provided for @privacyReadPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer la política'**
+  String get privacyReadPolicy;
+
+  /// No description provided for @valPrivacyRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes aceptar la política y autorizar el tratamiento de tus datos de salud para continuar.'**
+  String get valPrivacyRequired;
+
+  /// No description provided for @privacyConsentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa nuestra política de datos'**
+  String get privacyConsentTitle;
+
+  /// No description provided for @privacyConsentBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Para seguir usando Muévete debes revisar y aceptar la política de tratamiento de datos personales vigente. Si no la aceptas ahora, tus datos no se borran.'**
+  String get privacyConsentBody;
+
+  /// No description provided for @privacyConsentAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar y continuar'**
+  String get privacyConsentAccept;
+
+  /// No description provided for @privacyConsentSaveFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar tu aceptación. Revisa tu conexión e inténtalo de nuevo.'**
+  String get privacyConsentSaveFailed;
+
+  /// No description provided for @privacyHealthConsentCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.'**
+  String get privacyHealthConsentCheckbox;
 }
 
 class _AppLocalizationsDelegate

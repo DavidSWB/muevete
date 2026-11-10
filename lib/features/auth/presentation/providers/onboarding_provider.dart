@@ -1,5 +1,6 @@
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy.dart';
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,6 +10,7 @@ part 'onboarding_provider.g.dart';
 enum OnboardingStatus {
   unauthenticated,
   noProfile,
+  noPrivacyConsent,
   noDiagnosis,
   noTraining,
   complete,
@@ -35,6 +37,10 @@ Stream<OnboardingStatus> onboardingStatus(Ref ref) async* {
       yield OnboardingStatus.noProfile;
     } else {
       final data = snapshot.data()!;
+      if (!hasAcceptedCurrentPrivacyPolicy(data)) {
+        yield OnboardingStatus.noPrivacyConsent;
+        continue;
+      }
       final stats = data['stats'];
       if (stats == null) {
         yield OnboardingStatus.noDiagnosis;

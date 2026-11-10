@@ -85,6 +85,13 @@ class SettingsScreen extends ConsumerWidget {
                   title: l10n.settingsChangeProgram,
                   onTap: () => context.push('/program-setup'),
                 ),
+                const Divider(indent: 68),
+                SettingsTile(
+                  key: const ValueKey('settings-privacy-policy'),
+                  icon: Icons.privacy_tip_outlined,
+                  title: l10n.settingsPrivacyPolicy,
+                  onTap: () => context.push('/privacy-policy'),
+                ),
               ],
             ),
           ),

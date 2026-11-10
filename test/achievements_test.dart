@@ -545,7 +545,7 @@ class _BadgeRepository implements ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
-  Future<void> createProfile(UserModel user) async {}
+  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) async {}
 
   @override
   Future<void> recordCompletion({

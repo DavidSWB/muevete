@@ -221,7 +221,7 @@ class _Repository implements ProfileRepository {
       throw UnimplementedError();
 
   @override
-  Future<void> createProfile(UserModel user) => throw UnimplementedError();
+  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) => throw UnimplementedError();
 
   @override
 
