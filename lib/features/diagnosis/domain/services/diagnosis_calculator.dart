@@ -1,5 +1,6 @@
 import 'package:muevete/features/diagnosis/domain/entities/diagnosis.dart';
 import 'package:muevete/features/diagnosis/domain/entities/question.dart';
+import 'package:muevete/features/profile/domain/services/joint_stat_range.dart';
 
 class DiagnosisCalculator{
   
@@ -40,7 +41,7 @@ class DiagnosisCalculator{
     for (var category in totals.keys){
 
       average[category] =
-        totals[category]! / counts[category]!;
+        clampJointStat(totals[category]! / counts[category]!);
 
     }
 

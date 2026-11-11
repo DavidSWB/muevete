@@ -66,8 +66,8 @@ void main() {
     expect(best.ankle, 5);
     expect(best.knee, 5);
     expect(best.shoulder, 5);
-    // The flexibility question goes up to 6, so the hip average exceeds 5.
-    expect(best.hip, closeTo(16 / 3, 1e-9));
+    // The flexibility question goes up to 6; the hip is capped at 5.
+    expect(best.hip, 5);
     expect(levels.calculateLevel(best.shoulder), ExerciseLevel.advanced);
 
     final middle = answerAll((q) => 3);

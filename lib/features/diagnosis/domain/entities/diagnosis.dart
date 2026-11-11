@@ -1,3 +1,4 @@
+import 'package:muevete/features/profile/domain/services/joint_stat_range.dart';
 import 'package:muevete/features/training/domain/entities/joint_type.dart';
 
 class Diagnosis{
@@ -15,10 +16,10 @@ class Diagnosis{
 
   factory Diagnosis.fromJson(Map<String, dynamic> json){
     return Diagnosis(
-      ankle: json["ankle"].toDouble(), 
-      knee: json["knee"].toDouble(), 
-      hip: json["hip"].toDouble(), 
-      shoulder: json["shoulder"].toDouble(),
+      ankle: clampJointStat(json["ankle"].toDouble()), 
+      knee: clampJointStat(json["knee"].toDouble()), 
+      hip: clampJointStat(json["hip"].toDouble()), 
+      shoulder: clampJointStat(json["shoulder"].toDouble()),
     );
   }
   Map<String, dynamic> toJson(){
