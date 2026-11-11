@@ -11,6 +11,7 @@ import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_
 import 'package:muevete/features/walkthrough/presentation/walkthrough_anchor.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_copy.dart';
 import 'package:muevete/features/walkthrough/presentation/walkthrough_host.dart';
+import 'package:muevete/features/walkthrough/presentation/walkthrough_route_observer.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/l10n/app_localizations_en.dart';
 import 'package:muevete/l10n/app_localizations_es.dart';
@@ -228,6 +229,56 @@ void main() {
       h.routes.add('/');
       await tester.pumpAndSettle();
       expect(h.stepId, 'training.openExercise');
+    });
+
+    testWidgets('a route pushed while the Navigator rebuilds completes its '
+        'step', (tester) async {
+      // go_router pushes by rebuilding the Navigator with new pages, so the
+      // real observer reports the route in the middle of that build.
+      final observer = WalkthroughRouteObserver();
+      final pages = ValueNotifier<List<String>>(['/']);
+      addTearDown(pages.dispose);
+      h.container.listen(walkthroughControllerProvider, (_, _) {});
+      await h.controller.loaded;
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: h.container,
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: WalkthroughHost(
+              routeNames: observer.revealed,
+              child: ValueListenableBuilder<List<String>>(
+                valueListenable: pages,
+                builder: (context, names, _) => Navigator(
+                  observers: [observer],
+                  onDidRemovePage: (_) {},
+                  pages: [
+                    for (final name in names)
+                      MaterialPage<void>(
+                        key: ValueKey(name),
+                        name: name,
+                        child: Scaffold(body: Text(name)),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      h.goTo('progress.retake');
+      await tester.pumpAndSettle();
+
+      pages.value = ['/', 'diagnosis'];
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(h.stepId, 'diagnosis.overview');
+      expect(h.store.data['u']?.stepId, 'diagnosis.overview');
     });
 
     testWidgets('a tab change completes the step that asks for it', (
