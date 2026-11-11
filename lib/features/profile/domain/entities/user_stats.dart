@@ -1,3 +1,5 @@
+import 'package:muevete/features/profile/domain/services/joint_stat_range.dart';
+
 class UserStats {
   final double knee;
   final double hip;
@@ -11,12 +13,13 @@ class UserStats {
     required this.shoulder,
   });
 
+  /// Values above 5, saved before the 1–5 limit, are read as 5.
   factory UserStats.fromJson(Map<String, dynamic> json) {
     return UserStats(
-      knee: (json["knee"] as num).toDouble(),
-      hip: (json["hip"] as num).toDouble(),
-      ankle: (json["ankle"] as num).toDouble(),
-      shoulder: (json["shoulder"] as num).toDouble(),
+      knee: clampJointStat((json["knee"] as num).toDouble()),
+      hip: clampJointStat((json["hip"] as num).toDouble()),
+      ankle: clampJointStat((json["ankle"] as num).toDouble()),
+      shoulder: clampJointStat((json["shoulder"] as num).toDouble()),
     );
   }
 
