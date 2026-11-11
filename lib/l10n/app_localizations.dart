@@ -788,6 +788,18 @@ abstract class AppLocalizations {
   /// **'Repetir evaluación'**
   String get progressRetake;
 
+  /// No description provided for @progressCalendarToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get progressCalendarToday;
+
+  /// No description provided for @progressCalendarCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completado'**
+  String get progressCalendarCompleted;
+
   /// No description provided for @abTitle.
   ///
   /// In es, this message translates to:

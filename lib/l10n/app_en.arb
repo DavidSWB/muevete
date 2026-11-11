@@ -126,6 +126,8 @@
   "progressKnee": "Knee",
   "progressAnkle": "Ankle",
   "progressRetake": "Retake Assessment",
+  "progressCalendarToday": "Today",
+  "progressCalendarCompleted": "Completed",
 
   "abTitle": "Active Breaks",
   "abMotto": "You better move that beautiful butt... or you'll lose it.",

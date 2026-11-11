@@ -146,6 +146,8 @@
   "progressKnee": "Rodilla",
   "progressAnkle": "Tobillo",
   "progressRetake": "Repetir evaluación",
+  "progressCalendarToday": "Hoy",
+  "progressCalendarCompleted": "Completado",
 
   "abTitle": "Pausas activas",
   "abMotto": "Más vale mover ese lindo cuerpo... o lo perderás.",

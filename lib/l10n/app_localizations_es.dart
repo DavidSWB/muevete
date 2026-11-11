@@ -385,6 +385,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get progressRetake => 'Repetir evaluación';
 
   @override
+  String get progressCalendarToday => 'Hoy';
+
+  @override
+  String get progressCalendarCompleted => 'Completado';
+
+  @override
   String get abTitle => 'Pausas activas';
 
   @override

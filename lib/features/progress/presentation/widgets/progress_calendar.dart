@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:muevete/features/progress/presentation/widgets/calendar_grid.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 class ProgressCalendar extends StatefulWidget {
@@ -16,21 +17,6 @@ class ProgressCalendar extends StatefulWidget {
 }
 
 class _ProgressCalendarState extends State<ProgressCalendar> {
-  static const List<String> _monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
   late DateTime displayedMonth;
 
   @override
@@ -39,8 +25,6 @@ class _ProgressCalendarState extends State<ProgressCalendar> {
     final today = DateTime.now();
     displayedMonth = DateTime(today.year, today.month);
   }
-
-  String getMonthName(int month) => _monthNames[month - 1];
 
   void _previousMonth() {
     HapticFeedback.selectionClick();
@@ -64,6 +48,9 @@ class _ProgressCalendarState extends State<ProgressCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final materialL10n = MaterialLocalizations.of(context);
+
     return Column(
       children: [
         Row(
@@ -74,15 +61,23 @@ class _ProgressCalendarState extends State<ProgressCalendar> {
               icon: const Icon(Icons.chevron_left_rounded),
               color: AppColors.textPrimary,
               constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              tooltip: 'Previous month',
+              tooltip: materialL10n.previousMonthTooltip,
             ),
-            Text(
-              '${getMonthName(displayedMonth.month)} ${displayedMonth.year}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textPrimary,
-                fontFeatures: [FontFeature.tabularFigures()],
+            // Long month names, longer still in Spanish, shrink instead of
+            // pushing the arrows off a narrow screen.
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  materialL10n.formatMonthYear(displayedMonth),
+                  maxLines: 1,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
               ),
             ),
             IconButton(
@@ -90,7 +85,7 @@ class _ProgressCalendarState extends State<ProgressCalendar> {
               icon: const Icon(Icons.chevron_right_rounded),
               color: AppColors.textPrimary,
               constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              tooltip: 'Next month',
+              tooltip: materialL10n.nextMonthTooltip,
             ),
           ],
         ),
@@ -102,17 +97,17 @@ class _ProgressCalendarState extends State<ProgressCalendar> {
         const SizedBox(height: 12),
         const Divider(height: 1),
         const SizedBox(height: 12),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _CalendarLegendDot(
               color: AppColors.primaryDark,
-              label: 'Today',
+              label: l10n.progressCalendarToday,
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             _CalendarLegendDot(
               color: AppColors.success,
-              label: 'Completed',
+              label: l10n.progressCalendarCompleted,
             ),
           ],
         ),

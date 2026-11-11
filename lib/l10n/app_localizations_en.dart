@@ -377,6 +377,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressRetake => 'Retake Assessment';
 
   @override
+  String get progressCalendarToday => 'Today';
+
+  @override
+  String get progressCalendarCompleted => 'Completed';
+
+  @override
   String get abTitle => 'Active Breaks';
 
   @override
