@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:muevete/features/gamification/domain/activity_reward.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -74,7 +75,10 @@ class FirestoreProfileRepository implements ProfileRepository{
   }
 
   @override
-  Future<void> createProfile(UserModel user) async {
+  Future<void> createProfile(
+    UserModel user, {
+    String? privacyPolicyVersion,
+  }) async {
     await _firestore
         .collection('users')
         .doc(user.id)
@@ -89,6 +93,10 @@ class FirestoreProfileRepository implements ProfileRepository{
             'movementXp': 0,
             'jointProgress': {for (final joint in progressionJoints) joint: 0},
             'unlockedBadgeIds': <String>[],
+            if (privacyPolicyVersion != null) ...{
+              privacyPolicyVersionField: privacyPolicyVersion,
+              privacyAcceptedAtField: FieldValue.serverTimestamp(),
+            },
           },
           SetOptions(merge: true),
         );

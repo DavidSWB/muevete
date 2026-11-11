@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy.dart';
+import 'package:muevete/features/privacy/presentation/widgets/privacy_consent_checkbox.dart';
 import 'package:muevete/features/profile/domain/entities/biological_sex.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/services/body_measure_options.dart';
@@ -33,6 +35,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _passwordController = TextEditingController();
   final _medicalConditionsController = TextEditingController();
   BiologicalSex? _sex;
+  bool _privacyAccepted = false;
+  bool _healthDataAuthorized = false;
 
   // Picked on their own screens after the account details.
   int _age = BodyMeasureOptions.defaultAge;
@@ -109,6 +113,13 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     if (_sex == null) {
       return l10n.valSelectSex;
+    }
+
+    if (!PrivacyConsentCheckboxes.complete(
+      policyAccepted: _privacyAccepted,
+      healthDataAuthorized: _healthDataAuthorized,
+    )) {
+      return l10n.valPrivacyRequired;
     }
 
     return null;
@@ -210,7 +221,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       );
 
       signupStage = 'Firestore profile save';
-      await ref.read(profileRepositoryProvider).createProfile(initialUser);
+      await ref
+          .read(profileRepositoryProvider)
+          .createProfile(
+            initialUser,
+            privacyPolicyVersion: currentPrivacyPolicyVersion,
+          );
 
       signupStage = 'post-registration navigation';
       if (mounted) {
@@ -425,7 +441,18 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               obscureText: false,
               textInputAction: TextInputAction.done,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
+
+            PrivacyConsentCheckboxes(
+              policyAccepted: _privacyAccepted,
+              healthDataAuthorized: _healthDataAuthorized,
+              enabled: !_isLoading,
+              onPolicyChanged: (value) =>
+                  setState(() => _privacyAccepted = value),
+              onHealthDataChanged: (value) =>
+                  setState(() => _healthDataAuthorized = value),
+            ),
+            const SizedBox(height: 16),
 
             MyButton(text: l10n.commonNext, onTap: _next),
             const SizedBox(height: 12),

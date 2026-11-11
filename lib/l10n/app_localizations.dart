@@ -788,6 +788,18 @@ abstract class AppLocalizations {
   /// **'Repetir evaluación'**
   String get progressRetake;
 
+  /// No description provided for @progressCalendarToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get progressCalendarToday;
+
+  /// No description provided for @progressCalendarCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completado'**
+  String get progressCalendarCompleted;
+
   /// No description provided for @abTitle.
   ///
   /// In es, this message translates to:
@@ -2017,6 +2029,186 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count} de {goal} pausas activas esta semana'**
   String homeWeeklyBreaksLabel(int count, int goal);
+
+  /// No description provided for @settingsPrivacyPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get settingsPrivacyPolicy;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de tratamiento de datos personales'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacyPolicyVersionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión vigente: {version}'**
+  String privacyPolicyVersionLabel(String version);
+
+  /// No description provided for @privacyConsentCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'He leído y acepto la política de tratamiento de datos personales, incluida la transferencia de mis datos a servidores de Google en Estados Unidos.'**
+  String get privacyConsentCheckbox;
+
+  /// No description provided for @privacyReadPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer la política'**
+  String get privacyReadPolicy;
+
+  /// No description provided for @valPrivacyRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes aceptar la política y autorizar el tratamiento de tus datos de salud para continuar.'**
+  String get valPrivacyRequired;
+
+  /// No description provided for @privacyConsentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa nuestra política de datos'**
+  String get privacyConsentTitle;
+
+  /// No description provided for @privacyConsentBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Para seguir usando Muévete debes revisar y aceptar la política de tratamiento de datos personales vigente. Si no la aceptas ahora, tus datos no se borran.'**
+  String get privacyConsentBody;
+
+  /// No description provided for @privacyConsentAccept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar y continuar'**
+  String get privacyConsentAccept;
+
+  /// No description provided for @privacyConsentSaveFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar tu aceptación. Revisa tu conexión e inténtalo de nuevo.'**
+  String get privacyConsentSaveFailed;
+
+  /// No description provided for @privacyHealthConsentCheckbox.
+  ///
+  /// In es, this message translates to:
+  /// **'Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.'**
+  String get privacyHealthConsentCheckbox;
+
+  /// No description provided for @settingsDeleteAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get settingsDeleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar tu cuenta?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrarán de forma permanente tu perfil, tu diagnóstico, tu plan de entrenamiento, tu historial, tus medallas y tu cuenta de acceso. Esta acción no se puede deshacer.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get deleteAccountContinue;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma la eliminación'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountTypeWord.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe {word} para confirmar.'**
+  String deleteAccountTypeWord(String word);
+
+  /// No description provided for @deleteAccountWord.
+  ///
+  /// In es, this message translates to:
+  /// **'ELIMINAR'**
+  String get deleteAccountWord;
+
+  /// No description provided for @deleteAccountPasswordHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña'**
+  String get deleteAccountPasswordHint;
+
+  /// No description provided for @deleteAccountReauthNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de borrar, verificaremos tu identidad con tu método de inicio de sesión.'**
+  String get deleteAccountReauthNote;
+
+  /// No description provided for @deleteAccountConfirmButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar definitivamente'**
+  String get deleteAccountConfirmButton;
+
+  /// No description provided for @deleteAccountInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminando tu cuenta…'**
+  String get deleteAccountInProgress;
+
+  /// No description provided for @deleteAccountDone.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta y tus datos fueron eliminados.'**
+  String get deleteAccountDone;
+
+  /// No description provided for @deleteAccountCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelaste la verificación. No se eliminó nada.'**
+  String get deleteAccountCancelled;
+
+  /// No description provided for @deleteAccountWrongPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña no es correcta. No se eliminó nada.'**
+  String get deleteAccountWrongPassword;
+
+  /// No description provided for @deleteAccountWrongAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegiste una cuenta distinta a la de esta sesión. No se eliminó nada.'**
+  String get deleteAccountWrongAccount;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos eliminar tu cuenta y no se borró nada. Revisa tu conexión e inténtalo de nuevo.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @deleteAccountPartialTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta un paso'**
+  String get deleteAccountPartialTitle;
+
+  /// No description provided for @deleteAccountPartialBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos de la aplicación ya se borraron, pero no pudimos eliminar tu cuenta de acceso. Puedes reintentar ahora o cerrar sesión y pedir la eliminación a {email}.'**
+  String deleteAccountPartialBody(String email);
+
+  /// No description provided for @deleteAccountRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get deleteAccountRetry;
 }
 
 class _AppLocalizationsDelegate

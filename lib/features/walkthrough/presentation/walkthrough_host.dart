@@ -97,12 +97,30 @@ class _WalkthroughHostState extends ConsumerState<WalkthroughHost> {
       _mainRouteOnTop = true;
       final index = ref.read(mainNavIndexProvider);
       final screen = index >= 0 && index < _tabs.length ? _tabs[index] : null;
-      if (screen != null) _controller.onSignal(ScreenRevealed(screen));
+      if (screen != null) _reportRevealed(screen);
       return;
     }
     _mainRouteOnTop = false;
     final screen = walkthroughRouteScreens[name];
-    if (screen != null) _controller.onSignal(ScreenRevealed(screen));
+    if (screen != null) _reportRevealed(screen);
+  }
+
+  /// go_router reports the routes it pushes while it rebuilds the Navigator,
+  /// and a provider must not change during a build. A screen revealed then is
+  /// reported once the frame is done; any other is reported at once.
+  void _reportRevealed(WalkthroughScreen screen) {
+    final signal = ScreenRevealed(screen);
+    final scheduler = SchedulerBinding.instance;
+    if (scheduler.schedulerPhase != SchedulerPhase.persistentCallbacks) {
+      _controller.onSignal(signal);
+      return;
+    }
+    // Dropped if the step changes before the frame ends.
+    final generation = ref.read(walkthroughControllerProvider).generation;
+    scheduler.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _controller.onSignal(signal, generation: generation);
+    });
   }
 
   void _onTabChanged(int? previous, int next) {

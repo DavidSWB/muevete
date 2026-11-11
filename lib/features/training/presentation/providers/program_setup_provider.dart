@@ -4,6 +4,7 @@ import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/entities/training_plan.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
+import 'package:muevete/features/training/presentation/providers/workout_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'program_setup_provider.g.dart';
@@ -79,6 +80,10 @@ class ProgramSetup extends _$ProgramSetup {
       }
 
       ref.invalidate(profileProvider);
+      // Onboarding completes on the local write, so the home screen may have
+      // loaded the workout from the profile without this training. It reads
+      // the profile once, so reload it too.
+      ref.invalidate(workoutControllerProvider);
     } catch (error, stackTrace) {
       state = AsyncError(error, stackTrace);
       rethrow;

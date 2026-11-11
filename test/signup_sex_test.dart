@@ -73,6 +73,33 @@ void main() {
     await tester.tap(next);
     await tester.pumpAndSettle();
 
+    // Registration also needs both privacy consents, starting unchecked.
+    expect(
+      find.text(
+        'You must accept the policy and authorize the processing of your '
+        'health data to continue.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('How old are you?'), findsNothing);
+
+    final policyBox = find.byKey(const ValueKey('privacy-consent-checkbox'));
+    await tester.ensureVisible(policyBox);
+    await tester.tap(policyBox);
+    await tester.pump();
+    await tester.ensureVisible(next);
+    await tester.tap(next);
+    await tester.pumpAndSettle();
+    expect(find.text('How old are you?'), findsNothing);
+
+    final healthBox = find.byKey(const ValueKey('privacy-health-checkbox'));
+    await tester.ensureVisible(healthBox);
+    await tester.tap(healthBox);
+    await tester.pump();
+    await tester.ensureVisible(next);
+    await tester.tap(next);
+    await tester.pumpAndSettle();
+
     // Age, then weight, then height, one screen each.
     final stepButton = find.byKey(const ValueKey('signup-step-next'));
     expect(find.text('How old are you?'), findsOneWidget);
@@ -110,6 +137,8 @@ void main() {
     // 155 lbs, stored in kilograms.
     expect(created.weight, 70.3);
     expect(created.height, 169);
+    // The acceptance is stored with the profile, in the same write.
+    expect(profiles.acceptedVersions.single, '2026-11-10');
   });
 }
 
@@ -134,9 +163,16 @@ class _FakeAuthRepository extends Fake implements AuthRepository {
 
 class _RecordingProfileRepository implements ProfileRepository {
   final List<UserModel> created = [];
+  final List<String?> acceptedVersions = [];
 
   @override
-  Future<void> createProfile(UserModel user) async => created.add(user);
+  Future<void> createProfile(
+    UserModel user, {
+    String? privacyPolicyVersion,
+  }) async {
+    created.add(user);
+    acceptedVersions.add(privacyPolicyVersion);
+  }
 
   @override
   Future<UserModel> getProfile() => throw UnimplementedError();

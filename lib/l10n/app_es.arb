@@ -146,6 +146,8 @@
   "progressKnee": "Rodilla",
   "progressAnkle": "Tobillo",
   "progressRetake": "Repetir evaluación",
+  "progressCalendarToday": "Hoy",
+  "progressCalendarCompleted": "Completado",
 
   "abTitle": "Pausas activas",
   "abMotto": "Más vale mover ese lindo cuerpo... o lo perderás.",
@@ -474,5 +476,50 @@
       "count": {"type": "int"},
       "goal": {"type": "int"}
     }
-  }
+  },
+  "settingsPrivacyPolicy": "Política de privacidad",
+  "privacyPolicyTitle": "Política de tratamiento de datos personales",
+  "privacyPolicyVersionLabel": "Versión vigente: {version}",
+  "@privacyPolicyVersionLabel": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "privacyConsentCheckbox": "He leído y acepto la política de tratamiento de datos personales, incluida la transferencia de mis datos a servidores de Google en Estados Unidos.",
+  "privacyReadPolicy": "Leer la política",
+  "valPrivacyRequired": "Debes aceptar la política y autorizar el tratamiento de tus datos de salud para continuar.",
+  "privacyConsentTitle": "Revisa nuestra política de datos",
+  "privacyConsentBody": "Para seguir usando Muévete debes revisar y aceptar la política de tratamiento de datos personales vigente. Si no la aceptas ahora, tus datos no se borran.",
+  "privacyConsentAccept": "Aceptar y continuar",
+  "privacyConsentSaveFailed": "No pudimos guardar tu aceptación. Revisa tu conexión e inténtalo de nuevo.",
+  "privacyHealthConsentCheckbox": "Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.",
+  "settingsDeleteAccount": "Eliminar cuenta",
+  "deleteAccountTitle": "¿Eliminar tu cuenta?",
+  "deleteAccountBody": "Se borrarán de forma permanente tu perfil, tu diagnóstico, tu plan de entrenamiento, tu historial, tus medallas y tu cuenta de acceso. Esta acción no se puede deshacer.",
+  "deleteAccountContinue": "Continuar",
+  "deleteAccountConfirmTitle": "Confirma la eliminación",
+  "deleteAccountTypeWord": "Escribe {word} para confirmar.",
+  "@deleteAccountTypeWord": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "deleteAccountWord": "ELIMINAR",
+  "deleteAccountPasswordHint": "Tu contraseña",
+  "deleteAccountReauthNote": "Antes de borrar, verificaremos tu identidad con tu método de inicio de sesión.",
+  "deleteAccountConfirmButton": "Eliminar definitivamente",
+  "deleteAccountInProgress": "Eliminando tu cuenta…",
+  "deleteAccountDone": "Tu cuenta y tus datos fueron eliminados.",
+  "deleteAccountCancelled": "Cancelaste la verificación. No se eliminó nada.",
+  "deleteAccountWrongPassword": "La contraseña no es correcta. No se eliminó nada.",
+  "deleteAccountWrongAccount": "Elegiste una cuenta distinta a la de esta sesión. No se eliminó nada.",
+  "deleteAccountFailed": "No pudimos eliminar tu cuenta y no se borró nada. Revisa tu conexión e inténtalo de nuevo.",
+  "deleteAccountPartialTitle": "Falta un paso",
+  "deleteAccountPartialBody": "Tus datos de la aplicación ya se borraron, pero no pudimos eliminar tu cuenta de acceso. Puedes reintentar ahora o cerrar sesión y pedir la eliminación a {email}.",
+  "@deleteAccountPartialBody": {
+    "placeholders": {
+      "email": { "type": "String" }
+    }
+  },
+  "deleteAccountRetry": "Reintentar"
 }

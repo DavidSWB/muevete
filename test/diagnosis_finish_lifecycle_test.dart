@@ -116,18 +116,18 @@ void main() {
 const _questions = [
   Question(
     id: 'q1',
-    question: 'Shoulder mobility',
+    question: {'es': 'Shoulder mobility', 'en': 'Shoulder mobility'},
     categories: ['shoulder', 'hip'],
     imagePath: '',
-    options: [QuestionOption(text: 'Yes', value: 2)],
+    options: [QuestionOption(text: {'es': 'Yes', 'en': 'Yes'}, value: 2)],
     order: 1,
   ),
   Question(
     id: 'q2',
-    question: 'Knee and ankle mobility',
+    question: {'es': 'Knee and ankle mobility', 'en': 'Knee and ankle mobility'},
     categories: ['knee', 'ankle'],
     imagePath: '',
-    options: [QuestionOption(text: 'Yes', value: 2)],
+    options: [QuestionOption(text: {'es': 'Yes', 'en': 'Yes'}, value: 2)],
     order: 2,
   ),
 ];

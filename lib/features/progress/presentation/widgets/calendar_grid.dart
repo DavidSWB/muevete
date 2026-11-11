@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 class CalendarGrid extends StatelessWidget {
@@ -11,14 +12,15 @@ class CalendarGrid extends StatelessWidget {
   final DateTime month;
   final List<DateTime> completedWorkouts;
 
-  static const List<String> _weekDays = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun',
+  /// Monday first, matching [DateTime.weekday] and the grid's columns.
+  static List<String> _weekDays(AppLocalizations l10n) => [
+    l10n.dayMonShort,
+    l10n.dayTueShort,
+    l10n.dayWedShort,
+    l10n.dayThuShort,
+    l10n.dayFriShort,
+    l10n.daySatShort,
+    l10n.daySunShort,
   ];
 
   bool _isSameDay(DateTime a, DateTime b) {
@@ -39,7 +41,7 @@ class CalendarGrid extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
-            children: _weekDays.map((dayLabel) {
+            children: _weekDays(AppLocalizations.of(context)!).map((dayLabel) {
               return Expanded(
                 child: Center(
                   child: Text(

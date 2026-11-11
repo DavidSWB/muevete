@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/account/presentation/delete_account_flow.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/education/presentation/widgets/tip_frequency_tile.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
@@ -85,6 +86,13 @@ class SettingsScreen extends ConsumerWidget {
                   title: l10n.settingsChangeProgram,
                   onTap: () => context.push('/program-setup'),
                 ),
+                const Divider(indent: 68),
+                SettingsTile(
+                  key: const ValueKey('settings-privacy-policy'),
+                  icon: Icons.privacy_tip_outlined,
+                  title: l10n.settingsPrivacyPolicy,
+                  onTap: () => context.push('/privacy-policy'),
+                ),
               ],
             ),
           ),
@@ -117,16 +125,28 @@ class SettingsScreen extends ConsumerWidget {
               side: const BorderSide(color: AppColors.border),
             ),
             clipBehavior: Clip.antiAlias,
-            child: SettingsTile(
-              icon: Icons.logout_rounded,
-              title: l10n.settingsLogOut,
-              isDestructive: true,
-              onTap: () async {
-                await ref.read(authProvider.notifier).signOut();
-                if (context.mounted) {
-                  context.go('/login');
-                }
-              },
+            child: Column(
+              children: [
+                SettingsTile(
+                  icon: Icons.logout_rounded,
+                  title: l10n.settingsLogOut,
+                  isDestructive: true,
+                  onTap: () async {
+                    await ref.read(authProvider.notifier).signOut();
+                    if (context.mounted) {
+                      context.go('/login');
+                    }
+                  },
+                ),
+                const Divider(indent: 68),
+                SettingsTile(
+                  key: const ValueKey('settings-delete-account'),
+                  icon: Icons.delete_forever_outlined,
+                  title: l10n.settingsDeleteAccount,
+                  isDestructive: true,
+                  onTap: () => startAccountDeletion(context, ref),
+                ),
+              ],
             ),
           ),
         ],

@@ -13,25 +13,25 @@ void main() {
   final testQuestions = [
     const Question(
       id: 'q1',
-      question: 'Can you hold a plank for 30 seconds?',
+      question: {'es': 'Can you hold a plank for 30 seconds?', 'en': 'Can you hold a plank for 30 seconds?'},
       categories: ['core'],
       imagePath: 'assets/images/plank.gif',
       options: [
-        QuestionOption(text: 'Yes, easily', value: 3),
-        QuestionOption(text: 'With some struggle', value: 2),
-        QuestionOption(text: 'No, unable', value: 1),
+        QuestionOption(text: {'es': 'Yes, easily', 'en': 'Yes, easily'}, value: 3),
+        QuestionOption(text: {'es': 'With some struggle', 'en': 'With some struggle'}, value: 2),
+        QuestionOption(text: {'es': 'No, unable', 'en': 'No, unable'}, value: 1),
       ],
       order: 1,
     ),
     const Question(
       id: 'q2',
-      question: 'Can you touch your toes with straight legs?',
+      question: {'es': 'Can you touch your toes with straight legs?', 'en': 'Can you touch your toes with straight legs?'},
       categories: ['flexibility'],
       imagePath: '',
       options: [
-        QuestionOption(text: 'Yes, palms to floor', value: 3),
-        QuestionOption(text: 'Fingertips only', value: 2),
-        QuestionOption(text: 'Cannot reach', value: 1),
+        QuestionOption(text: {'es': 'Yes, palms to floor', 'en': 'Yes, palms to floor'}, value: 3),
+        QuestionOption(text: {'es': 'Fingertips only', 'en': 'Fingertips only'}, value: 2),
+        QuestionOption(text: {'es': 'Cannot reach', 'en': 'Cannot reach'}, value: 1),
       ],
       order: 2,
     ),

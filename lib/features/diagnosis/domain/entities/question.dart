@@ -9,7 +9,8 @@ class Question {
   });
 
   final String id;
-  final String question;
+  /// Localized text by language code, e.g. {'es': ..., 'en': ...}.
+  final Map<String, String> question;
   final List<String> categories;
   final String imagePath;
   final List<QuestionOption> options;
@@ -19,7 +20,7 @@ class Question {
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
       id: json['id'] as String? ?? '',
-      question: json['question'] as String? ?? '',
+      question: localizedText(json['question']),
       
       // Convertimos la lista dynamic de Firebase a List<String> de forma segura
       categories: List<String>.from(json['categories'] ?? []),
@@ -53,13 +54,14 @@ class QuestionOption {
     required this.value,
   });
   
-  final String text;
+  /// Localized text by language code, e.g. {'es': ..., 'en': ...}.
+  final Map<String, String> text;
   final int value;
 
   // --- CONSTRUCTOR FACTORY PARA OPCIONES ---
   factory QuestionOption.fromJson(Map<String, dynamic> json) {
     return QuestionOption(
-      text: json['text'] as String? ?? '',
+      text: localizedText(json['text']),
       value: json['value'] as int? ?? 0,
     );
   }
@@ -70,4 +72,18 @@ class QuestionOption {
       'value': value,
     };
   }
+}
+
+/// Reads a `{es, en}` map. A plain string, the format of the old `preguntas`
+/// collection, is read as Spanish so older data still shows.
+Map<String, String> localizedText(dynamic value) {
+  if (value is Map) {
+    return {
+      for (final entry in value.entries)
+        if (entry.key is String && entry.value is String)
+          entry.key as String: entry.value as String,
+    };
+  }
+  if (value is String && value.isNotEmpty) return {'es': value};
+  return const {};
 }

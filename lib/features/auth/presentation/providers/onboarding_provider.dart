@@ -1,5 +1,6 @@
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy.dart';
 import 'package:muevete/features/profile/domain/entities/user_schedule.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,6 +10,7 @@ part 'onboarding_provider.g.dart';
 enum OnboardingStatus {
   unauthenticated,
   noProfile,
+  noPrivacyConsent,
   noDiagnosis,
   noTraining,
   complete,
@@ -30,49 +32,61 @@ Stream<OnboardingStatus> onboardingStatus(Ref ref) async* {
 
   final firestore = ref.watch(firebaseFirestoreProvider);
   final trainingRepository = ref.watch(trainingRepositoryProvider);
-  await for (final snapshot in firestore.collection('users').doc(user.uid).snapshots()) {
-    if (!snapshot.exists || snapshot.data() == null) {
-      yield OnboardingStatus.noProfile;
-    } else {
-      final data = snapshot.data()!;
-      final stats = data['stats'];
-      if (stats == null) {
-        yield OnboardingStatus.noDiagnosis;
+  try {
+    await for (final snapshot in firestore.collection('users').doc(user.uid).snapshots()) {
+      if (!snapshot.exists || snapshot.data() == null) {
+        yield OnboardingStatus.noProfile;
       } else {
-        final training = data['training'];
-        final planId = training is Map ? training['activePlanId'] : null;
-
-        if (planId is! String || planId.trim().isEmpty) {
-          yield OnboardingStatus.noTraining;
+        final data = snapshot.data()!;
+        if (!hasAcceptedCurrentPrivacyPolicy(data)) {
+          yield OnboardingStatus.noPrivacyConsent;
           continue;
         }
+        final stats = data['stats'];
+        if (stats == null) {
+          yield OnboardingStatus.noDiagnosis;
+        } else {
+          final training = data['training'];
+          final planId = training is Map ? training['activePlanId'] : null;
 
-        try {
-          await trainingRepository.getPlan(planId);
-        } on StateError catch (_) {
-          yield OnboardingStatus.noTraining;
-          continue;
-        } on FormatException catch (_) {
-          yield OnboardingStatus.noTraining;
-          continue;
-        }
+          if (planId is! String || planId.trim().isEmpty) {
+            yield OnboardingStatus.noTraining;
+            continue;
+          }
 
-        final rawSchedule = training is Map ? training['schedule'] : null;
-        if (rawSchedule is! Map || rawSchedule.isEmpty) {
-          yield OnboardingStatus.noTraining;
-          continue;
-        }
-        final schedule = UserSchedule.fromJson(
-          Map<String, dynamic>.from(rawSchedule),
-        );
-        if (schedule.days.isEmpty) {
-          yield OnboardingStatus.noTraining;
-          continue;
-        }
+          try {
+            await trainingRepository.getPlan(planId);
+          } on StateError catch (_) {
+            yield OnboardingStatus.noTraining;
+            continue;
+          } on FormatException catch (_) {
+            yield OnboardingStatus.noTraining;
+            continue;
+          }
 
-        yield OnboardingStatus.complete;
+          final rawSchedule = training is Map ? training['schedule'] : null;
+          if (rawSchedule is! Map || rawSchedule.isEmpty) {
+            yield OnboardingStatus.noTraining;
+            continue;
+          }
+          final schedule = UserSchedule.fromJson(
+            Map<String, dynamic>.from(rawSchedule),
+          );
+          if (schedule.days.isEmpty) {
+            yield OnboardingStatus.noTraining;
+            continue;
+          }
+
+          yield OnboardingStatus.complete;
+        }
       }
     }
+  } catch (_) {
+    // Signing out cancels this stream, but the listener can still deliver
+    // the permission error Firestore sends once auth is gone. Nobody listens
+    // by then, so end quietly instead of leaving an unhandled error.
+    if (!ref.mounted) return;
+    rethrow;
   }
 }
 

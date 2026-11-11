@@ -377,6 +377,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressRetake => 'Retake Assessment';
 
   @override
+  String get progressCalendarToday => 'Today';
+
+  @override
+  String get progressCalendarCompleted => 'Completed';
+
+  @override
   String get abTitle => 'Active Breaks';
 
   @override
@@ -1094,4 +1100,111 @@ class AppLocalizationsEn extends AppLocalizations {
   String homeWeeklyBreaksLabel(int count, int goal) {
     return '$count of $goal active breaks this week';
   }
+
+  @override
+  String get settingsPrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get privacyPolicyTitle => 'Personal data processing policy';
+
+  @override
+  String privacyPolicyVersionLabel(String version) {
+    return 'Current version: $version';
+  }
+
+  @override
+  String get privacyConsentCheckbox =>
+      'I have read and accept the personal data processing policy, including the transfer of my data to Google servers in the United States.';
+
+  @override
+  String get privacyReadPolicy => 'Read the policy';
+
+  @override
+  String get valPrivacyRequired =>
+      'You must accept the policy and authorize the processing of your health data to continue.';
+
+  @override
+  String get privacyConsentTitle => 'Review our data policy';
+
+  @override
+  String get privacyConsentBody =>
+      'To keep using Muévete you must review and accept the current personal data processing policy. If you do not accept it now, your data is not deleted.';
+
+  @override
+  String get privacyConsentAccept => 'Accept and continue';
+
+  @override
+  String get privacyConsentSaveFailed =>
+      'We could not save your acceptance. Check your connection and try again.';
+
+  @override
+  String get privacyHealthConsentCheckbox =>
+      'I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I understand that, as sensitive data, I am not obliged to authorize it.';
+
+  @override
+  String get settingsDeleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'Your profile, diagnosis, training plan, history, badges and sign-in account will be permanently deleted. This cannot be undone.';
+
+  @override
+  String get deleteAccountContinue => 'Continue';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Confirm deletion';
+
+  @override
+  String deleteAccountTypeWord(String word) {
+    return 'Type $word to confirm.';
+  }
+
+  @override
+  String get deleteAccountWord => 'DELETE';
+
+  @override
+  String get deleteAccountPasswordHint => 'Your password';
+
+  @override
+  String get deleteAccountReauthNote =>
+      'Before deleting, we will verify your identity with your sign-in method.';
+
+  @override
+  String get deleteAccountConfirmButton => 'Delete permanently';
+
+  @override
+  String get deleteAccountInProgress => 'Deleting your account…';
+
+  @override
+  String get deleteAccountDone => 'Your account and data were deleted.';
+
+  @override
+  String get deleteAccountCancelled =>
+      'You cancelled the verification. Nothing was deleted.';
+
+  @override
+  String get deleteAccountWrongPassword =>
+      'The password is incorrect. Nothing was deleted.';
+
+  @override
+  String get deleteAccountWrongAccount =>
+      'You chose a different account from the one signed in. Nothing was deleted.';
+
+  @override
+  String get deleteAccountFailed =>
+      'We could not delete your account and nothing was deleted. Check your connection and try again.';
+
+  @override
+  String get deleteAccountPartialTitle => 'One step left';
+
+  @override
+  String deleteAccountPartialBody(String email) {
+    return 'Your app data was already deleted, but we could not delete your sign-in account. You can try again now, or sign out and request deletion at $email.';
+  }
+
+  @override
+  String get deleteAccountRetry => 'Try again';
 }
