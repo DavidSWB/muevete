@@ -247,13 +247,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   label: l10n.authSignInWithGoogle,
                   isLoading: _isGoogleLoading,
                   onTap: isAnyLoading ? null : _handleGoogleSignIn,
-                  iconWidget: Image.network(
-                    'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                    width: 22,
-                    height: 22,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.login, size: 22),
-                  ),
+                  // Image cannot decode the SVG logo this used to download,
+                  // so the button always ended on this icon anyway.
+                  iconWidget: const Icon(Icons.login, size: 22),
                 ),
                 const SizedBox(height: 12),
 
