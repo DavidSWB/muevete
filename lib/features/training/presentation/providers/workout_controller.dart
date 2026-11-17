@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:muevete/features/gamification/domain/activity_reward.dart';
 import 'package:muevete/features/profile/domain/entities/activity_kind.dart';
+import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/presentation/activity_recorder.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 import 'package:muevete/features/training/domain/entities/workout.dart';
@@ -23,6 +24,9 @@ class WorkoutController extends _$WorkoutController {
 
   Future<Workout> _loadWorkout() async {
 
+  // Rebuild when the stats change, such as when the diagnosis is retaken, so
+  // the variants follow them. Other profile updates keep the loaded workout.
+  await ref.watch(profileProvider.selectAsync(_statsKey));
   final user = await ref.read(profileProvider.future);
     debugPrint('Workout: user loaded; training=${user.training}, stats=${user.stats}');
 
@@ -89,4 +93,10 @@ class WorkoutController extends _$WorkoutController {
     await future;
   }
 
+}
+
+(double, double, double, double)? _statsKey(UserModel user) {
+  final stats = user.stats;
+  if (stats == null) return null;
+  return (stats.ankle, stats.knee, stats.hip, stats.shoulder);
 }
