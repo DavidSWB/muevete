@@ -149,6 +149,35 @@ void main() {
       expect(user.toJson().keys, isNot(contains(healthDataAuthorizationField)));
     });
 
+    test('each record keeps its own version and timestamp', () {
+      final accepted = DateTime.utc(2026, 11, 20, 14);
+      final authorized = DateTime.utc(2027, 2, 1, 9);
+      final user = UserModel.fromJson(
+        id: 'u',
+        json: {
+          policyAcceptedField: {
+            'version': 3,
+            'date': Timestamp.fromDate(accepted),
+          },
+          healthDataAuthorizationField: {
+            'version': 4,
+            'date': Timestamp.fromDate(authorized),
+          },
+        },
+      );
+      expect(user.policyAccepted!.version, 3);
+      expect(user.policyAccepted!.date!.isAtSameMomentAs(accepted), isTrue);
+      expect(user.healthDataAuthorization!.version, 4);
+      expect(
+        user.healthDataAuthorization!.date!.isAtSameMomentAs(authorized),
+        isTrue,
+      );
+      // copyWith changes one record and leaves the other alone.
+      final updated = user.copyWith(policyAccepted: _v2);
+      expect(updated.policyAccepted, _v2);
+      expect(updated.healthDataAuthorization, user.healthDataAuthorization);
+    });
+
     test('a profile from before versioned policies has no records', () {
       final user = UserModel.fromJson(
         id: 'u',

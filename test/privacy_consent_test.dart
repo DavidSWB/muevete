@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/privacy/domain/privacy_consent_repository.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy_document.dart';
 import 'package:muevete/features/privacy/presentation/privacy_providers.dart';
 import 'package:muevete/features/privacy/presentation/screens/privacy_consent_screen.dart';
 import 'package:muevete/features/privacy/presentation/screens/privacy_policy_screen.dart';
@@ -46,6 +47,52 @@ void main() {
       expect(consent.calls, 1);
       expect(consent.versions, [3], reason: 'the version shown is stored');
       expect(find.byKey(const ValueKey('privacy-consent-error')), findsNothing);
+    });
+
+    testWidgets('ticks are cleared when a newer version arrives', (
+      tester,
+    ) async {
+      final consent = _RecordingConsentRepository();
+      await _pumpConsentScreen(
+        tester,
+        consent,
+        overrides: [
+          currentPrivacyPolicyProvider.overrideWith(
+            (ref) async => LoadedPrivacyPolicy(
+              policy: testPolicyVersion(ref.watch(_shownVersion)),
+              source: PolicySource.server,
+            ),
+          ),
+        ],
+      );
+      for (final key in [
+        'privacy-consent-checkbox',
+        'privacy-health-checkbox',
+      ]) {
+        await tester.tap(find.byKey(ValueKey(key)));
+      }
+      await tester.pump();
+
+      // A new version is published while the screen is open.
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(PrivacyConsentScreen)),
+      );
+      container.read(_shownVersion.notifier).show(4);
+      await tester.pumpAndSettle();
+
+      expect(find.text('I accept policy v4.'), findsOneWidget);
+      for (final key in [
+        'privacy-consent-checkbox',
+        'privacy-health-checkbox',
+      ]) {
+        expect(
+          tester.widget<Checkbox>(find.byKey(ValueKey(key))).value,
+          isFalse,
+        );
+      }
+      await tester.tap(find.byKey(const ValueKey('privacy-consent-accept')));
+      await tester.pumpAndSettle();
+      expect(consent.calls, 0, reason: 'version 4 was not accepted yet');
     });
 
     testWidgets('shows what changed and both boxes start unticked', (
@@ -183,7 +230,8 @@ Future<void> _pumpConsentScreen(
     ProviderScope(
       overrides: [
         privacyConsentRepositoryProvider.overrideWithValue(consent),
-        ...privacyPolicyOverrides(version: 3),
+        // Callers that pass overrides provide the policy themselves.
+        if (overrides.isEmpty) ...privacyPolicyOverrides(version: 3),
         ...overrides,
       ],
       child: MaterialApp.router(
@@ -234,4 +282,13 @@ class _MemoryStore implements WalkthroughStore {
 
   @override
   Future<void> clear(String uid) async => data.remove(uid);
+}
+
+final _shownVersion = NotifierProvider<_ShownVersion, int>(_ShownVersion.new);
+
+class _ShownVersion extends Notifier<int> {
+  @override
+  int build() => 3;
+
+  void show(int version) => state = version;
 }
