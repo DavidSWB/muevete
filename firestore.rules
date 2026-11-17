@@ -22,11 +22,47 @@ service cloud.firestore {
       return signedIn() && request.auth.token.admin == true;
     }
 
+    // A consent record on a profile (`policyAccepted`,
+    // `healthDataAuthorization`): exactly {version, date}, a version that
+    // has been published, and the server time of this very write, so the
+    // date is proof of when the user accepted.
+    function validConsentRecord(record) {
+      return record is map
+        && record.keys().hasOnly(['version', 'date'])
+        && record.keys().hasAll(['version', 'date'])
+        && record.version is int
+        && record.version >= 1
+        && record.version <= get(/databases/$(database)/documents/policies/privacy).data.currentVersion
+        && record.date == request.time;
+    }
+
+    // Writes that leave both consent records untouched are not checked
+    // here, so every other profile write behaves as before. Removing a
+    // record is refused.
+    function consentRecordsValid() {
+      let changed = resource == null
+        ? request.resource.data.keys()
+        : request.resource.data.diff(resource.data).affectedKeys();
+      return (!('policyAccepted' in changed)
+          || validConsentRecord(request.resource.data.policyAccepted))
+        && (!('healthDataAuthorization' in changed)
+          || validConsentRecord(request.resource.data.healthDataAuthorization));
+    }
+
     // Personal data: only the owner, never admins. The app creates the
     // profile at sign-up, updates it, and deletes it from Settings
     // (account deletion is a legal requirement). No subcollections.
     match /users/{uid} {
-      allow read, create, update, delete: if isOwner(uid);
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && consentRecordsValid();
+    }
+
+    // The privacy policy and its versions. Public, because it is shown
+    // before an account exists. Published only with the Admin SDK
+    // (tool/publish_policy), which bypasses these rules; no app writes it.
+    match /policies/{document=**} {
+      allow read: if true;
+      allow write: if false;
     }
 
     // Content the app reads: signed-in users read it, only admins write it.
