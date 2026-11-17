@@ -7,9 +7,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:muevete/core/firebase/firebase_providers.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/auth/presentation/providers/onboarding_provider.dart';
-import 'package:muevete/features/privacy/domain/privacy_policy.dart';
+import 'package:muevete/features/privacy/domain/consent_record.dart';
+import 'package:muevete/features/privacy/presentation/privacy_providers.dart';
 import 'package:muevete/features/training/domain/repositories/training_repository.dart';
 import 'package:muevete/features/training/presentation/providers/training_repository_provider.dart';
+
+import 'helpers/privacy_policy_test_data.dart';
 
 /// The onboarding gate listens to users/{uid}. On sign-out Firestore can
 /// still send that listener a permission error after the gate stopped
@@ -27,6 +30,9 @@ void main() {
         authStateProvider.overrideWith((ref) => auth.stream),
         firebaseFirestoreProvider.overrideWithValue(_FakeFirestore(userDoc.stream)),
         trainingRepositoryProvider.overrideWithValue(_NoPlans()),
+        privacyPolicyMetadataProvider.overrideWith(
+          (ref) => Stream.value(testPolicyMetadata()),
+        ),
       ],
     );
     // Stands in for AuthGate, which watches the gate while signed in.
@@ -51,7 +57,10 @@ void main() {
     auth.add(_FakeUser());
     await settle();
     userDoc.add(
-      _FakeSnapshot({privacyPolicyVersionField: currentPrivacyPolicyVersion}),
+      _FakeSnapshot({
+        policyAcceptedField: {'version': 2},
+        healthDataAuthorizationField: {'version': 2},
+      }),
     );
     await settle();
     expect(status(), OnboardingStatus.noDiagnosis);

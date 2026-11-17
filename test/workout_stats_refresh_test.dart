@@ -291,7 +291,7 @@ class _Profiles implements ProfileRepository {
   @override
   Future<void> createProfile(
     UserModel user, {
-    String? privacyPolicyVersion,
+    int? acceptedPolicyVersion,
   }) async {}
 
   @override

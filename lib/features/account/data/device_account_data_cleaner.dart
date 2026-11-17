@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:muevete/features/account/domain/account_deletion_service.dart';
 import 'package:muevete/features/education/data/shared_preferences_tip_preferences_store.dart';
+import 'package:muevete/features/privacy/data/shared_preferences_policy_notice_store.dart';
 import 'package:muevete/features/training/domain/services/notification_scheduler.dart';
 import 'package:muevete/features/walkthrough/domain/walkthrough_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,10 @@ class DeviceAccountDataCleaner implements LocalAccountDataCleaner {
     await _run('clear tip preferences', () async {
       final prefs = await _preferences();
       await prefs.remove(SharedPreferencesTipPreferencesStore.keyFor(uid));
+    });
+    await _run('clear policy notice', () async {
+      final prefs = await _preferences();
+      await prefs.remove(SharedPreferencesPolicyNoticeStore.keyFor(uid));
     });
   }
 

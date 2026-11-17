@@ -2045,14 +2045,56 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyVersionLabel.
   ///
   /// In es, this message translates to:
-  /// **'Versión vigente: {version}'**
-  String privacyPolicyVersionLabel(String version);
+  /// **'Versión {version} · vigente desde el {date}'**
+  String privacyPolicyVersionLabel(int version, String date);
 
-  /// No description provided for @privacyConsentCheckbox.
+  /// No description provided for @privacyPolicySavedCopy.
   ///
   /// In es, this message translates to:
-  /// **'He leído y acepto la política de tratamiento de datos personales, incluida la transferencia de mis datos a servidores de Google en Estados Unidos.'**
-  String get privacyConsentCheckbox;
+  /// **'Sin conexión: estás viendo la copia guardada en tu teléfono (versión {version}).'**
+  String privacyPolicySavedCopy(int version);
+
+  /// No description provided for @privacyPolicyBundledCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: estás viendo la copia incluida en la app (versión {version}).'**
+  String privacyPolicyBundledCopy(int version);
+
+  /// No description provided for @privacyPolicyNewerUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay una versión más reciente de la política (versión {version}) que no pudimos cargar. Revisa tu conexión e inténtalo de nuevo.'**
+  String privacyPolicyNewerUnavailable(int version);
+
+  /// No description provided for @privacyPolicyLoadFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar la política de privacidad. Inténtalo de nuevo más tarde.'**
+  String get privacyPolicyLoadFailed;
+
+  /// No description provided for @privacyConsentChangesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué cambió en la versión {version}'**
+  String privacyConsentChangesTitle(int version);
+
+  /// No description provided for @privacyNoticeText.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizamos la política de privacidad. Puedes revisar los cambios cuando quieras.'**
+  String get privacyNoticeText;
+
+  /// No description provided for @privacyNoticeView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get privacyNoticeView;
+
+  /// No description provided for @privacyNoticeDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get privacyNoticeDismiss;
 
   /// No description provided for @privacyReadPolicy.
   ///
@@ -2089,12 +2131,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos guardar tu aceptación. Revisa tu conexión e inténtalo de nuevo.'**
   String get privacyConsentSaveFailed;
-
-  /// No description provided for @privacyHealthConsentCheckbox.
-  ///
-  /// In es, this message translates to:
-  /// **'Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.'**
-  String get privacyHealthConsentCheckbox;
 
   /// No description provided for @settingsDeleteAccount.
   ///

@@ -15,6 +15,8 @@ import 'package:muevete/features/profile/domain/repositories/profile_repository.
 import 'package:muevete/features/profile/presentation/profile_repository_provider.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 
+import 'helpers/privacy_policy_test_data.dart';
+
 void main() {
   testWidgets('sign-up asks for sex, then age, weight and height in turn', (
     tester,
@@ -42,6 +44,7 @@ void main() {
         overrides: [
           authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
           profileRepositoryProvider.overrideWithValue(profiles),
+          ...privacyPolicyOverrides(version: 2),
         ],
         child: MaterialApp.router(
           routerConfig: router,
@@ -82,6 +85,9 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('How old are you?'), findsNothing);
+    // The labels are the ones of the policy version that will be stored.
+    expect(find.text('I accept policy v2.'), findsOneWidget);
+    expect(find.text('I authorize my health data v2.'), findsOneWidget);
 
     final policyBox = find.byKey(const ValueKey('privacy-consent-checkbox'));
     await tester.ensureVisible(policyBox);
@@ -138,7 +144,7 @@ void main() {
     expect(created.weight, 70.3);
     expect(created.height, 169);
     // The acceptance is stored with the profile, in the same write.
-    expect(profiles.acceptedVersions.single, '2026-11-10');
+    expect(profiles.acceptedVersions.single, 2);
   });
 }
 
@@ -163,15 +169,15 @@ class _FakeAuthRepository extends Fake implements AuthRepository {
 
 class _RecordingProfileRepository implements ProfileRepository {
   final List<UserModel> created = [];
-  final List<String?> acceptedVersions = [];
+  final List<int?> acceptedVersions = [];
 
   @override
   Future<void> createProfile(
     UserModel user, {
-    String? privacyPolicyVersion,
+    int? acceptedPolicyVersion,
   }) async {
     created.add(user);
-    acceptedVersions.add(privacyPolicyVersion);
+    acceptedVersions.add(acceptedPolicyVersion);
   }
 
   @override

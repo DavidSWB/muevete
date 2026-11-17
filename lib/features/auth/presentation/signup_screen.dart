@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
 import 'package:muevete/features/localization/presentation/widgets/locale_switcher.dart';
-import 'package:muevete/features/privacy/domain/privacy_policy.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy_document.dart';
+import 'package:muevete/features/privacy/presentation/privacy_providers.dart';
 import 'package:muevete/features/privacy/presentation/widgets/privacy_consent_checkbox.dart';
 import 'package:muevete/features/profile/domain/entities/biological_sex.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
@@ -91,6 +92,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     super.dispose();
   }
 
+  /// The policy version whose checkboxes are on screen.
+  PrivacyPolicyVersion? _shownPolicy() =>
+      ref.read(currentPrivacyPolicyProvider).asData?.value.policy;
+
   /// Checks the account form. Age, weight and height come from pickers
   /// limited to valid values.
   String? _validateAccount(AppLocalizations l10n) {
@@ -115,10 +120,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       return l10n.valSelectSex;
     }
 
-    if (!PrivacyConsentCheckboxes.complete(
-      policyAccepted: _privacyAccepted,
-      healthDataAuthorized: _healthDataAuthorized,
-    )) {
+    if (_shownPolicy() == null ||
+        !PrivacyConsentCheckboxes.complete(
+          policyAccepted: _privacyAccepted,
+          healthDataAuthorized: _healthDataAuthorized,
+        )) {
       return l10n.valPrivacyRequired;
     }
 
@@ -225,7 +231,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
           .read(profileRepositoryProvider)
           .createProfile(
             initialUser,
-            privacyPolicyVersion: currentPrivacyPolicyVersion,
+            // Validated above: the version whose text the user accepted.
+            acceptedPolicyVersion: _shownPolicy()!.version,
           );
 
       signupStage = 'post-registration navigation';
@@ -356,6 +363,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final social = _isSocialUser;
+    // Ticks given for one version's text never carry over to another.
+    ref.listen(currentPrivacyPolicyProvider, (previous, next) {
+      if (previous?.asData?.value.policy.version !=
+          next.asData?.value.policy.version) {
+        setState(() {
+          _privacyAccepted = false;
+          _healthDataAuthorized = false;
+        });
+      }
+    });
 
     return PopScope(
       // Back from a picker returns to the previous step, not out of sign-up.
@@ -444,6 +461,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             const SizedBox(height: 16),
 
             PrivacyConsentCheckboxes(
+              policy: ref
+                  .watch(currentPrivacyPolicyProvider)
+                  .asData
+                  ?.value
+                  .policy,
               policyAccepted: _privacyAccepted,
               healthDataAuthorized: _healthDataAuthorized,
               enabled: !_isLoading,

@@ -264,7 +264,7 @@ class _CountingProfileRepository implements ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
-  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) async => savedProfiles.add(user);
+  Future<void> createProfile(UserModel user, {int? acceptedPolicyVersion}) async => savedProfiles.add(user);
 
   @override
 

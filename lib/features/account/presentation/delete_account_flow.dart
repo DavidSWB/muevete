@@ -6,7 +6,7 @@ import 'package:muevete/features/account/domain/account_deletion_service.dart';
 import 'package:muevete/features/account/presentation/account_providers.dart';
 import 'package:muevete/features/auth/domain/repositories/auth_repository.dart';
 import 'package:muevete/features/auth/presentation/providers/auth_provider.dart';
-import 'package:muevete/features/privacy/presentation/privacy_policy_content.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 

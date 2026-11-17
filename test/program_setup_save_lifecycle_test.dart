@@ -100,7 +100,7 @@ class _ControlledProfileRepository implements ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
-  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) async {}
+  Future<void> createProfile(UserModel user, {int? acceptedPolicyVersion}) async {}
 
   @override
 

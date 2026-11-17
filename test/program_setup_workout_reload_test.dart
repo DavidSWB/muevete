@@ -138,7 +138,7 @@ class _NewAccountProfileRepository implements ProfileRepository {
   Future<void> updatePersonalInfo(PersonalInfo info) async {}
 
   @override
-  Future<void> createProfile(UserModel user, {String? privacyPolicyVersion}) async {}
+  Future<void> createProfile(UserModel user, {int? acceptedPolicyVersion}) async {}
 
   @override
   Future<void> unlockBadges(Set<String> badgeIds) async {}

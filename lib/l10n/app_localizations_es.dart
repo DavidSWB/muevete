@@ -1121,13 +1121,43 @@ class AppLocalizationsEs extends AppLocalizations {
       'Política de tratamiento de datos personales';
 
   @override
-  String privacyPolicyVersionLabel(String version) {
-    return 'Versión vigente: $version';
+  String privacyPolicyVersionLabel(int version, String date) {
+    return 'Versión $version · vigente desde el $date';
   }
 
   @override
-  String get privacyConsentCheckbox =>
-      'He leído y acepto la política de tratamiento de datos personales, incluida la transferencia de mis datos a servidores de Google en Estados Unidos.';
+  String privacyPolicySavedCopy(int version) {
+    return 'Sin conexión: estás viendo la copia guardada en tu teléfono (versión $version).';
+  }
+
+  @override
+  String privacyPolicyBundledCopy(int version) {
+    return 'Sin conexión: estás viendo la copia incluida en la app (versión $version).';
+  }
+
+  @override
+  String privacyPolicyNewerUnavailable(int version) {
+    return 'Hay una versión más reciente de la política (versión $version) que no pudimos cargar. Revisa tu conexión e inténtalo de nuevo.';
+  }
+
+  @override
+  String get privacyPolicyLoadFailed =>
+      'No pudimos cargar la política de privacidad. Inténtalo de nuevo más tarde.';
+
+  @override
+  String privacyConsentChangesTitle(int version) {
+    return 'Qué cambió en la versión $version';
+  }
+
+  @override
+  String get privacyNoticeText =>
+      'Actualizamos la política de privacidad. Puedes revisar los cambios cuando quieras.';
+
+  @override
+  String get privacyNoticeView => 'Ver';
+
+  @override
+  String get privacyNoticeDismiss => 'Entendido';
 
   @override
   String get privacyReadPolicy => 'Leer la política';
@@ -1149,10 +1179,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get privacyConsentSaveFailed =>
       'No pudimos guardar tu aceptación. Revisa tu conexión e inténtalo de nuevo.';
-
-  @override
-  String get privacyHealthConsentCheckbox =>
-      'Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.';
 
   @override
   String get settingsDeleteAccount => 'Eliminar cuenta';
