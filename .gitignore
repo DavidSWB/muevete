@@ -55,6 +55,8 @@ ui-debug.log
 .env
 firebase/serviceAccountKey.json
 *.json
+# Privacy policy versions: bundled in the app and read by tool/publish_policy.
+!assets/policies/*.json
 
 # UNCOMMENT the following lines ONLY if your repository is PUBLIC
 # to prevent exposing your Firebase API credentials:

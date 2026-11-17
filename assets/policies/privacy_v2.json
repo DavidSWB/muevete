@@ -1,0 +1,438 @@
+{
+  "version": 2,
+  "effectiveFrom": "2026-11-17T00:00:00-05:00",
+  "textEs": [
+    {
+      "title": "1. Responsable del tratamiento",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El responsable del tratamiento de tus datos personales en Muévete es David Camilo Eraso Oñate, estudiante del programa de Ingeniería de Sistemas de la Universidad Mariana (San Juan de Pasto, Colombia), en el marco de su trabajo de grado."
+        },
+        {
+          "type": "paragraph",
+          "text": "Correo de contacto: davidc.eraso221@umariana.edu.co."
+        },
+        {
+          "type": "paragraph",
+          "text": "Esta política se rige por la Ley 1581 de 2012 y el Decreto 1377 de 2013, compilado en el Decreto 1074 de 2015."
+        }
+      ]
+    },
+    {
+      "title": "2. Datos que tratamos",
+      "blocks": [
+        {
+          "type": "bullet",
+          "text": "Datos de la cuenta: correo electrónico, nombre y el identificador de la cuenta de Google o Apple si inicias sesión con ellas."
+        },
+        {
+          "type": "bullet",
+          "text": "Datos del perfil: edad, sexo biológico, peso y estatura."
+        },
+        {
+          "type": "bullet",
+          "text": "Datos de salud (datos sensibles): las condiciones médicas que decidas escribir, las respuestas al diagnóstico de movilidad y el nivel calculado para hombro, cadera, rodilla y tobillo."
+        },
+        {
+          "type": "bullet",
+          "text": "Datos de actividad: plan y horario de entrenamiento, preferencias de recordatorios, fechas de los entrenamientos y pausas activas completadas, racha, puntos de movimiento, progreso por articulación y medallas."
+        },
+        {
+          "type": "bullet",
+          "text": "Registro de aceptación: la versión de esta política que aceptaste y la fecha, y la versión y fecha de tu autorización para tratar datos de salud."
+        },
+        {
+          "type": "bullet",
+          "text": "Datos guardados solo en tu teléfono: el progreso del recorrido guiado, tus preferencias de consejos e idioma y los recordatorios programados."
+        }
+      ]
+    },
+    {
+      "title": "3. Datos sensibles",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Los datos de salud son datos sensibles. Por eso te informamos que no estás obligado a autorizar su tratamiento y que las condiciones médicas son opcionales. Su tratamiento requiere una autorización expresa, separada de la aceptación de esta política."
+        },
+        {
+          "type": "paragraph",
+          "text": "Actualmente, la aplicación usa el diagnóstico de movilidad para calcular tu nivel y generar tu plan de entrenamiento, por lo que lo pide antes de mostrar el plan."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si no deseas suministrar estos datos, puedes no crear la cuenta o solicitar en cualquier momento la eliminación de los que ya registraste."
+        }
+      ]
+    },
+    {
+      "title": "4. Finalidades",
+      "blocks": [
+        {
+          "type": "bullet",
+          "text": "Crear y administrar tu cuenta e iniciar tu sesión."
+        },
+        {
+          "type": "bullet",
+          "text": "Calcular tu nivel de movilidad y recomendarte variantes de ejercicios y rutinas acordes con ese nivel."
+        },
+        {
+          "type": "bullet",
+          "text": "Programar en tu teléfono los recordatorios de entrenamiento y de pausas activas."
+        },
+        {
+          "type": "bullet",
+          "text": "Registrar tu progreso, tu racha, tus puntos de movimiento y tus medallas."
+        },
+        {
+          "type": "bullet",
+          "text": "Mostrarte consejos breves de salud."
+        },
+        {
+          "type": "bullet",
+          "text": "Conservar la prueba de tu autorización."
+        },
+        {
+          "type": "bullet",
+          "text": "Atender tus consultas, reclamos y solicitudes sobre tus datos."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tus datos no se venden ni se usan con fines publicitarios."
+        }
+      ]
+    },
+    {
+      "title": "5. Proveedores y transmisión internacional",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Para funcionar, la aplicación usa servicios de terceros que tratan datos por cuenta del responsable, como encargados del tratamiento:"
+        },
+        {
+          "type": "bullet",
+          "text": "Google Firebase (Authentication y Cloud Firestore) almacena tu cuenta y los datos de la aplicación. La base de datos está en la región multirregional nam5, en Estados Unidos."
+        },
+        {
+          "type": "bullet",
+          "text": "Google o Apple procesan tu inicio de sesión cuando eliges esas opciones."
+        },
+        {
+          "type": "bullet",
+          "text": "Los videos de los ejercicios se cargan desde YouTube (Google) en su modo de privacidad mejorada; al reproducirlos, YouTube recibe datos técnicos de tu dispositivo, como la dirección IP."
+        },
+        {
+          "type": "paragraph",
+          "text": "Esto implica una transmisión internacional de datos a Estados Unidos, país incluido por la Superintendencia de Industria y Comercio entre los que cuentan con un nivel adecuado de protección (Circular Externa 005 de 2017, modificada por la Circular Externa 008 de 2017). Al aceptar esta política autorizas de forma expresa esa transmisión."
+        }
+      ]
+    },
+    {
+      "title": "6. Tus derechos",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Como titular de los datos tienes derecho a:"
+        },
+        {
+          "type": "bullet",
+          "text": "Conocer, actualizar y rectificar tus datos personales."
+        },
+        {
+          "type": "bullet",
+          "text": "Solicitar prueba de la autorización que otorgaste."
+        },
+        {
+          "type": "bullet",
+          "text": "Ser informado, previa solicitud, sobre el uso que se ha dado a tus datos."
+        },
+        {
+          "type": "bullet",
+          "text": "Presentar quejas ante la Superintendencia de Industria y Comercio."
+        },
+        {
+          "type": "bullet",
+          "text": "Revocar la autorización y solicitar la supresión de tus datos."
+        },
+        {
+          "type": "bullet",
+          "text": "Acceder de forma gratuita a tus datos personales."
+        }
+      ]
+    },
+    {
+      "title": "7. Cómo ejercer tus derechos",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Escribe a davidc.eraso221@umariana.edu.co indicando tu nombre, el correo de tu cuenta en Muévete y tu solicitud."
+        },
+        {
+          "type": "bullet",
+          "text": "Las consultas se responden en un máximo de 10 días hábiles. Si no es posible, te informaremos el motivo y la nueva fecha, que no superará 5 días hábiles adicionales."
+        },
+        {
+          "type": "bullet",
+          "text": "Los reclamos (corrección, actualización, supresión o revocación) se atienden en un máximo de 15 días hábiles, prorrogables hasta 8 días hábiles más con aviso previo. Si el reclamo está incompleto, te pediremos completarlo dentro de los 5 días siguientes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Antes de acudir a la Superintendencia de Industria y Comercio debes haber presentado tu consulta o reclamo al responsable."
+        }
+      ]
+    },
+    {
+      "title": "8. Conservación y seguridad",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Tus datos se conservan mientras tu cuenta exista. Puedes eliminar tu cuenta y sus datos en cualquier momento desde Ajustes > Eliminar cuenta, o solicitarlo por correo; en ambos casos se borran de la aplicación, salvo que una obligación legal exija conservarlos."
+        },
+        {
+          "type": "paragraph",
+          "text": "Los datos viajan cifrados entre tu teléfono y los servidores de Firebase."
+        }
+      ]
+    },
+    {
+      "title": "9. Cambios y vigencia",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Esta es la versión 2 de la política, vigente desde el [PUBLICATION_DATE]."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si la modificamos de forma sustancial, por ejemplo en el responsable, las finalidades o los datos que tratamos, la aplicación te pedirá revisarla y aceptarla de nuevo antes de continuar. Si el cambio es menor, te lo informaremos al abrir la aplicación."
+        },
+        {
+          "type": "paragraph",
+          "text": "Puedes consultar siempre la versión vigente en Ajustes > Política de privacidad."
+        }
+      ]
+    }
+  ],
+  "textEn": [
+    {
+      "title": "1. Data controller",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "The controller of your personal data in Muévete is David Camilo Eraso Oñate, a student of the Systems Engineering program at Universidad Mariana (San Juan de Pasto, Colombia), as part of their degree project."
+        },
+        {
+          "type": "paragraph",
+          "text": "Contact email: davidc.eraso221@umariana.edu.co."
+        },
+        {
+          "type": "paragraph",
+          "text": "This policy is governed by Colombian Law 1581 of 2012 and Decree 1377 of 2013, compiled in Decree 1074 of 2015. The Spanish version is the reference text."
+        }
+      ]
+    },
+    {
+      "title": "2. Data we process",
+      "blocks": [
+        {
+          "type": "bullet",
+          "text": "Account data: email address, name and the identifier of your Google or Apple account if you sign in with them."
+        },
+        {
+          "type": "bullet",
+          "text": "Profile data: age, biological sex, weight and height."
+        },
+        {
+          "type": "bullet",
+          "text": "Health data (sensitive data): the medical conditions you choose to write, your answers to the mobility diagnosis and the level calculated for shoulder, hip, knee and ankle."
+        },
+        {
+          "type": "bullet",
+          "text": "Activity data: training plan and schedule, reminder preferences, dates of completed workouts and active breaks, streak, movement points, progress per joint and badges."
+        },
+        {
+          "type": "bullet",
+          "text": "Acceptance record: the version of this policy you accepted and the date, and the version and date of your authorization to process health data."
+        },
+        {
+          "type": "bullet",
+          "text": "Data stored only on your phone: guided tour progress, your tip and language preferences and the scheduled reminders."
+        }
+      ]
+    },
+    {
+      "title": "3. Sensitive data",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Health data is sensitive data. We therefore inform you that you are not obliged to authorize its processing and that medical conditions are optional. Its processing requires an express authorization, separate from accepting this policy."
+        },
+        {
+          "type": "paragraph",
+          "text": "Currently, the app uses the mobility diagnosis to calculate your level and build your training plan, so it asks for it before showing the plan."
+        },
+        {
+          "type": "paragraph",
+          "text": "If you do not wish to provide this data, you can choose not to create an account or ask at any time for the data you already entered to be deleted."
+        }
+      ]
+    },
+    {
+      "title": "4. Purposes",
+      "blocks": [
+        {
+          "type": "bullet",
+          "text": "Create and manage your account and sign you in."
+        },
+        {
+          "type": "bullet",
+          "text": "Calculate your mobility level and recommend exercise variants and routines that match that level."
+        },
+        {
+          "type": "bullet",
+          "text": "Schedule training and active-break reminders on your phone."
+        },
+        {
+          "type": "bullet",
+          "text": "Record your progress, streak, movement points and badges."
+        },
+        {
+          "type": "bullet",
+          "text": "Show you short health tips."
+        },
+        {
+          "type": "bullet",
+          "text": "Keep proof of your authorization."
+        },
+        {
+          "type": "bullet",
+          "text": "Handle your inquiries, complaints and requests about your data."
+        },
+        {
+          "type": "paragraph",
+          "text": "Your data is not sold or used for advertising."
+        }
+      ]
+    },
+    {
+      "title": "5. Providers and international transmission",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "To work, the app uses third-party services that process data on behalf of the controller, as data processors:"
+        },
+        {
+          "type": "bullet",
+          "text": "Google Firebase (Authentication and Cloud Firestore) stores your account and app data. The database is in the nam5 multi-region, in the United States."
+        },
+        {
+          "type": "bullet",
+          "text": "Google or Apple process your sign-in when you choose those options."
+        },
+        {
+          "type": "bullet",
+          "text": "Exercise videos load from YouTube (Google) in its privacy-enhanced mode; when you play them, YouTube receives technical data from your device, such as your IP address."
+        },
+        {
+          "type": "paragraph",
+          "text": "This involves an international transmission of data to the United States, a country the Superintendencia de Industria y Comercio lists among those with an adequate level of protection (External Circular 005 of 2017, amended by External Circular 008 of 2017). By accepting this policy you expressly authorize that transmission."
+        }
+      ]
+    },
+    {
+      "title": "6. Your rights",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "As the data subject you have the right to:"
+        },
+        {
+          "type": "bullet",
+          "text": "Know, update and correct your personal data."
+        },
+        {
+          "type": "bullet",
+          "text": "Request proof of the authorization you gave."
+        },
+        {
+          "type": "bullet",
+          "text": "Be informed, on request, about how your data has been used."
+        },
+        {
+          "type": "bullet",
+          "text": "File complaints with the Superintendencia de Industria y Comercio."
+        },
+        {
+          "type": "bullet",
+          "text": "Revoke your authorization and request deletion of your data."
+        },
+        {
+          "type": "bullet",
+          "text": "Access your personal data free of charge."
+        }
+      ]
+    },
+    {
+      "title": "7. How to exercise your rights",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Write to davidc.eraso221@umariana.edu.co with your name, the email of your Muévete account and your request."
+        },
+        {
+          "type": "bullet",
+          "text": "Inquiries are answered within 10 business days at most. If that is not possible, we will tell you why and give a new date, no more than 5 additional business days later."
+        },
+        {
+          "type": "bullet",
+          "text": "Complaints (correction, update, deletion or revocation) are handled within 15 business days at most, extendable by up to 8 more business days with prior notice. If a complaint is incomplete, we will ask you to complete it within the following 5 days."
+        },
+        {
+          "type": "paragraph",
+          "text": "Before going to the Superintendencia de Industria y Comercio you must have filed your inquiry or complaint with the controller."
+        }
+      ]
+    },
+    {
+      "title": "8. Retention and security",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Your data is kept while your account exists. You can delete your account and its data at any time from Settings > Delete account, or request it by email; either way it is removed from the app unless a legal obligation requires keeping it."
+        },
+        {
+          "type": "paragraph",
+          "text": "Data travels encrypted between your phone and the Firebase servers."
+        }
+      ]
+    },
+    {
+      "title": "9. Changes and effective date",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "This is version 2 of the policy, in effect since [PUBLICATION_DATE]."
+        },
+        {
+          "type": "paragraph",
+          "text": "If we change it substantially, for example the controller, the purposes or the data we process, the app will ask you to review and accept it again before continuing. If the change is minor, we will let you know when you open the app."
+        },
+        {
+          "type": "paragraph",
+          "text": "You can always read the version in force in Settings > Privacy policy."
+        }
+      ]
+    }
+  ],
+  "policyCheckbox": {
+    "es": "He leído y acepto la política de tratamiento de datos personales, incluida la transmisión de mis datos a servidores de Google en Estados Unidos.",
+    "en": "I have read and accept the personal data processing policy, including the transmission of my data to Google servers in the United States."
+  },
+  "healthDataCheckbox": {
+    "es": "Autorizo de forma expresa el tratamiento de mis datos de salud (diagnóstico de movilidad y condiciones médicas que registre) para las finalidades descritas en la política. Sé que, por ser datos sensibles, no estoy obligado a autorizarlo.",
+    "en": "I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I know that, because it is sensitive data, I am not obliged to authorize it."
+  },
+  "changeSummary": {
+    "es": "Ahora guardamos por separado tu aceptación de la política y tu autorización para tratar datos de salud, con su versión y fecha. También actualizamos los datos del responsable y precisamos la transmisión internacional de datos.",
+    "en": "We now store your acceptance of the policy and your authorization to process health data separately, each with its version and date. We also updated the controller's details and clarified the international transmission of data."
+  }
+}
