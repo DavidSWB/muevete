@@ -192,39 +192,50 @@ void main() {
   });
 
   group('bundled version 2', () {
-    test(
-      'loads from the app bundle with full text in both languages',
-      () async {
-        final version = await BundledPrivacyPolicy().load();
-        expect(version.version, 2);
-        for (final code in ['es', 'en']) {
-          final sections = version.sectionsFor(code);
-          expect(sections, hasLength(9));
-          final text = sections
-              .expand((s) => [s.title, ...s.blocks.map((b) => b.text)])
-              .join('\n');
-          expect(text, contains('David Camilo Eraso Oñate'));
-          expect(text, contains('davidc.eraso221@umariana.edu.co'));
-          expect(text, contains('nam5'));
-          expect(text, contains('008'));
-          expect(version.policyCheckbox[code], isNotEmpty);
-          expect(version.healthDataCheckbox[code], isNotEmpty);
-          expect(version.changeSummary[code], isNotEmpty);
-        }
-        expect(
-          version.policyCheckbox['es'],
-          startsWith(
-            'He leído y acepto la política de tratamiento de datos personales',
-          ),
-        );
-        expect(
-          version.healthDataCheckbox['es'],
-          startsWith(
-            'Autorizo de forma expresa el tratamiento de mis datos de salud',
-          ),
-        );
-      },
-    );
+    test('loads from the app bundle with full text in both languages', () async {
+      final version = await BundledPrivacyPolicy().load();
+      expect(version.version, 2);
+      for (final code in ['es', 'en']) {
+        final sections = version.sectionsFor(code);
+        expect(sections, hasLength(9));
+        final text = sections
+            .expand((s) => [s.title, ...s.blocks.map((b) => b.text)])
+            .join('\n');
+        expect(text, contains('David Camilo Eraso Oñate'));
+        expect(text, contains('davidc.eraso221@umariana.edu.co'));
+        expect(text, contains('nam5'));
+        expect(text, contains('008'));
+        expect(version.policyCheckbox[code], isNotEmpty);
+        expect(version.healthDataCheckbox[code], isNotEmpty);
+        expect(version.changeSummary[code], isNotEmpty);
+      }
+      expect(
+        version.effectiveFrom.isAtSameMomentAs(
+          DateTime.parse('2026-11-18T00:00:00-05:00'),
+        ),
+        isTrue,
+      );
+      expect(
+        version.sectionsFor('es').last.blocks.first.text,
+        'Esta es la versión 2 de la política, vigente desde el 18 de noviembre de 2026.',
+      );
+      expect(
+        version.sectionsFor('en').last.blocks.first.text,
+        'This is version 2 of the policy, in effect since November 18, 2026.',
+      );
+      expect(
+        version.policyCheckbox['es'],
+        startsWith(
+          'He leído y acepto la política de tratamiento de datos personales',
+        ),
+      );
+      expect(
+        version.healthDataCheckbox['es'],
+        startsWith(
+          'Autorizo de forma expresa el tratamiento de mis datos de salud',
+        ),
+      );
+    });
 
     test('is treated as current and mandatory when used as metadata', () async {
       final version = await BundledPrivacyPolicy().load();

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "effectiveFrom": "2026-11-17T00:00:00-05:00",
+  "effectiveFrom": "2026-11-18T00:00:00-05:00",
   "textEs": [
     {
       "title": "1. Responsable del tratamiento",
@@ -199,7 +199,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Esta es la versión 2 de la política, vigente desde el [PUBLICATION_DATE]."
+          "text": "Esta es la versión 2 de la política, vigente desde el 18 de noviembre de 2026."
         },
         {
           "type": "paragraph",
@@ -410,7 +410,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "This is version 2 of the policy, in effect since [PUBLICATION_DATE]."
+          "text": "This is version 2 of the policy, in effect since November 18, 2026."
         },
         {
           "type": "paragraph",
