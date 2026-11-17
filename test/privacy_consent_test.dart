@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muevete/features/privacy/domain/privacy_consent_repository.dart';
-import 'package:muevete/features/privacy/domain/privacy_policy.dart';
-import 'package:muevete/features/privacy/presentation/privacy_policy_content.dart';
 import 'package:muevete/features/privacy/presentation/privacy_providers.dart';
 import 'package:muevete/features/privacy/presentation/screens/privacy_consent_screen.dart';
 import 'package:muevete/features/privacy/presentation/screens/privacy_policy_screen.dart';
@@ -18,40 +16,10 @@ import 'package:muevete/features/walkthrough/presentation/providers/walkthrough_
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'helpers/privacy_policy_test_data.dart';
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
-
-  group('policy version', () {
-    test('only the current version counts as accepted', () {
-      expect(hasAcceptedCurrentPrivacyPolicy({}), isFalse);
-      expect(
-        hasAcceptedCurrentPrivacyPolicy({
-          privacyPolicyVersionField: '2025-01-01',
-        }),
-        isFalse,
-      );
-      expect(
-        hasAcceptedCurrentPrivacyPolicy({
-          privacyPolicyVersionField: currentPrivacyPolicyVersion,
-        }),
-        isTrue,
-      );
-      expect(currentPrivacyPolicyVersion, '2026-11-10');
-    });
-
-    test('both languages name the controller and the contact channel', () {
-      for (final code in ['es', 'en']) {
-        final text = privacyPolicySections(code)
-            .expand((section) => [section.title, ...section.paragraphs])
-            .join('\n');
-        expect(text, contains('David Camilo Eraso Oñate'));
-        expect(text, contains(privacyPolicyContactEmail));
-        expect(text, contains('Calle 18 No. 34-104'));
-        expect(text, contains('nam5'));
-        expect(text, contains(currentPrivacyPolicyVersion));
-      }
-    });
-  });
 
   group('consent screen', () {
     testWidgets('accept stays disabled until both boxes are ticked', (
@@ -76,7 +44,28 @@ void main() {
       await tester.tap(accept);
       await tester.pumpAndSettle();
       expect(consent.calls, 1);
+      expect(consent.versions, [3], reason: 'the version shown is stored');
       expect(find.byKey(const ValueKey('privacy-consent-error')), findsNothing);
+    });
+
+    testWidgets('shows what changed and both boxes start unticked', (
+      tester,
+    ) async {
+      await _pumpConsentScreen(tester, _RecordingConsentRepository());
+
+      expect(find.text('What changed in version 3'), findsOneWidget);
+      expect(find.text('Changes in version 3.'), findsOneWidget);
+      expect(find.text('I accept policy v3.'), findsOneWidget);
+      expect(find.text('I authorize my health data v3.'), findsOneWidget);
+      for (final key in [
+        'privacy-consent-checkbox',
+        'privacy-health-checkbox',
+      ]) {
+        expect(
+          tester.widget<Checkbox>(find.byKey(ValueKey(key))).value,
+          isFalse,
+        );
+      }
     });
 
     testWidgets('a failed save shows an error and allows a retry', (
@@ -111,7 +100,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(PrivacyPolicyScreen), findsOneWidget);
-      expect(find.text('Current version: 2026-11-10'), findsOneWidget);
+      expect(
+        find.text('Version 3 · in effect since November 17, 2026'),
+        findsOneWidget,
+      );
+      expect(find.text('Text of version 3.'), findsOneWidget);
+      expect(find.text('• A bullet.'), findsOneWidget);
     });
   });
 
@@ -138,6 +132,7 @@ void main() {
           profileProvider.overrideWith(_FakeProfile.new),
           walkthroughStoreProvider.overrideWithValue(_MemoryStore()),
           walkthroughUserIdProvider.overrideWithValue('u'),
+          ...privacyPolicyOverrides(),
         ],
         child: MaterialApp.router(
           routerConfig: router,
@@ -188,6 +183,7 @@ Future<void> _pumpConsentScreen(
     ProviderScope(
       overrides: [
         privacyConsentRepositoryProvider.overrideWithValue(consent),
+        ...privacyPolicyOverrides(version: 3),
         ...overrides,
       ],
       child: MaterialApp.router(
@@ -206,10 +202,12 @@ class _RecordingConsentRepository implements PrivacyConsentRepository {
 
   final bool failFirst;
   int calls = 0;
+  final List<int> versions = [];
 
   @override
-  Future<void> acceptCurrentPolicy() async {
+  Future<void> acceptPolicy(int version) async {
     calls++;
+    versions.add(version);
     if (failFirst && calls == 1) throw Exception('permission-denied');
   }
 }

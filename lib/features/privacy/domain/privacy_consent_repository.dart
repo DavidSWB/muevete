@@ -1,5 +1,6 @@
 abstract class PrivacyConsentRepository {
-  /// Records that the signed-in user accepted [currentPrivacyPolicyVersion]
-  /// on an existing profile. Throws if no user is signed in.
-  Future<void> acceptCurrentPolicy();
+  /// Records on the signed-in user's existing profile that they accepted
+  /// policy [version] and authorized health data under it, each with the
+  /// server time. Throws if no user is signed in.
+  Future<void> acceptPolicy(int version);
 }

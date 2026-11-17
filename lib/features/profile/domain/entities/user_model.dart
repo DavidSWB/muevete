@@ -7,6 +7,7 @@ import 'package:muevete/features/profile/domain/entities/user_notifications.dart
 import 'package:muevete/features/profile/domain/entities/personal_info.dart';
 import 'package:muevete/shared/entities/progresssummary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:muevete/features/privacy/domain/consent_record.dart';
 
 class UserModel {
   final String id;
@@ -48,6 +49,13 @@ class UserModel {
   /// Ids of the achievements the user has earned.
   final List<String> unlockedBadgeIds;
 
+  /// The privacy policy version the user accepted, and when.
+  final ConsentRecord? policyAccepted;
+
+  /// The policy version under which the user authorized processing of
+  /// their health data, and when. Independent of [policyAccepted].
+  final ConsentRecord? healthDataAuthorization;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -69,6 +77,8 @@ class UserModel {
     this.movementXp = 0,
     this.jointProgress = const {},
     this.unlockedBadgeIds = const [],
+    this.policyAccepted,
+    this.healthDataAuthorization,
   });
 
   factory UserModel.fromJson({
@@ -136,6 +146,12 @@ class UserModel {
             for (final id in json["unlockedBadgeIds"] as List)
               if (id is String) id,
         ],
+
+        policyAccepted: ConsentRecord.fromJson(json[policyAcceptedField]),
+
+        healthDataAuthorization: ConsentRecord.fromJson(
+          json[healthDataAuthorizationField],
+        ),
       );
     } catch (e, s) {
       print(e);
@@ -208,7 +224,9 @@ class UserModel {
   /// Profile fields only. Activity history, the streak, rewards, badges and
   /// [consistencyTrackedSince] are written by
   /// `ProfileRepository.recordCompletion` and `createProfile`, so saving a
-  /// profile can never overwrite completions recorded meanwhile.
+  /// profile can never overwrite completions recorded meanwhile. The consent
+  /// records are written only by `createProfile` and
+  /// `PrivacyConsentRepository`, with the server time.
   Map<String, dynamic> toJson() {
     return {
       "email": email,
@@ -250,6 +268,8 @@ class UserModel {
       movementXp: movementXp,
       jointProgress: jointProgress,
       unlockedBadgeIds: unlockedBadgeIds,
+      policyAccepted: policyAccepted,
+      healthDataAuthorization: healthDataAuthorization,
     );
   }
 
@@ -273,6 +293,8 @@ class UserModel {
     int? movementXp,
     Map<String, int>? jointProgress,
     List<String>? unlockedBadgeIds,
+    ConsentRecord? policyAccepted,
+    ConsentRecord? healthDataAuthorization,
   }) {
     return UserModel(
       id: id,
@@ -300,6 +322,9 @@ class UserModel {
       movementXp: movementXp ?? this.movementXp,
       jointProgress: jointProgress ?? this.jointProgress,
       unlockedBadgeIds: unlockedBadgeIds ?? this.unlockedBadgeIds,
+      policyAccepted: policyAccepted ?? this.policyAccepted,
+      healthDataAuthorization:
+          healthDataAuthorization ?? this.healthDataAuthorization,
     );
   }
 }

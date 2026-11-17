@@ -1108,13 +1108,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicyTitle => 'Personal data processing policy';
 
   @override
-  String privacyPolicyVersionLabel(String version) {
-    return 'Current version: $version';
+  String privacyPolicyVersionLabel(int version, String date) {
+    return 'Version $version · in effect since $date';
   }
 
   @override
-  String get privacyConsentCheckbox =>
-      'I have read and accept the personal data processing policy, including the transfer of my data to Google servers in the United States.';
+  String get privacyPolicyLoadFailed =>
+      'We could not load the privacy policy. Please try again later.';
+
+  @override
+  String privacyConsentChangesTitle(int version) {
+    return 'What changed in version $version';
+  }
+
+  @override
+  String get privacyNoticeText =>
+      'We updated the privacy policy. You can review the changes any time.';
+
+  @override
+  String get privacyNoticeView => 'View';
+
+  @override
+  String get privacyNoticeDismiss => 'Got it';
 
   @override
   String get privacyReadPolicy => 'Read the policy';
@@ -1136,10 +1151,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get privacyConsentSaveFailed =>
       'We could not save your acceptance. Check your connection and try again.';
-
-  @override
-  String get privacyHealthConsentCheckbox =>
-      'I expressly authorize the processing of my health data (mobility diagnosis and any medical conditions I enter) for the purposes described in the policy. I understand that, as sensitive data, I am not obliged to authorize it.';
 
   @override
   String get settingsDeleteAccount => 'Delete account';

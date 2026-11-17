@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muevete/features/localization/domain/localized_map_extension.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy_document.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 import 'package:muevete/shared/theme/app_colors.dart';
 
 /// The two consents the app asks for: the policy itself and, separately, the
 /// express authorization for health data. Both start unchecked; the caller
 /// keeps the values and refuses to continue until both are true.
+///
+/// The labels come from [policy], the version the caller stores when the
+/// user accepts. While it is still loading ([policy] is null) the boxes
+/// cannot be ticked.
 class PrivacyConsentCheckboxes extends StatelessWidget {
   const PrivacyConsentCheckboxes({
     super.key,
@@ -13,8 +19,11 @@ class PrivacyConsentCheckboxes extends StatelessWidget {
     required this.healthDataAuthorized,
     required this.onPolicyChanged,
     required this.onHealthDataChanged,
+    required this.policy,
     this.enabled = true,
   });
+
+  final PrivacyPolicyVersion? policy;
 
   final bool policyAccepted;
   final bool healthDataAuthorized;
@@ -31,6 +40,18 @@ class PrivacyConsentCheckboxes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final policy = this.policy;
+    if (policy == null) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: CircularProgressIndicator(
+            key: ValueKey('privacy-consent-loading'),
+          ),
+        ),
+      );
+    }
+    final languageCode = Localizations.localeOf(context).languageCode;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -40,14 +61,14 @@ class PrivacyConsentCheckboxes extends StatelessWidget {
           _ConsentRow(
             checkboxKey: const ValueKey('privacy-consent-checkbox'),
             value: policyAccepted,
-            text: l10n.privacyConsentCheckbox,
+            text: policy.policyCheckbox.localizedWithCode(languageCode),
             enabled: enabled,
             onChanged: onPolicyChanged,
           ),
           _ConsentRow(
             checkboxKey: const ValueKey('privacy-health-checkbox'),
             value: healthDataAuthorized,
-            text: l10n.privacyHealthConsentCheckbox,
+            text: policy.healthDataCheckbox.localizedWithCode(languageCode),
             enabled: enabled,
             onChanged: onHealthDataChanged,
           ),

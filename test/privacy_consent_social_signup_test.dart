@@ -8,6 +8,8 @@ import 'package:muevete/features/auth/presentation/providers/auth_provider.dart'
 import 'package:muevete/features/auth/presentation/signup_screen.dart';
 import 'package:muevete/l10n/app_localizations.dart';
 
+import 'helpers/privacy_policy_test_data.dart';
+
 /// A Google or Apple user reaches the sign-up form signed in but without a
 /// profile; the form must still require both privacy consents.
 void main() {
@@ -38,6 +40,7 @@ void main() {
             authRepositoryProvider.overrideWithValue(
               _SocialAuthRepository(_SocialUser(provider)),
             ),
+            ...privacyPolicyOverrides(),
           ],
           child: MaterialApp.router(
             routerConfig: router,

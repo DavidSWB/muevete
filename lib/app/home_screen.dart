@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:muevete/app/main_screen.dart';
 import 'package:muevete/features/education/presentation/widgets/daily_tip_card.dart';
 import 'package:muevete/features/localization/domain/localized_map_extension.dart';
+import 'package:muevete/features/privacy/presentation/widgets/privacy_policy_notice.dart';
 import 'package:muevete/features/profile/domain/entities/user_model.dart';
 import 'package:muevete/features/profile/domain/services/weekly_activity.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
@@ -76,6 +77,7 @@ class HomeScreen extends ConsumerWidget {
                   onAvatarTap: () => openTab(MainScreen.settingsTab),
                 ),
                 const SizedBox(height: 22),
+                const PrivacyPolicyNoticeSlot(),
                 const DailyTipSlot(),
                 _NextWorkoutHeroCard(
                   user: user,

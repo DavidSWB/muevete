@@ -5,6 +5,7 @@ import 'package:muevete/features/account/domain/account_deletion_service.dart';
 import 'package:muevete/features/auth/domain/repositories/auth_repository.dart';
 import 'package:muevete/features/education/data/shared_preferences_tip_preferences_store.dart';
 import 'package:muevete/features/walkthrough/data/shared_preferences_walkthrough_store.dart';
+import 'package:muevete/features/privacy/data/shared_preferences_policy_notice_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -132,6 +133,7 @@ void main() {
         SharedPreferencesWalkthroughStore.keyFor(uid): '{}',
         SharedPreferencesTipPreferencesStore.keyFor(uid): '{}',
         SharedPreferencesTipPreferencesStore.keyFor('other'): '{}',
+        SharedPreferencesPolicyNoticeStore.keyFor(uid): 3,
         'locale': 'es',
       });
       var cancelled = 0;
