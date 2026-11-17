@@ -49,7 +49,10 @@ PrivacyPolicyMetadata testPolicyMetadata({
 /// Firestore.
 List<Override> privacyPolicyOverrides({int version = 2}) => [
   currentPrivacyPolicyProvider.overrideWith(
-    (ref) async => testPolicyVersion(version),
+    (ref) async => LoadedPrivacyPolicy(
+      policy: testPolicyVersion(version),
+      source: PolicySource.server,
+    ),
   ),
   privacyPolicyMetadataProvider.overrideWith(
     (ref) => Stream.value(testPolicyMetadata(current: version)),

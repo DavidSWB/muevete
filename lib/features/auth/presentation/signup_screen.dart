@@ -94,7 +94,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   /// The policy version whose checkboxes are on screen.
   PrivacyPolicyVersion? _shownPolicy() =>
-      ref.read(currentPrivacyPolicyProvider).asData?.value;
+      ref.read(currentPrivacyPolicyProvider).asData?.value.policy;
 
   /// Checks the account form. Age, weight and height come from pickers
   /// limited to valid values.
@@ -365,7 +365,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final social = _isSocialUser;
     // Ticks given for one version's text never carry over to another.
     ref.listen(currentPrivacyPolicyProvider, (previous, next) {
-      if (previous?.asData?.value.version != next.asData?.value.version) {
+      if (previous?.asData?.value.policy.version !=
+          next.asData?.value.policy.version) {
         setState(() {
           _privacyAccepted = false;
           _healthDataAuthorized = false;
@@ -460,7 +461,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             const SizedBox(height: 16),
 
             PrivacyConsentCheckboxes(
-              policy: ref.watch(currentPrivacyPolicyProvider).asData?.value,
+              policy: ref
+                  .watch(currentPrivacyPolicyProvider)
+                  .asData
+                  ?.value
+                  .policy,
               policyAccepted: _privacyAccepted,
               healthDataAuthorized: _healthDataAuthorized,
               enabled: !_isLoading,

@@ -28,7 +28,10 @@ class PrivacyPolicyScreen extends ConsumerWidget {
               ),
             ),
           ),
-          data: (policy) => _PolicyText(policy: policy),
+          data: (loaded) => _PolicyText(
+            loaded: loaded,
+            onRetry: () => retryPrivacyPolicy(ref),
+          ),
         ),
       ),
     );
@@ -36,13 +39,21 @@ class PrivacyPolicyScreen extends ConsumerWidget {
 }
 
 class _PolicyText extends StatelessWidget {
-  const _PolicyText({required this.policy});
+  const _PolicyText({required this.loaded, required this.onRetry});
 
-  final PrivacyPolicyVersion policy;
+  final LoadedPrivacyPolicy loaded;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final policy = loaded.policy;
+    final unavailableVersion = loaded.unavailableVersion;
+    final sourceNote = switch (loaded.source) {
+      PolicySource.server => null,
+      PolicySource.cache => l10n.privacyPolicySavedCopy(policy.version),
+      PolicySource.bundled => l10n.privacyPolicyBundledCopy(policy.version),
+    };
     final locale = Localizations.localeOf(context);
     final effectiveFrom = DateFormat.yMMMMd(
       locale.toLanguageTag(),
@@ -66,6 +77,35 @@ class _PolicyText extends StatelessWidget {
           key: const ValueKey('privacy-policy-version'),
           style: const TextStyle(color: AppColors.textMuted),
         ),
+        if (sourceNote != null || unavailableVersion != null) ...[
+          const SizedBox(height: 12),
+          Container(
+            key: const ValueKey('privacy-policy-source-note'),
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+            decoration: BoxDecoration(
+              color: AppColors.textMuted.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (sourceNote != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: Text(sourceNote),
+                  ),
+                if (unavailableVersion != null)
+                  Text(l10n.privacyPolicyNewerUnavailable(unavailableVersion)),
+                TextButton(
+                  key: const ValueKey('privacy-policy-retry'),
+                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                  onPressed: onRetry,
+                  child: Text(l10n.notifRetry),
+                ),
+              ],
+            ),
+          ),
+        ],
         for (final section in policy.sectionsFor(locale.languageCode)) ...[
           const SizedBox(height: 20),
           Text(

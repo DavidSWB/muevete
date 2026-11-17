@@ -1113,6 +1113,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String privacyPolicySavedCopy(int version) {
+    return 'Offline: you are viewing the copy saved on your phone (version $version).';
+  }
+
+  @override
+  String privacyPolicyBundledCopy(int version) {
+    return 'Offline: you are viewing the copy included in the app (version $version).';
+  }
+
+  @override
+  String privacyPolicyNewerUnavailable(int version) {
+    return 'There is a newer version of the policy (version $version) that we could not load. Check your connection and try again.';
+  }
+
+  @override
   String get privacyPolicyLoadFailed =>
       'We could not load the privacy policy. Please try again later.';
 

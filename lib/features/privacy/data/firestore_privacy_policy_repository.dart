@@ -27,8 +27,16 @@ class FirestorePrivacyPolicyRepository implements PrivacyPolicyRepository {
   }
 
   @override
-  Future<PrivacyPolicyVersion> getVersion(int version) async {
-    final snapshot = await _policy.collection('versions').doc('$version').get();
+  Future<FetchedPolicyVersion> getVersion(int version) async {
+    final document = _policy.collection('versions').doc('$version');
+    DocumentSnapshot<Map<String, dynamic>> snapshot;
+    try {
+      // Offline, this already answers from the device cache when it can.
+      snapshot = await document.get();
+    } on FirebaseException {
+      // No connection and the default read gave up: try the cache alone.
+      snapshot = await document.get(const GetOptions(source: Source.cache));
+    }
     final data = snapshot.data();
     if (!snapshot.exists || data == null) {
       throw StateError('Privacy policy version $version is not published.');
@@ -39,6 +47,9 @@ class FirestorePrivacyPolicyRepository implements PrivacyPolicyRepository {
         'Document versions/$version holds version ${parsed.version}.',
       );
     }
-    return parsed;
+    return FetchedPolicyVersion(
+      parsed,
+      fromCache: snapshot.metadata.isFromCache,
+    );
   }
 }

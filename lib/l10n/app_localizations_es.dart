@@ -1126,6 +1126,21 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String privacyPolicySavedCopy(int version) {
+    return 'Sin conexión: estás viendo la copia guardada en tu teléfono (versión $version).';
+  }
+
+  @override
+  String privacyPolicyBundledCopy(int version) {
+    return 'Sin conexión: estás viendo la copia incluida en la app (versión $version).';
+  }
+
+  @override
+  String privacyPolicyNewerUnavailable(int version) {
+    return 'Hay una versión más reciente de la política (versión $version) que no pudimos cargar. Revisa tu conexión e inténtalo de nuevo.';
+  }
+
+  @override
   String get privacyPolicyLoadFailed =>
       'No pudimos cargar la política de privacidad. Inténtalo de nuevo más tarde.';
 

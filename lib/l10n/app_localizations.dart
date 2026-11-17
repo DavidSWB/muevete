@@ -2048,6 +2048,24 @@ abstract class AppLocalizations {
   /// **'Versión {version} · vigente desde el {date}'**
   String privacyPolicyVersionLabel(int version, String date);
 
+  /// No description provided for @privacyPolicySavedCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: estás viendo la copia guardada en tu teléfono (versión {version}).'**
+  String privacyPolicySavedCopy(int version);
+
+  /// No description provided for @privacyPolicyBundledCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: estás viendo la copia incluida en la app (versión {version}).'**
+  String privacyPolicyBundledCopy(int version);
+
+  /// No description provided for @privacyPolicyNewerUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay una versión más reciente de la política (versión {version}) que no pudimos cargar. Revisa tu conexión e inténtalo de nuevo.'**
+  String privacyPolicyNewerUnavailable(int version);
+
   /// No description provided for @privacyPolicyLoadFailed.
   ///
   /// In es, this message translates to:

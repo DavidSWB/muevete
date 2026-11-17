@@ -486,6 +486,24 @@
       "date": { "type": "String" }
     }
   },
+  "privacyPolicySavedCopy": "Sin conexión: estás viendo la copia guardada en tu teléfono (versión {version}).",
+  "@privacyPolicySavedCopy": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "privacyPolicyBundledCopy": "Sin conexión: estás viendo la copia incluida en la app (versión {version}).",
+  "@privacyPolicyBundledCopy": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "privacyPolicyNewerUnavailable": "Hay una versión más reciente de la política (versión {version}) que no pudimos cargar. Revisa tu conexión e inténtalo de nuevo.",
+  "@privacyPolicyNewerUnavailable": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
   "privacyPolicyLoadFailed": "No pudimos cargar la política de privacidad. Inténtalo de nuevo más tarde.",
   "privacyConsentChangesTitle": "Qué cambió en la versión {version}",
   "@privacyConsentChangesTitle": {

@@ -96,3 +96,39 @@ class PrivacyPolicyVersion {
   List<PolicySection> sectionsFor(String languageCode) =>
       languageCode == 'en' ? textEn : textEs;
 }
+
+/// Where the policy text on screen came from.
+enum PolicySource {
+  /// Read from Firestore just now.
+  server,
+
+  /// Firestore's offline copy, saved the last time it was read.
+  cache,
+
+  /// The copy shipped inside the app.
+  bundled,
+}
+
+/// A version fetched from Firestore, and whether it came from its cache.
+class FetchedPolicyVersion {
+  const FetchedPolicyVersion(this.policy, {required this.fromCache});
+
+  final PrivacyPolicyVersion policy;
+  final bool fromCache;
+}
+
+/// The policy the app shows, with where it came from.
+class LoadedPrivacyPolicy {
+  const LoadedPrivacyPolicy({
+    required this.policy,
+    required this.source,
+    this.unavailableVersion,
+  });
+
+  final PrivacyPolicyVersion policy;
+  final PolicySource source;
+
+  /// The published current version when its text could not be loaded and an
+  /// older one is shown instead. Null when [policy] is the current version.
+  final int? unavailableVersion;
+}

@@ -11,6 +11,7 @@ import 'package:muevete/features/privacy/domain/policy_notice_store.dart';
 import 'package:muevete/features/privacy/domain/privacy_consent_repository.dart';
 import 'package:muevete/features/privacy/domain/privacy_policy.dart';
 import 'package:muevete/features/privacy/domain/privacy_policy_document.dart';
+import 'package:muevete/features/privacy/domain/privacy_policy_loader.dart';
 import 'package:muevete/features/privacy/domain/privacy_policy_repository.dart';
 import 'package:muevete/features/profile/presentation/profile_provider.dart';
 
@@ -58,23 +59,44 @@ final privacyPolicyMetadataProvider = StreamProvider<PrivacyPolicyMetadata>((
   );
 });
 
-/// The text of the current version: the one the user reads and accepts.
-/// Falls back to the bundled version when that text cannot be loaded; the
-/// version number shown and stored is always the one of the text shown.
-final currentPrivacyPolicyProvider = FutureProvider<PrivacyPolicyVersion>((
+/// The text the user reads and accepts: the current version from Firestore
+/// or its offline copy, else the bundled version. The version number shown
+/// and stored is always the one of the text shown.
+final currentPrivacyPolicyProvider = FutureProvider<LoadedPrivacyPolicy>((
   ref,
 ) async {
   final bundled = ref.watch(bundledPrivacyPolicyProvider);
+  final metadataFuture = ref.watch(privacyPolicyMetadataProvider.future);
+  PrivacyPolicyRepository? repository;
   try {
-    final metadata = await ref.watch(privacyPolicyMetadataProvider.future);
-    return await ref
-        .watch(privacyPolicyRepositoryProvider)
-        .getVersion(metadata.currentVersion);
+    repository = ref.watch(privacyPolicyRepositoryProvider);
   } catch (error, stackTrace) {
     _logFallback('text', error, stackTrace);
-    return bundled.load();
   }
+  final metadata = await metadataFuture;
+  if (repository == null) {
+    final policy = await bundled.load();
+    return LoadedPrivacyPolicy(
+      policy: policy,
+      source: PolicySource.bundled,
+      unavailableVersion: metadata.currentVersion > policy.version
+          ? metadata.currentVersion
+          : null,
+    );
+  }
+  return loadPrivacyPolicy(
+    metadata: metadata,
+    repository: repository,
+    loadBundled: bundled.load,
+    onFallback: (error, stackTrace) => _logFallback('text', error, stackTrace),
+  );
 });
+
+/// Reads the policy again after a failed load, from the metadata down.
+void retryPrivacyPolicy(WidgetRef ref) {
+  ref.invalidate(privacyPolicyMetadataProvider);
+  ref.invalidate(currentPrivacyPolicyProvider);
+}
 
 final policyNoticeStoreProvider = Provider<PolicyNoticeStore>(
   (ref) => SharedPreferencesPolicyNoticeStore(),

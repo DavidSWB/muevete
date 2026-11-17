@@ -49,11 +49,16 @@ class _PrivacyConsentScreenState extends ConsumerState<PrivacyConsentScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final policy = ref.watch(currentPrivacyPolicyProvider).asData?.value;
+    final loaded = ref.watch(currentPrivacyPolicyProvider).asData?.value;
+    // Accepting an older text than the one required would not let the user
+    // in, so ask them to retry instead of showing the boxes.
+    final unavailableVersion = loaded?.unavailableVersion;
+    final policy = unavailableVersion == null ? loaded?.policy : null;
     final languageCode = Localizations.localeOf(context).languageCode;
     // Ticks given for one version's text never carry over to another.
     ref.listen(currentPrivacyPolicyProvider, (previous, next) {
-      if (previous?.asData?.value.version != next.asData?.value.version) {
+      if (previous?.asData?.value.policy.version !=
+          next.asData?.value.policy.version) {
         setState(() {
           _policyAccepted = false;
           _healthDataAuthorized = false;
@@ -124,6 +129,11 @@ class _PrivacyConsentScreenState extends ConsumerState<PrivacyConsentScreen> {
                     ),
                   ],
                   const SizedBox(height: 20),
+                  if (unavailableVersion != null)
+                    _PolicyUnavailable(
+                      version: unavailableVersion,
+                      onRetry: () => retryPrivacyPolicy(ref),
+                    ),
                   if (_failed)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
@@ -133,16 +143,17 @@ class _PrivacyConsentScreenState extends ConsumerState<PrivacyConsentScreen> {
                         style: const TextStyle(color: AppColors.error),
                       ),
                     ),
-                  PrivacyConsentCheckboxes(
-                    policy: policy,
-                    policyAccepted: _policyAccepted,
-                    healthDataAuthorized: _healthDataAuthorized,
-                    enabled: !_saving,
-                    onPolicyChanged: (value) =>
-                        setState(() => _policyAccepted = value),
-                    onHealthDataChanged: (value) =>
-                        setState(() => _healthDataAuthorized = value),
-                  ),
+                  if (unavailableVersion == null)
+                    PrivacyConsentCheckboxes(
+                      policy: policy,
+                      policyAccepted: _policyAccepted,
+                      healthDataAuthorized: _healthDataAuthorized,
+                      enabled: !_saving,
+                      onPolicyChanged: (value) =>
+                          setState(() => _policyAccepted = value),
+                      onHealthDataChanged: (value) =>
+                          setState(() => _healthDataAuthorized = value),
+                    ),
                   const SizedBox(height: 20),
                   MyButton(
                     key: const ValueKey('privacy-consent-accept'),
@@ -168,6 +179,38 @@ class _PrivacyConsentScreenState extends ConsumerState<PrivacyConsentScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Shown instead of the checkboxes when the version the user must accept
+/// is published but its text cannot be loaded right now.
+class _PolicyUnavailable extends StatelessWidget {
+  const _PolicyUnavailable({required this.version, required this.onRetry});
+
+  final int version;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Padding(
+      key: const ValueKey('privacy-consent-unavailable'),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          Text(
+            l10n.privacyPolicyNewerUnavailable(version),
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.error),
+          ),
+          TextButton(
+            key: const ValueKey('privacy-policy-retry'),
+            onPressed: onRetry,
+            child: Text(l10n.notifRetry),
+          ),
+        ],
       ),
     );
   }
